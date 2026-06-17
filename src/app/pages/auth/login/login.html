@@ -1,8 +1,8 @@
 <div class="flex min-h-screen items-center justify-center bg-[#F4F6F8] px-4">
-  <div class="w-full max-w-[420px] rounded-[20px] bg-white px-10 py-11 shadow-[0_18px_45px_rgba(15,23,42,0.12)]">
+  <div class="w-full max-w-105 rounded-[20px] bg-white px-10 py-10 shadow-[0_18px_45px_rgba(15,23,42,0.12)]">
     <div class="mb-8 flex flex-col items-center">
-      <div class="mb-4 flex h-[60px] w-[60px] items-center justify-center rounded-[18px] bg-[#2EA8E5]">
-        <svg lucideMessageSquare class="h-8 w-8 text-white"></svg>
+      <div class="mb-4 flex h-15 w-15 items-center justify-center rounded-[18px] bg-[#2EA8E5]">
+        <lucide-icon name="message-square"></lucide-icon>
       </div>
 
       <h1 class="text-[26px] font-bold leading-none text-[#090B1A]">ChatApp</h1>
@@ -12,14 +12,15 @@
     <form class="space-y-5" (ngSubmit)="login()">
       <div>
         <label class="mb-2 block text-sm font-semibold text-[#090B1A]">
-          Email hoặc số điện thoại
+          Email
         </label>
         <input
           type="text"
           [ngModel]="email()"
           (ngModelChange)="email.set($event)"
           name="email"
-          class="h-[44px] w-full rounded-[10px] border border-[#E1E5EA] px-4 text-sm outline-none transition focus:border-[#2EA8E5] focus:ring-2 focus:ring-[#2EA8E5]/15"
+          placeholder="Mời nhập email"
+          class="h-10 w-full rounded-[10px] border border-[#E1E5EA] px-4 text-sm outline-none transition focus:border-[#2EA8E5] focus:ring-2 focus:ring-[#2EA8E5]/15"
         />
       </div>
 
@@ -34,7 +35,8 @@
             [ngModel]="password()"
             (ngModelChange)="password.set($event)"
             name="password"
-            class="h-[44px] w-full rounded-[10px] border border-[#E1E5EA] px-4 pr-11 text-sm outline-none transition focus:border-[#2EA8E5] focus:ring-2 focus:ring-[#2EA8E5]/15"
+            placeholder="Mời nhập mật khẩu"
+            class="h-10 w-full rounded-[10px] border border-[#E1E5EA] px-4 pr-11 text-sm outline-none transition focus:border-[#2EA8E5] focus:ring-2 focus:ring-[#2EA8E5]/15"
           />
 
           <button
@@ -64,7 +66,7 @@
 
       <button
         type="submit"
-        class="h-[48px] w-full rounded-[10px] bg-[#2EA8E5] text-sm font-bold text-white transition hover:bg-[#2499D5]"
+        class="h-10 w-full rounded-[10px] bg-[#2EA8E5] text-sm font-bold text-white transition hover:bg-[#2499D5]"
       >
         Đăng nhập
       </button>
