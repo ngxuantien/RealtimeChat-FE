@@ -1,10 +1,11 @@
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { LucideAngularModule } from 'lucide-angular';
+import { LucideEyeOff, LucideMessageSquare, LucideEye } from '@lucide/angular';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, LucideAngularModule],
+  imports: [FormsModule, LucideMessageSquare, LucideEyeOff, LucideEye, RouterLink],
   templateUrl: './login.html',
 })
 export class Login {
