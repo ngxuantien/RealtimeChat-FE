@@ -1,0 +1,28 @@
+<div>
+    @if(label()){
+        <label [class]="ui.label">
+            {{label()}}
+            @if(required()){
+                <span class="text-[#D92D20]">*</span>
+            }
+        </label>
+    }
+
+    <div class="relative">
+        <input 
+            [type]="inputType"
+            [placeholder]="placeholder()"
+            [(ngModel)]="value"
+            [class]="type() === 'password' ? ui.inputWithIcon : ui.input"
+        >
+        @if(type() === 'password'){
+        <button type="button" class="absolute top-1/2 right-3 -translate-y-1/2 text-[#8A8FA3]" (click)="togglePassword()">
+            @if (showPassword()) {
+                <svg lucideEyeOff class="size-5"></svg>
+            } @else {
+                <svg lucideEye class="size-5"></svg>
+            }
+        </button>
+        }
+    </div>
+</div>

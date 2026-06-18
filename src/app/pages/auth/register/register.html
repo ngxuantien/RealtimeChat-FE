@@ -1,0 +1,59 @@
+<div class="flex min-h-screen items-center justify-center bg-[#F4F6F8] px-4 py-8">
+    <div class="w-full max-w-105 rounded-3xl bg-white px-10 py-9 shadow-[0_15px_40px_rgba(0,0,0,0.08)]">
+        <div class="mb-7 flex flex-col items-center">
+            <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#2EA8E5]">
+                <svg lucideMessageSquare class="h-7 w-7 text-white"></svg>
+            </div>
+
+            <h1 class="text-[24px] font-bold leading-none text-[#111827]">
+                Tạo tài khoản mới
+            </h1>
+
+            <p class="mt-3 text-sm text-[#8A8FA3]">
+                Điền thông tin để bắt đầu trò chuyện
+            </p>
+        </div>
+
+        <div class="mb-7 flex flex-col items-center">
+            <button type="button"
+                class="relative flex h-20 w-20 items-center justify-center rounded-full border-2 border-dashed border-[#2EA8E5] text-[#2EA8E5]">
+                <svg lucideCamera class="h-7 w-7"></svg>
+
+                <span
+                    class="absolute -right-1 bottom-1 flex h-7 w-7 items-center justify-center rounded-full bg-[#2EA8E5] text-white">
+                    <svg lucideCamera class="h-4 w-4"></svg>
+                </span>
+            </button>
+
+            <p class="mt-3 text-sm text-[#8A8FA3]">
+                Nhấn để chọn ảnh đại diện
+            </p>
+        </div>
+
+        <form class="space-y-4" (ngSubmit)="register()">
+            <app-ui-input label="Họ và tên" placeholder="Nguyễn Văn A..." [required]="true" [(value)]="userName" />
+
+            <app-ui-input label="Email" type="email" placeholder="email@example.com" [required]="true"
+                [(value)]="email" />
+
+            <app-ui-input label="Mật khẩu" type="password" placeholder="Tối thiểu 6 ký tự" [required]="true"
+                [(value)]="password" />
+
+            <app-ui-input label="Xác nhận mật khẩu" type="password" placeholder="Nhập lại mật khẩu" [required]="true"
+                [(value)]="confirmPassword" />
+
+            <div class="pt-3">
+                <app-ui-button type="submit">
+                    Tạo tài khoản
+                </app-ui-button>
+            </div>
+
+            <p class="pt-2 text-center text-sm text-[#8A8FA3]">
+                Đã có tài khoản?
+                <a routerLink="/auth/login" class="font-semibold text-[#2EA8E5]">
+                    Đăng nhập
+                </a>
+            </p>
+        </form>
+    </div>
+</div>
