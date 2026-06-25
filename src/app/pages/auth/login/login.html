@@ -8,77 +8,49 @@
       <h1 class="text-2xl font-bold leading-none text-[#090B1A]">ChatApp</h1>
       <p class="mt-3 text-sm text-[#7C7C7C]">Kết nối và trò chuyện mọi lúc mọi nơi</p>
     </div>
+    <div>
+      <label class="mb-2 block text-sm font-semibold text-[#090B1A]">
+        Email
+      </label>
+      <input type="text" [ngModel]="email()" (ngModelChange)="email.set($event)" name="email"
+        placeholder="Mời nhập email"
+        class="h-10 w-full rounded-md border border-[#D2D5DA] px-4 text-sm outline-none transition focus:border-[#1179EA]  focus:ring-[#1179EA]/15" />
+    </div>
 
-    <form class="space-y-5" (ngSubmit)="login()">
-      <div>
-        <label class="mb-2 block text-sm font-semibold text-[#090B1A]">
-          Email
-        </label>
-        <input
-          type="text"
-          [ngModel]="email()"
-          (ngModelChange)="email.set($event)"
-          name="email"
-          placeholder="Mời nhập email"
-          class="h-10 w-full rounded-md border border-[#D2D5DA] px-4 text-sm outline-none transition focus:border-[#1179EA]  focus:ring-[#1179EA]/15"
-        />
+    <div>
+      <label class="mb-2 block text-sm font-semibold text-[#090B1A]">
+        Mật khẩu
+      </label>
+
+      <div class="relative">
+        <input [type]="showPassword() ? 'text' : 'password'" [ngModel]="password()"
+          (ngModelChange)="password.set($event)" name="password" placeholder="Mời nhập mật khẩu"
+          class="h-10 w-full rounded-md border border-[#D2D5DA] px-4 pr-11 text-sm outline-none transition focus:border-[#1179EA] focus:ring-[#1179EA]/15" />
+
+        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#8A8FA3]"
+          (click)="togglePassword()">
+          @if (showPassword()) {
+          <svg lucideEyeOff class="h-5 w-5"></svg>
+          } @else {
+          <svg lucideEye class="h-5 w-5"></svg>
+          }
+        </button>
       </div>
+    </div>
 
-      <div>
-        <label class="mb-2 block text-sm font-semibold text-[#090B1A]">
-          Mật khẩu
-        </label>
+    <div class="flex items-center justify-between text-sm">
+      <label class="flex items-center gap-2 text-[#090B1A]">
+        <input type="checkbox" [ngModel]="rememberMe()" (ngModelChange)="rememberMe.set($event)" name="rememberMe"
+          class="h-4 w-4 rounded border-[#C8CDD6]" />
+        Ghi nhớ đăng nhập
+      </label>
 
-        <div class="relative">
-          <input
-            [type]="showPassword() ? 'text' : 'password'"
-            [ngModel]="password()"
-            (ngModelChange)="password.set($event)"
-            name="password"
-            placeholder="Mời nhập mật khẩu"
-            class="h-10 w-full rounded-md border border-[#D2D5DA] px-4 pr-11 text-sm outline-none transition focus:border-[#1179EA] focus:ring-[#1179EA]/15"
-          />
+      <a class="font-medium text-[#1179EA]" href="#">Quên mật khẩu?</a>
+    </div>
 
-          <button
-            type="button"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-[#8A8FA3]"
-            (click)="togglePassword()"
-          >
-            @if (showPassword()) {
-            <svg lucideEyeOff class="h-5 w-5"></svg>
-            } @else {
-            <svg lucideEye class="h-5 w-5"></svg>
-            }
-            </button>
-        </div>
-      </div>
-
-      <div class="flex items-center justify-between text-sm">
-        <label class="flex items-center gap-2 text-[#090B1A]">
-          <input
-            type="checkbox"
-            [ngModel]="rememberMe()"
-            (ngModelChange)="rememberMe.set($event)"
-            name="rememberMe"
-            class="h-4 w-4 rounded border-[#C8CDD6]"
-          />
-          Ghi nhớ đăng nhập
-        </label>
-
-        <a class="font-medium text-[#1179EA]" href="#">Quên mật khẩu?</a>
-      </div>
-
-      <button
-        type="submit"
-        class="h-10 w-full rounded-md bg-[#1179EA] text-sm font-medium text-white transition hover:bg-[#1170D5] cursor-pointer"
-      >
-        Đăng nhập
-      </button>
+    <app-ui-button type="submit">Đăng nhập</app-ui-button>
 
       <p class="pt-1 text-center text-sm text-[#6A7282]">
         Chưa có tài khoản?
         <a routerLink="/auth/register" class="font-medium text-[#1179EA]">Đăng ký ngay</a>
       </p>
-    </form>
-  </div>
-</div>
