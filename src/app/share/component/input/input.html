@@ -1,6 +1,6 @@
 <div>
     @if(label()){
-        <label [class]="ui.label">
+        <label class="mb-2 block text-sm font-semibold text-[#18181B]">
             {{label()}}
             @if(required()){
                 <span class="text-[#D92D20]">*</span>
@@ -13,7 +13,8 @@
             [type]="inputType"
             [placeholder]="placeholder()"
             [(ngModel)]="value"
-            [class]="type() === 'password' ? ui.inputWithIcon : ui.input"
+            class="w-full rounded-lg border border-[#D0D5DD] px-3.5 py-2.5 text-sm text-[#18181B] outline-none focus:border-primary"
+            [class]="this.type() === 'password' ? 'h-10 w-full rounded-lg border border-[#E4E4E7] px-4 pr-11 text-sm outline-none transition focus:border-[#2EA8E5] focus:ring-2 focus:ring-[#2EA8E5]/15' : 'h-10 w-full rounded-lg border border-[#E4E4E7] px-4 text-sm outline-none transition focus:border-[#2EA8E5] focus:ring-2 focus:ring-[#2EA8E5]/15'"
         >
         @if(type() === 'password'){
         <button type="button" class="absolute top-1/2 right-3 -translate-y-1/2 text-[#8A8FA3]" (click)="togglePassword()">

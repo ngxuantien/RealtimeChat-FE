@@ -1,5 +1,4 @@
 import { Component, input, model, signal } from "@angular/core";
-import { UI_CLASS } from "../../constants/ui-class";
 import { FormsModule } from "@angular/forms";
 
 @Component({
@@ -14,8 +13,6 @@ export class UiInput{
     required = input(false);
 
     value = model('');
-
-    protected readonly ui = UI_CLASS;
     protected readonly showPassword = signal(false);
 
     get inputType(){
