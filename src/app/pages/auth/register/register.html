@@ -1,7 +1,7 @@
 <div class="flex min-h-screen items-center justify-center bg-[#F4F6F8] px-4 py-8">
     <div class="w-full max-w-105 rounded-3xl bg-white px-10 py-9 shadow-[0_15px_40px_rgba(0,0,0,0.08)]">
         <div class="mb-6 flex flex-col items-center">
-            <div class="mb-4 flex h-15 w-15 items-center justify-center rounded-[18px] bg-[#1179EA]">
+            <div class="mb-4 flex h-15 w-15 items-center justify-center rounded-[18px] bg-primary">
                 <svg lucideMessageSquare class="h-8 w-8 text-white"></svg>
             </div>
 
@@ -15,39 +15,47 @@
         </div>
 
         <div class="mb-6 flex flex-col items-center">
-            <button type="button"
-                class="relative flex h-20 w-20 items-center justify-center rounded-full border-2 border-dashed border-primary text-primary">
+            <input #fileInput type="file" accept="image/*" class="hidden" (change)="onAvatarSelected($event)" />
+        
+            <button type="button" (click)="fileInput.click()"
+                class="relative flex h-20 w-20 items-center justify-center rounded-full border-2 border-dashed border-primary text-primary ">
+        
+                @if (avatarPreview()) {
+                <img [src]="avatarPreview()" class="h-full w-full object-cover rounded-full" alt="Ảnh đại diện" />
+                } @else {
                 <svg lucideCamera class="h-7 w-7"></svg>
-
+                }
+        
                 <span
                     class="absolute -right-1 bottom-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white cursor-pointer">
                     <svg lucideCamera class="h-4 w-4"></svg>
                 </span>
             </button>
-
-            <p class="mt-3 text-sm text-success">
+        
+            <p class="mt-3 text-sm text-neutral-500">
                 Nhấn để chọn ảnh đại diện
             </p>
         </div>
 
         <form class="space-y-4" (ngSubmit)="register()">
-            <app-ui-input label="Họ và tên" type="text" placeholder="Nhập họ và tên" [required]="true" [(value)]="userName"/>
-
+            <app-ui-input label="Họ và tên" type="text" placeholder="Nhập họ và tên" [required]="true" [(value)]="userName" />
+        
             <app-ui-input label="Email" type="email" placeholder="Nhập email" [required]="true" [(value)]="email" />
-
+        
             <app-ui-input label="Mật khẩu" type="password" placeholder="Nhập mật khẩu" [required]="true" [(value)]="password" />
-
-            <app-ui-input label="Xác nhận mật khẩu" type="password" placeholder="Nhập lại mật khẩu" [required]="true" [(value)]="confirmPassword" />
-
-            <div class="pt-4">
-                <app-ui-button type="submit">
-                    Tạo tài khoản
+        
+            <app-ui-input label="Xác nhận mật khẩu" type="password" placeholder="Nhập lại mật khẩu" [required]="true"
+                [(value)]="confirmPassword" />
+        
+            <div class="mt-2">
+                <app-ui-button type="submit" [full]="true">
+                    Đăng Ký
                 </app-ui-button>
             </div>
-
-            <p class="pt-2 text-center text-sm text-[#8A8FA3]">
+        
+            <p class="text-center text-sm text-[#566474]">
                 Đã có tài khoản?
-                <a routerLink="/auth/login" class="font-semibold text-[#2EA8E5]">
+                <a routerLink="/auth/login" class="font-semibold text-primary cursor-pointer">
                     Đăng nhập
                 </a>
             </p>

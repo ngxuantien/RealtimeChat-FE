@@ -7,7 +7,7 @@ import { UiButton } from "../../../share/component/button/button";
 
 @Component({
   selector: 'app-register',
-  imports: [ FormsModule, RouterLink, UiButton, UiInput, LucideCamera, LucideMessageSquare ],
+  imports: [FormsModule, RouterLink, UiButton, UiInput, LucideCamera, LucideMessageSquare],
   templateUrl: './register.html',
 })
 export class Register {
@@ -15,6 +15,19 @@ export class Register {
   email = signal('');
   password = signal('');
   confirmPassword = signal('');
+  avatarPreview = signal<string | null>(null);
+  avatarFile: File | null = null;
+
+  onAvatarSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    this.avatarFile = file;
+    const reader = new FileReader();
+    reader.onload = () => this.avatarPreview.set(reader.result as string);
+    reader.readAsDataURL(file);
+  }
 
   register() {
     console.log({
