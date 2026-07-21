@@ -1,3 +1,10 @@
-<button [type]="type()" [disabled]="disable()" [class]="">
+<button 
+    [type]="type()" 
+    [disabled]="disabled() || loading()" 
+    [class]="classes()"
+>
+    @if (loading()) {
+        <svg LoaderCircle ></svg>
+    }
     <ng-content />
 </button>
