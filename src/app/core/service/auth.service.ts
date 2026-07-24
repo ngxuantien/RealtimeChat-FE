@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { LoginRequest} from '@app/core/model/auth/login-request.model';
 import { RegisterRequest } from '../model/auth/register-request.model';
 import { AuthResponse } from '../model/auth/auth-response.model';
+import { API_ENDPOINT } from '../constants/api-endpoint.constant';
 
 const TOKEN_KEY = 'access_token';
 
@@ -16,7 +17,9 @@ export class AuthService {
     currentUser = signal<AuthResponse | null>(null);
 
     login(payload: LoginRequest) {
-        return this.http.post<AuthResponse>(`${this.baseUrl}/auth/login`, payload).pipe(
+        const url = `${this.baseUrl}/${API_ENDPOINT.AUTH.LOGIN}`;
+        
+        return this.http.post<AuthResponse>(url, payload).pipe(
             tap(res => this.setSession(res))
         );
     }
