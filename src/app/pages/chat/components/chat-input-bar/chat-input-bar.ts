@@ -1,0 +1,21 @@
+// chat-input-bar.ts
+import { Component, output, signal } from "@angular/core";
+import { FormsModule } from '@angular/forms';
+import { LucidePaperclip, LucideImage, LucideSmile, LucideSend } from '@lucide/angular';
+
+@Component({
+    selector: 'app-chat-input-bar',
+    imports: [FormsModule, LucidePaperclip, LucideImage, LucideSmile, LucideSend],
+    templateUrl: './chat-input-bar.html',
+})
+export class ChatInputBar {
+    message = signal('');
+    send = output<string>();
+
+    onSend() {
+        const value = this.message().trim();
+        if (!value) return;
+        this.send.emit(value);
+        this.message.set('');
+    }
+}
