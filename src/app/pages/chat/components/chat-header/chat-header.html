@@ -1,0 +1,27 @@
+<!-- chat-header.html -->
+<div class="flex items-center justify-between border-b border-dark-border px-6 py-3">
+    <div class="flex items-center gap-3">
+        <div class="h-10 w-10 overflow-hidden rounded-full bg-neutral-700">
+            @if (avatarUrl()) {
+                <img [src]="avatarUrl()" class="h-full w-full object-cover" alt="" />
+            }
+        </div>
+        <div>
+            <p class="text-sm font-semibold text-dark-text">{{ name() }}</p>
+            @if (isOnline()) {
+                <p class="text-xs text-success">Đang hoạt động</p>
+            } @else {
+                <p class="text-xs text-dark-muted">Ngoại tuyến</p>
+            }
+        </div>
+    </div>
+    <div class="flex items-center gap-4 text-dark-muted">
+        <svg lucideSearch class="h-4.5 w-4.5 cursor-pointer hover:text-white"></svg>
+        <svg lucidePhone class="h-4.5 w-4.5 cursor-pointer hover:text-white"></svg>
+        <svg lucideVideo class="h-4.5 w-4.5 cursor-pointer hover:text-white"></svg>
+        <button class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/20 text-primary" (click)="toggleInfo.emit()">
+            <svg lucideInfo class="h-4 w-4"></svg>
+        </button>
+        <svg lucideEllipsis class="h-4.5 w-4.5 cursor-pointer hover:text-white"></svg>
+    </div>
+</div>
