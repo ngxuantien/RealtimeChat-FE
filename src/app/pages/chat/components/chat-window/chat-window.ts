@@ -3,10 +3,11 @@ import { Component, input, output } from "@angular/core";
 import { ChatHeader } from "@app/pages/chat/components/chat-header/chat-header";
 import { MessageList, MessageItem } from "@app/pages/chat/components/message-list/message-list";
 import { ChatInputBar } from "@app/pages/chat/components/chat-input-bar/chat-input-bar";
+import { LucideAngularModule } from "lucide-angular";
 
 @Component({
     selector: 'app-chat-window',
-    imports: [ChatHeader, MessageList, ChatInputBar],
+    imports: [ChatHeader, MessageList, ChatInputBar, LucideAngularModule],
     templateUrl: './chat-window.html',
     host: { class: 'block' }
 })
