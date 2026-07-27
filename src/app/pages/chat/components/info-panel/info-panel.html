@@ -1,6 +1,70 @@
-<div class="flex flex-1 flex-col items-center justify-center gap-3 bg-dark-bg">
-    <div class="flex h-14 w-14 items-center justify-center rounded-full bg-dark-surface">
-        <svg lucideMessageCircle class="h-6 w-6 text-dark-muted"></svg>
+<!-- info-panel.html -->
+<aside class="flex h-full flex-col border-l border-neutral-200 bg-white">
+
+    <div class="flex items-center justify-between border-b border-neutral-200 px-5 py-4">
+        <span class="font-semibold text-neutral-900">Thông tin liên hệ</span>
+        <lucide-icon name="x" class="h-4 w-4 cursor-pointer text-neutral-400 hover:text-neutral-600"></lucide-icon>
     </div>
-    <p class="font-medium text-dark-text">Bên phải/p>
-</div>
+
+    <div class="flex-1 overflow-y-auto px-5 py-6">
+
+        <!-- Profile -->
+        <div class="mb-6 flex flex-col items-center text-center">
+            <div class="relative mb-3 h-20 w-20">
+                <img src="https://i.pravatar.cc/150?img=5" class="h-full w-full rounded-full object-cover" alt="" />
+                <span class="absolute bottom-1 right-1 h-3 w-3 rounded-full border-2 border-white bg-success"></span>
+            </div>
+            <p class="font-semibold text-neutral-900">Linh Nguyễn</p>
+            <p class="mt-1 text-xs text-neutral-500">Product Designer @ Kreativ Studio</p>
+            <span
+                class="mt-2 inline-flex items-center gap-1.5 rounded-full bg-success/10 px-3 py-1 text-xs text-success">
+                <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
+                Đang hoạt động
+            </span>
+        </div>
+
+        <!-- Actions -->
+        <div class="mb-6 grid grid-cols-3 gap-3 border-y border-neutral-200 py-4 text-center text-xs text-neutral-500">
+            <div class="flex cursor-pointer flex-col items-center gap-1.5 hover:text-neutral-700">
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100">
+                    <lucide-icon name="bell-off" class="h-4 w-4"></lucide-icon>
+                </div>
+                Tắt thông báo
+            </div>
+            <div class="flex cursor-pointer flex-col items-center gap-1.5 hover:text-neutral-700">
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100">
+                    <lucide-icon name="shield" class="h-4 w-4"></lucide-icon>
+                </div>
+                Chặn
+            </div>
+            <div class="flex cursor-pointer flex-col items-center gap-1.5 hover:text-danger">
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100">
+                    <lucide-icon name="trash" class="h-4 w-4"></lucide-icon>
+                </div>
+                Xóa
+            </div>
+        </div>
+
+        <!-- Shared media -->
+        <div class="mb-3 flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase text-neutral-500">Ảnh & file đã chia sẻ</span>
+            <a class="cursor-pointer text-xs font-medium text-primary">Xem tất cả (6)</a>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+            @for (img of sharedImages(); track img) {
+            <img [src]="img" class="aspect-square rounded-lg object-cover" alt="" />
+            }
+        </div>
+
+    </div>
+
+    <!-- Danger zone -->
+    <div class="border-t border-neutral-200 p-4">
+        <button
+            class="flex w-full items-center justify-center gap-2 rounded-lg border border-danger/20 bg-danger/5 py-2.5 text-sm font-medium text-danger hover:bg-danger/10">
+            <lucide-icon name="trash" class="h-4 w-4"></lucide-icon>
+            Xóa cuộc trò chuyện
+        </button>
+    </div>
+
+</aside>
