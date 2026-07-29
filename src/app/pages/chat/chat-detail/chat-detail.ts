@@ -12,6 +12,7 @@ import { CONVERSATIONS, MOCK_MESSAGES } from '@app/pages/chat/mock-data';
     selector: 'app-chat-detail',
     imports: [ChatWindow, InfoPanel],
     templateUrl: './chat-detail.html',
+    host: { class: 'flex min-h-0 flex-1' },
 })
 export class ChatDetail {
     private route = inject(ActivatedRoute);

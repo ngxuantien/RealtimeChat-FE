@@ -7,6 +7,7 @@ import { LucideAngularModule } from 'lucide-angular';
     selector: 'app-chat-input-bar',
     imports: [FormsModule, LucideAngularModule],
     templateUrl: './chat-input-bar.html',
+    host: { class: 'shrink-0' },
 })
 export class ChatInputBar {
     message = signal('');

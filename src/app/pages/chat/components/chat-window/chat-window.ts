@@ -8,7 +8,7 @@ import { ChatInputBar } from "@app/pages/chat/components/chat-input-bar/chat-inp
     selector: 'app-chat-window',
     imports: [ChatHeader, MessageList, ChatInputBar],
     templateUrl: './chat-window.html',
-    host: { class: 'block' }
+    host: { class: 'flex min-h-0 flex-1 flex-col' }
 })
 export class ChatWindow {
     conversationId = input<string | null>(null);
