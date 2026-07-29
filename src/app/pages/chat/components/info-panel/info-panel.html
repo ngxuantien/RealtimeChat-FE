@@ -1,9 +1,8 @@
-<!-- info-panel.html -->
 <aside class="flex h-full flex-col border-l border-neutral-200 bg-white">
 
     <div class="flex items-center justify-between border-b border-neutral-200 px-5 py-4">
         <span class="font-semibold text-neutral-900">Thông tin liên hệ</span>
-        <lucide-icon name="x" class="h-4 w-4 cursor-pointer text-neutral-400 hover:text-neutral-600"></lucide-icon>
+        <lucide-icon name="x" class="h-4 w-4 cursor-pointer text-neutral-400 hover:text-neutral-600" (click)="close.emit()"></lucide-icon>
     </div>
 
     <div class="flex-1 overflow-y-auto px-5 py-6">

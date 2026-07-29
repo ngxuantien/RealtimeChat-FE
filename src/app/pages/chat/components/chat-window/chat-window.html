@@ -1,110 +1,12 @@
-<!-- chat-window.html -->
-<section class="flex h-full flex-col bg-neutral-100">
+<section class="flex h-full flex-col bg-dark-bg">
+    <app-chat-header
+        [name]="contactName()"
+        [avatarUrl]="contactAvatar()"
+        [isOnline]="isOnline()"
+        (toggleInfo)="toggleInfo.emit()"
+    />
 
-    <!-- Header -->
-    <div class="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-3">
-        <div class="flex items-center gap-3">
-            <div class="relative h-10 w-10 shrink-0">
-                <img src="https://i.pravatar.cc/150?img=5" class="h-full w-full rounded-full object-cover" alt="" />
-                <span
-                    class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-success"></span>
-            </div>
-            <div>
-                <p class="text-sm font-semibold text-neutral-900">Linh Nguyễn</p>
-                <p class="text-xs text-success">Đang hoạt động</p>
-            </div>
-        </div>
-        <div class="flex items-center gap-4 text-neutral-400">
-            <lucide-icon name="search" class="h-4.5 w-4.5 cursor-pointer hover:text-neutral-600"></lucide-icon>
-            <lucide-icon name="phone" class="h-4.5 w-4.5 cursor-pointer hover:text-neutral-600"></lucide-icon>
-            <lucide-icon name="video" class="h-4.5 w-4.5 cursor-pointer hover:text-neutral-600"></lucide-icon>
-            <button class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <lucide-icon name="info" class="h-4 w-4"></lucide-icon>
-            </button>
-            <lucide-icon name="ellipsis" class="h-4.5 w-4.5 cursor-pointer hover:text-neutral-600"></lucide-icon>
-        </div>
-    </div>
+    <app-message-list [messages]="messages()" />
 
-    <!-- Messages -->
-    <div class="flex-1 space-y-4 overflow-y-auto px-6 py-5">
-
-        <!-- Tin nhắn mình gửi -->
-        <div class="flex flex-col items-end gap-1">
-            <div class="max-w-md rounded-2xl bg-primary px-4 py-2.5 text-sm text-white">
-                Mình hiểu rồi. Thường thì với 375px mình hay dùng single column layout và tăng font size lên 1px. Để
-                mình xem file rồi góp ý chi tiết hơn
-            </div>
-            <div class="flex items-center gap-1 text-xs text-neutral-400">
-                <span>10:08</span>
-                <lucide-icon name="check-check" class="h-3.5 w-3.5 text-primary"></lucide-icon>
-            </div>
-        </div>
-
-        <!-- Tin nhắn người khác gửi (có avatar, tên, ảnh) -->
-        <div class="flex items-start gap-2.5">
-            <img src="https://i.pravatar.cc/150?img=5" class="mt-5 h-7 w-7 shrink-0 rounded-full object-cover" alt="" />
-            <div class="flex flex-col items-start gap-1">
-                <span class="text-xs font-medium text-primary">Linh Nguyễn</span>
-                <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400"
-                    class="w-70 rounded-2xl object-cover" alt="" />
-                <span class="text-xs text-neutral-400">10:15</span>
-            </div>
-        </div>
-
-        <!-- Tin nhắn text người khác -->
-        <div class="flex items-start gap-2.5">
-            <div class="mt-5 h-7 w-7 shrink-0"></div>
-            <div class="flex flex-col items-start gap-1">
-                <div class="max-w-md rounded-2xl bg-white px-4 py-2.5 text-sm text-neutral-900 shadow-sm">
-                    Screenshot của màn hình mobile hiện tại
-                </div>
-                <span class="text-xs text-neutral-400">10:15</span>
-            </div>
-        </div>
-
-        <!-- Tin nhắn mình gửi -->
-        <div class="flex flex-col items-end gap-1">
-            <div class="max-w-md rounded-2xl bg-primary px-4 py-2.5 text-sm text-white">
-                À mình thấy vấn đề rồi. Navigation bar bị overflow. Bạn thử dùng overflow-hidden + flex-wrap cho
-                container đó xem sao
-            </div>
-            <div class="flex items-center gap-1 text-xs text-neutral-400">
-                <span>10:22</span>
-                <lucide-icon name="check-check" class="h-3.5 w-3.5 text-primary"></lucide-icon>
-            </div>
-        </div>
-
-        <!-- Tin nhắn text người khác -->
-        <div class="flex items-start gap-2.5">
-            <img src="https://i.pravatar.cc/150?img=5" class="mt-5 h-7 w-7 shrink-0 rounded-full object-cover" alt="" />
-            <div class="flex flex-col items-start gap-1">
-                <span class="text-xs font-medium text-primary">Linh Nguyễn</span>
-                <div class="max-w-md rounded-2xl bg-white px-4 py-2.5 text-sm text-neutral-900 shadow-sm">
-                    Bạn đã xem file thiết kế mới chưa? 👀
-                </div>
-                <span class="text-xs text-neutral-400">10:35</span>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Input bar -->
-    <div class="border-t border-neutral-200 bg-white px-6 py-4">
-        <div class="flex items-center gap-3 rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-2.5">
-            <lucide-icon name="paperclip"
-                class="h-4.5 w-4.5 cursor-pointer text-neutral-400 hover:text-neutral-600"></lucide-icon>
-            <lucide-icon name="image"
-                class="h-4.5 w-4.5 cursor-pointer text-neutral-400 hover:text-neutral-600"></lucide-icon>
-            <input type="text" placeholder="Nhập tin nhắn... (Enter để gửi, Shift+Enter xuống dòng)"
-                class="flex-1 bg-transparent text-sm text-neutral-900 placeholder:text-neutral-400 outline-none" />
-            <lucide-icon name="smile"
-                class="h-4.5 w-4.5 cursor-pointer text-neutral-400 hover:text-neutral-600"></lucide-icon>
-            <button
-                class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white hover:bg-primary-hover">
-                <lucide-icon name="send" class="h-4 w-4"></lucide-icon>
-            </button>
-        </div>
-        <p class="mt-2 text-xs text-neutral-400">Enter để gửi • Shift+Enter xuống dòng</p>
-    </div>
-
+    <app-chat-input-bar (send)="sendMessage.emit($event)" />
 </section>
