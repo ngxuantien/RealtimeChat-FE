@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, output, signal } from '@angular/core';
 import { LucideAngularModule } from "lucide-angular";
 
 @Component({
@@ -7,6 +7,8 @@ import { LucideAngularModule } from "lucide-angular";
     imports: [LucideAngularModule],
 })
 export class InfoPanel {
+    close = output<void>();
+
     sharedImages = signal([
         'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=200',
         'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=200',

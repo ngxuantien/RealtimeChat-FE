@@ -1,4 +1,3 @@
-<!-- sidebar.html -->
 <aside class="flex h-full flex-col">
     <div class="flex items-center justify-between border-b border-[#D7DBE3] px-4 py-4">
         <div class="flex items-center gap-1">
@@ -27,7 +26,7 @@
 
     <div class="px-5 py-4">
         <div class="flex items-center gap-2 rounded-lg border border-[#D7DBE3] bg-dark-bg px-3 py-2.5">
-            <svg lucideSearch class="h-4 w-4 text-dark-muted"></svg>
+            <lucide-icon name="search" class="h-4 w-4 text-dark-muted"></lucide-icon>
             <input type="text" [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)"
                 placeholder="Tìm kiếm cuộc trò chuyện..."
                 class="w-full bg-transparent text-sm text-white placeholder:text-dark-muted outline-none" />
@@ -46,7 +45,7 @@
         </button>
         <button type="button"
             class="ml-auto flex h-7 w-7 items-center justify-center rounded-full text-white hover:bg-dark-hover">
-            <svg lucidePlus class="h-4 w-4"></svg>
+            <lucide-icon name="plus" class="h-4 w-4"></lucide-icon>
         </button>
     </div>
 
@@ -56,6 +55,8 @@
         <p class="px-2 pb-2 text-xs font-semibold uppercase text-dark-muted">Đã ghim</p>
         @for (item of pinnedConversations; track item.id) {
         <div
+            [routerLink]="['/chat', item.id]"
+            routerLinkActive="ring-1 ring-primary"
             class="mb-1 flex cursor-pointer items-center gap-3 rounded-lg bg-primary/15 px-2 py-2.5 hover:bg-primary/20">
             <div class="relative h-11 w-11 shrink-0">
                 <img [src]="item.avatarUrl" class="h-full w-full rounded-full object-cover" alt="" />
@@ -85,7 +86,10 @@
         }
 
         @for (item of allConversations; track item.id) {
-        <div class="mb-1 flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2.5 hover:bg-dark-hover">
+        <div
+            [routerLink]="['/chat', item.id]"
+            routerLinkActive="ring-1 ring-primary"
+            class="mb-1 flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2.5 hover:bg-dark-hover">
             <div class="relative h-11 w-11 shrink-0">
                 <img [src]="item.avatarUrl" class="h-full w-full rounded-full object-cover" alt="" />
                 @if (item.isOnline) {
@@ -116,7 +120,7 @@
     <div class="border-t border-dark-border p-4">
         <button
             class="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-medium text-white hover:bg-primary-hover">
-            <svg lucidePencil class="h-4 w-4"></svg>
+            <lucide-icon name="pencil" class="h-4 w-4"></lucide-icon>
             Tin nhắn mới
         </button>
     </div>

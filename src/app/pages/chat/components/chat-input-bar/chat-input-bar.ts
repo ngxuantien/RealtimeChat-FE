@@ -1,11 +1,11 @@
 // chat-input-bar.ts
 import { Component, output, signal } from "@angular/core";
 import { FormsModule } from '@angular/forms';
-import { LucidePaperclip, LucideImage, LucideSmile, LucideSend } from '@lucide/angular';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
     selector: 'app-chat-input-bar',
-    imports: [FormsModule, LucidePaperclip, LucideImage, LucideSmile, LucideSend],
+    imports: [FormsModule, LucideAngularModule],
     templateUrl: './chat-input-bar.html',
 })
 export class ChatInputBar {

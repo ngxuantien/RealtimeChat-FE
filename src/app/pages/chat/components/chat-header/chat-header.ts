@@ -1,10 +1,10 @@
 // chat-header.ts
 import { Component, input, output } from "@angular/core";
-import { LucideSearch, LucidePhone, LucideVideo, LucideInfo, LucideEllipsis } from '@lucide/angular';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
     selector: 'app-chat-header',
-    imports: [LucideSearch, LucidePhone, LucideVideo, LucideInfo, LucideEllipsis],
+    imports: [LucideAngularModule],
     templateUrl: './chat-header.html',
 })
 export class ChatHeader {

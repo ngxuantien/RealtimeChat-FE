@@ -1,8 +1,16 @@
-<!-- chat-detail.html -->
 <div class="flex min-w-0 flex-1">
-    <app-chat-window class="min-w-0 flex-1" />
+    <app-chat-window
+        class="min-w-0 flex-1"
+        [conversationId]="conversationId() ?? null"
+        [contactName]="conversation()?.name ?? ''"
+        [contactAvatar]="conversation()?.avatarUrl ?? null"
+        [isOnline]="conversation()?.isOnline ?? false"
+        [messages]="messages()"
+        (toggleInfo)="toggleInfoPanel()"
+        (sendMessage)="onSendMessage($event)"
+    />
 
     @if (showInfoPanel()) {
-    <app-info-panel class="hidden w-75 shrink-0 lg:block" />
+    <app-info-panel class="hidden w-75 shrink-0 lg:block" (close)="showInfoPanel.set(false)" />
     }
 </div>
