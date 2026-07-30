@@ -1,5 +1,5 @@
 @if (messages().length === 0) {
-    <div class="flex flex-1 flex-col items-center justify-center gap-3">
+    <div class="flex flex-1 min-h-0 flex-col items-center justify-center gap-3">
         <div class="flex h-14 w-14 items-center justify-center rounded-full bg-dark-surface">
             <lucide-icon name="message-circle" class="h-6 w-6 text-dark-muted"></lucide-icon>
         </div>
@@ -7,7 +7,7 @@
         <p class="text-sm text-dark-muted">Hãy bắt đầu cuộc trò chuyện!</p>
     </div>
 } @else {
-    <div class="flex flex-1 flex-col gap-4 overflow-y-auto px-6 py-4">
+    <div class="flex flex-1 min-h-0 flex-col gap-4 overflow-y-auto px-4 py-5">
         @for (msg of messages(); track msg.id) {
             <app-message-bubble [content]="msg.content" [time]="msg.time" [isMine]="msg.isMine" />
         }

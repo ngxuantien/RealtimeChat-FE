@@ -6,6 +6,7 @@ import { LucideAngularModule } from 'lucide-angular';
     selector: 'app-chat-header',
     imports: [LucideAngularModule],
     templateUrl: './chat-header.html',
+    host: { class: 'shrink-0' },
 })
 export class ChatHeader {
     name = input('');

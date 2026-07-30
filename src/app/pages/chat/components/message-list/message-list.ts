@@ -14,6 +14,7 @@ export interface MessageItem {
     selector: 'app-message-list',
     imports: [MessageBubble, LucideAngularModule],
     templateUrl: './message-list.html',
+    host: { class: 'flex min-h-0 flex-1 flex-col' },
 })
 export class MessageList {
     messages = input<MessageItem[]>([]);
