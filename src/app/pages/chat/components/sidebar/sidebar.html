@@ -1,4 +1,4 @@
-<aside class="flex h-full flex-col">
+<aside class="flex h-full w-full flex-col bg-dark-bg text-dark-text">
     <div class="flex items-center justify-between border-b border-[#D7DBE3] px-4 py-5">
         <div class="flex items-center gap-1">
             <div class="flex h-6 w-6 items-center justify-center rounded-lg bg-primary">
@@ -6,8 +6,9 @@
             <span class="font-semibold text-dark-text">ChatFlow</span>
         </div>
         <div class="flex items-center gap-2">
-            <lucide-icon name="moon" class="w-5 h-5 cursor-pointer"></lucide-icon>
-            <lucide-icon name="settings" class="w-5 h-5 cursor-pointer"></lucide-icon>
+            <lucide-icon [name]="themeService.theme() === 'dark' ? 'sun' : 'moon'" class="w-5 h-5 cursor-pointer"
+                (click)="themeService.toggle()"></lucide-icon>
+            <lucide-icon name="settings" class="w-5 h-5 cursor-pointer" routerLink="/settings"></lucide-icon>
         </div>
     </div>
 
@@ -29,7 +30,7 @@
             <lucide-icon name="search" class="h-4 w-4 text-dark-muted"></lucide-icon>
             <input type="text" [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)"
                 placeholder="Tìm kiếm cuộc trò chuyện..."
-                class="w-full bg-transparent text-sm text-white placeholder:text-dark-muted outline-none" />
+                class="w-full bg-transparent text-sm text-dark-text placeholder:text-dark-muted outline-none" />
         </div>
     </div>
 
@@ -44,7 +45,7 @@
             Nhóm
         </button>
         <button type="button"
-            class="ml-auto flex h-7 w-7 items-center justify-center rounded-full text-white hover:bg-dark-hover">
+            class="ml-auto flex h-7 w-7 items-center justify-center rounded-full text-dark-text hover:bg-dark-hover">
             <lucide-icon name="plus" class="h-4 w-4"></lucide-icon>
         </button>
     </div>
@@ -99,7 +100,7 @@
             </div>
             <div class="min-w-0 flex-1">
                 <div class="flex items-center justify-between">
-                    <p class="truncate text-sm font-medium text-white">{{ item.name }}</p>
+                    <p class="truncate text-sm font-medium text-dark-text">{{ item.name }}</p>
                     <span class="shrink-0 text-xs text-dark-muted">{{ item.time }}</span>
                 </div>
                 <div class="flex items-center justify-between">

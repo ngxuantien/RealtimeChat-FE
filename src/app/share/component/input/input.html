@@ -1,6 +1,6 @@
 <div>
     @if(label()){
-    <label [for]="inputId" class="mb-1 block text-sm font-semibold text-neutral-900">
+    <label [for]="inputId" class="mb-1 block text-sm font-semibold text-neutral-900 dark:text-white">
         {{label()}}
         @if(required()){
         <span class="text-danger">*</span>
@@ -10,12 +10,13 @@
 
     <div class="relative">
         <input [id]="inputId" [type]="inputType" [placeholder]="placeholder()" [(ngModel)]="value"
-            [disabled]="disabled()" class="h-10 w-full rounded-lg border border-[#D7DBE3] px-4 text-sm text-main outline-none transition
+            [disabled]="disabled()" class="h-10 w-full rounded-lg border border-[#D7DBE3] bg-white px-4 text-sm text-main outline-none transition
                    focus:border-[#60A5FA] focus:ring-2 focus:ring-[#C2DFFF]
-                   disabled:cursor-not-allowed disabled:bg-[#C2CFDD] disabled:opacity-60"
+                   disabled:cursor-not-allowed disabled:bg-[#C2CFDD] disabled:opacity-60
+                   dark:border-neutral-700 dark:bg-neutral-900 dark:text-white dark:focus:border-primary dark:disabled:bg-neutral-800"
             [class.pr-11]="type() === 'password'">
         @if(type() === 'password'){
-        <button type="button" class="absolute cursor-pointer top-1/2 right-3 -translate-y-1/2 text-[#8B98A5] hover:text-[#566474]"
+        <button type="button" class="absolute cursor-pointer top-1/2 right-3 -translate-y-1/2 text-[#8B98A5] hover:text-[#566474] dark:text-neutral-500 dark:hover:text-neutral-300"
             [attr.aria-label]="showPassword() ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'" (click)="togglePassword()">
             @if (showPassword()) {
             <svg lucideEyeOff class="size-5"></svg>

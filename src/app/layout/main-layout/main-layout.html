@@ -1,6 +1,6 @@
 <div class="flex h-screen overflow-hidden">
-    <app-sidebar class="w-full md:block md:w-80 shrink-0 border-r border-[#D7DBE3] shadow-xl" />
-    <div class="flex min-w-0 flex-1 flex-col">
+    <app-sidebar [class]="sidebarClass()" />
+    <div [class]="contentClass()">
         <router-outlet></router-outlet>
     </div>
 </div>

@@ -1,12 +1,15 @@
-<div class="flex items-center justify-between border-b border-dark-border px-6 py-3">
-    <div class="flex items-center gap-3">
-        <div class="h-10 w-10 overflow-hidden rounded-full bg-neutral-700">
+<div class="flex items-center justify-between gap-2 border-b border-dark-border px-4 py-3 md:px-6">
+    <div class="flex min-w-0 items-center gap-3">
+        <a routerLink="/" class="shrink-0 text-dark-muted hover:text-dark-text md:hidden">
+            <lucide-icon name="arrow-left" class="h-5 w-5"></lucide-icon>
+        </a>
+        <div class="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-neutral-700">
             @if (avatarUrl()) {
                 <img [src]="avatarUrl()" class="h-full w-full object-cover" alt="" />
             }
         </div>
-        <div>
-            <p class="text-sm font-semibold text-dark-text">{{ name() }}</p>
+        <div class="min-w-0">
+            <p class="truncate text-sm font-semibold text-dark-text">{{ name() }}</p>
             @if (isOnline()) {
                 <p class="text-xs text-success">Đang hoạt động</p>
             } @else {
@@ -14,13 +17,13 @@
             }
         </div>
     </div>
-    <div class="flex items-center gap-4 text-dark-muted">
-        <lucide-icon name="search" class="h-4.5 w-4.5 cursor-pointer hover:text-white"></lucide-icon>
-        <lucide-icon name="phone" class="h-4.5 w-4.5 cursor-pointer hover:text-white"></lucide-icon>
-        <lucide-icon name="video" class="h-4.5 w-4.5 cursor-pointer hover:text-white"></lucide-icon>
-        <button class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/20 text-primary" (click)="toggleInfo.emit()">
+    <div class="flex shrink-0 items-center gap-3 text-dark-muted sm:gap-4">
+        <lucide-icon name="search" class="hidden h-4.5 w-4.5 cursor-pointer hover:text-dark-text sm:block"></lucide-icon>
+        <lucide-icon name="phone" class="h-4.5 w-4.5 cursor-pointer hover:text-dark-text"></lucide-icon>
+        <lucide-icon name="video" class="hidden h-4.5 w-4.5 cursor-pointer hover:text-dark-text sm:block"></lucide-icon>
+        <button class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary" (click)="toggleInfo.emit()">
             <lucide-icon name="info" class="h-4 w-4"></lucide-icon>
         </button>
-        <lucide-icon name="ellipsis" class="h-4.5 w-4.5 cursor-pointer hover:text-white"></lucide-icon>
+        <lucide-icon name="ellipsis" class="h-4.5 w-4.5 cursor-pointer hover:text-dark-text"></lucide-icon>
     </div>
 </div>

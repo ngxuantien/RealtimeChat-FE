@@ -1,10 +1,40 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary:  #1179EA;
+  --color-primary-hover: #0E67C7;
   --color-danger:   #F7382A;
   --color-warning:  #FDB022;
   --color-success:  #079455;
   --color-main: #415163;
+
+  /* Theme-adaptive surface tokens used across the chat UI. Light values by default; overridden under .dark below. */
+  --color-dark-bg: #FFFFFF;
+  --color-dark-surface: #F3F4F6;
+  --color-dark-hover: #E5E7EB;
+  --color-dark-border: #E5E7EB;
+  --color-dark-muted: #6B7280;
+  --color-dark-text: #111827;
+}
+
+.dark {
+  --color-dark-bg: #0A0A0A;
+  --color-dark-surface: #262626;
+  --color-dark-hover: #262626;
+  --color-dark-border: #262626;
+  --color-dark-muted: #A3A3A3;
+  --color-dark-text: #FFFFFF;
+  color-scheme: dark;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--color-dark-bg);
+  color: var(--color-dark-text);
 }
