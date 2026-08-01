@@ -1,8 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 import { CONVERSATIONS } from '@app/pages/chat/mock-data';
+import { ThemeService } from '@app/core/service/theme.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,6 +11,8 @@ import { CONVERSATIONS } from '@app/pages/chat/mock-data';
   imports: [LucideAngularModule, FormsModule, RouterLink, RouterLinkActive],
 })
 export class Sidebar {
+    protected readonly themeService = inject(ThemeService);
+
     activeTab = signal<'message' | 'group'>('message');
     searchTerm = signal('');
 

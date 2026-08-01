@@ -15,6 +15,12 @@ export const routes: Routes = [
     loadChildren: () => import('./pages/chat/chat.route').then(m => m.CHAT_ROUTES),
   },
   {
+    path: 'settings',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/settings/settings-layout/settings-layout').then(m => m.SettingsLayout),
+    loadChildren: () => import('./pages/settings/settings.route').then(m => m.SETTINGS_ROUTES),
+  },
+  {
     path: '**',
     redirectTo: 'auth/login',
   },

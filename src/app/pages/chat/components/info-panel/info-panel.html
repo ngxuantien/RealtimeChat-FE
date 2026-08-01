@@ -1,8 +1,8 @@
-<aside class="flex h-full flex-col border-l border-neutral-200 bg-white">
+<aside class="flex h-full flex-col border-l border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
 
-    <div class="flex items-center justify-between border-b border-neutral-200 px-4 py-5">
-        <span class="font-semibold text-neutral-900">Thông tin liên hệ</span>
-        <lucide-icon name="x" class="h-4 w-4 cursor-pointer text-neutral-400 hover:text-neutral-600" (click)="close.emit()"></lucide-icon>
+    <div class="flex items-center justify-between border-b border-neutral-200 px-4 py-5 dark:border-neutral-800">
+        <span class="font-semibold text-neutral-900 dark:text-white">Thông tin liên hệ</span>
+        <lucide-icon name="x" class="h-4 w-4 cursor-pointer text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300" (click)="close.emit()"></lucide-icon>
     </div>
 
     <div class="flex-1 overflow-y-auto px-5 py-6">
@@ -11,10 +11,10 @@
         <div class="mb-6 flex flex-col items-center text-center">
             <div class="relative mb-3 h-20 w-20">
                 <img src="https://i.pravatar.cc/150?img=5" class="h-full w-full rounded-full object-cover" alt="" />
-                <span class="absolute bottom-1 right-1 h-3 w-3 rounded-full border-2 border-white bg-success"></span>
+                <span class="absolute bottom-1 right-1 h-3 w-3 rounded-full border-2 border-white bg-success dark:border-neutral-950"></span>
             </div>
-            <p class="font-semibold text-neutral-900">Linh Nguyễn</p>
-            <p class="mt-1 text-xs text-neutral-500">Product Designer @ Kreativ Studio</p>
+            <p class="font-semibold text-neutral-900 dark:text-white">Linh Nguyễn</p>
+            <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">Product Designer @ Kreativ Studio</p>
             <span
                 class="mt-2 inline-flex items-center gap-1.5 rounded-full bg-success/10 px-3 py-1 text-xs text-success">
                 <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
@@ -23,21 +23,21 @@
         </div>
 
         <!-- Actions -->
-        <div class="mb-6 grid grid-cols-3 gap-3 border-y border-neutral-200 py-4 text-center text-xs text-neutral-500">
-            <div class="flex cursor-pointer flex-col items-center gap-1.5 hover:text-neutral-700">
-                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100">
+        <div class="mb-6 grid grid-cols-3 gap-3 border-y border-neutral-200 py-4 text-center text-xs text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
+            <div class="flex cursor-pointer flex-col items-center gap-1.5 hover:text-neutral-700 dark:hover:text-neutral-200">
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
                     <lucide-icon name="bell-off" class="h-4 w-4"></lucide-icon>
                 </div>
                 Tắt thông báo
             </div>
-            <div class="flex cursor-pointer flex-col items-center gap-1.5 hover:text-neutral-700">
-                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100">
+            <div class="flex cursor-pointer flex-col items-center gap-1.5 hover:text-neutral-700 dark:hover:text-neutral-200">
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
                     <lucide-icon name="shield" class="h-4 w-4"></lucide-icon>
                 </div>
                 Chặn
             </div>
             <div class="flex cursor-pointer flex-col items-center gap-1.5 hover:text-danger">
-                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100">
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
                     <lucide-icon name="trash" class="h-4 w-4"></lucide-icon>
                 </div>
                 Xóa
@@ -46,7 +46,7 @@
 
         <!-- Shared media -->
         <div class="mb-3 flex items-center justify-between">
-            <span class="text-xs font-semibold uppercase text-neutral-500">Ảnh & file đã chia sẻ</span>
+            <span class="text-xs font-semibold uppercase text-neutral-500 dark:text-neutral-400">Ảnh & file đã chia sẻ</span>
             <a class="cursor-pointer text-xs font-medium text-primary">Xem tất cả (6)</a>
         </div>
         <div class="grid grid-cols-3 gap-2">
@@ -58,7 +58,7 @@
     </div>
 
     <!-- Danger zone -->
-    <div class="border-t border-neutral-200 p-4">
+    <div class="border-t border-neutral-200 p-4 dark:border-neutral-800">
         <button
             class="flex w-full items-center justify-center gap-2 rounded-lg border border-danger/20 bg-danger/5 py-2.5 text-sm font-medium text-danger hover:bg-danger/10">
             <lucide-icon name="trash" class="h-4 w-4"></lucide-icon>
