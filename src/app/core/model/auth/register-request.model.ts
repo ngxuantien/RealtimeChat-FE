@@ -1,5 +1,6 @@
 export interface RegisterRequest {
-    fullName: string;
+    displayName: string;
     email: string;
+    phoneNumber: string;
     password: string;
 }

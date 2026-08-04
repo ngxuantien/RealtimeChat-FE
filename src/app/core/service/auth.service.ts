@@ -1,11 +1,12 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { tap } from 'rxjs';
+import { catchError, of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LoginRequest} from '@app/core/model/auth/login-request.model';
 import { RegisterRequest } from '../model/auth/register-request.model';
 import { AuthResponse } from '../model/auth/auth-response.model';
 import { API_ENDPOINT } from '../constants/api-endpoint.constant';
+import { STORAGE_KEY } from '../constants/storage.constant';
 
 const TOKEN_KEY = 'access_token';
 
@@ -25,26 +26,34 @@ export class AuthService {
     }
 
     register(payload: RegisterRequest) {
-        return this.http.post<AuthResponse>(`${this.baseUrl}/auth/register`, payload).pipe(
-            tap(res => this.setSession(res))
-        );
+        const url = `${this.baseUrl}/${API_ENDPOINT.USER.REGISTER}`;
+
+        return this.http.post<AuthResponse>(url, payload);
     }
 
     logout() {
-        localStorage.removeItem(TOKEN_KEY);
+        const userId = this.currentUser()?.userId;
+
         this.currentUser.set(null);
+        localStorage.removeItem(STORAGE_KEY.ACCESS_TOKEN);
+        
+        if (!userId) return;
+
+        this.http.post(`${this.baseUrl}/${API_ENDPOINT.AUTH.LOGOUT}/${userId}`, {})
+            .pipe(catchError(() => of(null)))
+            .subscribe();
     }
 
     private setSession(res: AuthResponse) {
-        localStorage.setItem(TOKEN_KEY, res.accessToken);
+        localStorage.setItem(STORAGE_KEY.ACCESS_TOKEN, res.accessToken);
         this.currentUser.set(res);
     }
 
     get isLoggedIn(): boolean {
-        return !!localStorage.getItem(TOKEN_KEY);
+        return !!localStorage.getItem(STORAGE_KEY.ACCESS_TOKEN);
     }
 
     get token(): string | null {
-        return localStorage.getItem(TOKEN_KEY);
+        return localStorage.getItem(STORAGE_KEY.ACCESS_TOKEN);
     }
 }

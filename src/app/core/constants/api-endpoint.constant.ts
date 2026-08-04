@@ -6,7 +6,7 @@ export const API_ENDPOINT = {
         CHANGE_PASSWORD: 'auth/change-password',
     },
     USER: {
-        REGISTER: 'user/register',
+        REGISTER: 'users',
         PROFILE: 'user/profile',
     },
     CONVERSATION: {

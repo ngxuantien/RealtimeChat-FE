@@ -15,7 +15,7 @@ export class Login {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  email = signal('');
+  phoneNumber = signal('');
   password = signal('');
   rememberMe = signal(false);
   isLoading = signal(false);
@@ -25,14 +25,14 @@ export class Login {
     this.errorMessage.set('');
     this.isLoading.set(true);
 
-    this.authService.login({ email: this.email(), password: this.password() }).subscribe({
+    this.authService.login({phoneNumber: this.phoneNumber(), password: this.password() }).subscribe({
       next: () => {
         this.isLoading.set(false);
         this.router.navigateByUrl('/');
       },
       error: () => {
         this.isLoading.set(false);
-        this.errorMessage.set('Email hoặc mật khẩu không đúng.');
+        this.errorMessage.set('Số điện thoại hoặc mật khẩu không đúng.');
       },
     });
   }

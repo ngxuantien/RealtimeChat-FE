@@ -1,4 +1,4 @@
-<div class="flex min-w-0 min-h-0 flex-1">
+<div class="relative flex min-h-0 min-w-0 flex-1 overflow-hidden">
     <app-chat-window
         class="min-w-0 flex-1"
         [conversationId]="conversationId() ?? null"
@@ -11,6 +11,10 @@
     />
 
     @if (showInfoPanel()) {
-    <app-info-panel class="hidden w-80 shrink-0 lg:block" (close)="showInfoPanel.set(false)" />
+    <div class="fixed inset-0 z-40 bg-black/50 lg:hidden" (click)="showInfoPanel.set(false)"></div>
+    <app-info-panel
+        class="fixed inset-y-0 right-0 z-50 shadow-xl lg:static lg:z-auto lg:w-80 lg:max-w-none lg:shrink-0 lg:shadow-none"
+        (close)="showInfoPanel.set(false)"
+    />
     }
 </div>

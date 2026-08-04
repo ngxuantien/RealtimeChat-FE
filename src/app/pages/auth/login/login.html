@@ -1,5 +1,6 @@
 <div class="flex min-h-screen items-center justify-center bg-neutral-50 px-4 dark:bg-neutral-950">
-  <div class="w-full max-w-105 rounded-[20px] bg-white px-10 py-10 shadow-[0_18px_45px_rgba(15,23,42,0.12)] dark:bg-neutral-900 dark:shadow-none">
+  <div
+    class="w-full max-w-105 rounded-[20px] bg-white px-10 py-10 shadow-[0_18px_45px_rgba(15,23,42,0.12)] dark:bg-neutral-900 dark:shadow-none">
 
     <div class="mb-8 flex flex-col items-center">
       <div class="mb-4 flex h-15 w-15 items-center justify-center rounded-[18px] bg-primary">
@@ -11,23 +12,13 @@
 
     <form (ngSubmit)="login()">
       <div class="mb-4">
-        <app-ui-input
-          label="Email"
-          placeholder="Mời nhập email"
-          type="email"
-          [required]="true"
-          [(value)]="email"
-        />
+        <app-ui-input label="Số điện thoại" placeholder="Mời nhập số điện thoại" type="tel" [required]="true"
+          [(value)]="phoneNumber" />
       </div>
 
       <div class="mb-4">
-        <app-ui-input
-          label="Mật khẩu"
-          placeholder="Mời nhập mật khẩu"
-          type="password"
-          [required]="true"
-          [(value)]="password"
-        />
+        <app-ui-input label="Mật khẩu" placeholder="Mời nhập mật khẩu" type="password" [required]="true"
+          [(value)]="password" />
       </div>
 
       <div class="mb-6 flex items-center justify-between text-sm">
@@ -40,7 +31,7 @@
       </div>
 
       @if (errorMessage()) {
-        <p class="mb-4 text-sm text-red-500">{{ errorMessage() }}</p>
+      <p class="mb-4 text-sm text-red-500">{{ errorMessage() }}</p>
       }
 
       <app-ui-button type="submit" variant="primary" [full]="true" [loading]="isLoading()">Đăng nhập</app-ui-button>
