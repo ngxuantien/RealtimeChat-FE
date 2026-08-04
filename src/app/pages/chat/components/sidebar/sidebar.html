@@ -15,14 +15,17 @@
     <div class="flex items-center justify-between border-b border-[#D7DBE3] px-5 py-4">
         <div class="flex items-center gap-3">
             <div class="h-9 w-9 overflow-hidden rounded-full bg-neutral-700">
-                <img src="https://i.pravatar.cc/150?img=3" class="h-full w-full object-cover" alt="" />
+                <img [src]="currentUserProfile()?.avatarUrl || ('https://i.pravatar.cc/150?u=' + currentUserProfile()?.id)"
+                    class="h-full w-full object-cover" alt="" />
             </div>
             <div>
-                <p class="text-sm font-medium">Minh Tuấn</p>
-                <p class="text-xs text-success">Đang hoạt động</p>
+                <p class="text-sm font-medium">{{ currentUserProfile()?.displayName || 'Đang tải...' }}</p>
+                <p class="text-xs" [class]="currentUserProfile()?.isOnline ? 'text-success' : 'text-dark-muted'">
+                    {{ currentUserProfile()?.isOnline ? 'Đang hoạt động' : 'Ngoại tuyến' }}
+                </p>
             </div>
         </div>
-        <lucide-icon name="log-out" class="h-4 w-4 cursor-pointer"></lucide-icon>
+        <lucide-icon name="log-out" (click)="logout()" class="h-4 w-4 cursor-pointer"></lucide-icon>
     </div>
 
     <div class="px-5 py-4">
@@ -44,7 +47,7 @@
             [class]="activeTab() === 'group' ? 'bg-primary text-white' : 'text-dark-muted hover:bg-dark-hover'">
             Nhóm
         </button>
-        <button type="button"
+        <button type="button" (click)="showNewConversationModal.set(true)"
             class="ml-auto flex h-7 w-7 items-center justify-center rounded-full text-dark-text hover:bg-dark-hover">
             <lucide-icon name="plus" class="h-4 w-4"></lucide-icon>
         </button>
@@ -55,9 +58,7 @@
         @if (pinnedConversations.length > 0) {
         <p class="px-2 pb-2 text-xs font-semibold uppercase text-dark-muted">Đã ghim</p>
         @for (item of pinnedConversations; track item.id) {
-        <div
-            [routerLink]="['/chat', item.id]"
-            routerLinkActive="ring-1 ring-primary"
+        <div [routerLink]="['/chat', item.id]" routerLinkActive="ring-1 ring-primary"
             class="mb-1 flex cursor-pointer items-center gap-3 rounded-lg bg-primary/15 px-2 py-2.5 hover:bg-primary/20">
             <div class="relative h-11 w-11 shrink-0">
                 <img [src]="item.avatarUrl" class="h-full w-full rounded-full object-cover" alt="" />
@@ -87,9 +88,7 @@
         }
 
         @for (item of allConversations; track item.id) {
-        <div
-            [routerLink]="['/chat', item.id]"
-            routerLinkActive="ring-1 ring-primary"
+        <div [routerLink]="['/chat', item.id]" routerLinkActive="ring-1 ring-primary"
             class="mb-1 flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2.5 hover:bg-dark-hover">
             <div class="relative h-11 w-11 shrink-0">
                 <img [src]="item.avatarUrl" class="h-full w-full rounded-full object-cover" alt="" />
@@ -119,10 +118,14 @@
     </div>
 
     <div class="border-t border-dark-border p-4">
-        <button
+        <button type="button" (click)="showNewConversationModal.set(true)"
             class="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-medium text-white hover:bg-primary-hover">
             <lucide-icon name="pencil" class="h-4 w-4"></lucide-icon>
             Tin nhắn mới
         </button>
     </div>
 </aside>
+
+@if (showNewConversationModal()) {
+<app-new-conversation-modal (close)="showNewConversationModal.set(false)" (created)="onConversationCreated()" />
+}
