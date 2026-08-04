@@ -14,7 +14,6 @@ export const API_ENDPOINT = {
         DETAIL: 'conversations',
     },
     MESSAGE: {
-        LIST: 'conversations',
-        SEND: 'conversations',
+        BASE: 'messages',
     },
 }

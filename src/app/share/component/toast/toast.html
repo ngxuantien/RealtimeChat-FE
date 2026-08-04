@@ -1,0 +1,49 @@
+<div class="fixed top-6 right-6 z-99999 flex w-90 max-w-[calc(100vw-32px)] flex-col gap-4">
+    @for (toast of toastService.toasts(); track toast.id) {
+    <div class="flex items-center gap-4 rounded-xl px-4 py-3 shadow-lg animate-[toastIn_0.25s_ease-out]" [ngClass]="{
+        'bg-green-50 dark:bg-green-950/40': toast.type === 'success',
+        'bg-red-50 dark:bg-red-950/40': toast.type === 'error',
+        'bg-yellow-50 dark:bg-yellow-950/40': toast.type === 'warning',
+        'bg-blue-50 dark:bg-blue-950/40': toast.type === 'info',
+        'bg-neutral-50 dark:bg-neutral-800/60': toast.type === 'loading'
+      }">
+        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full" [ngClass]="{
+          'bg-green-100 dark:bg-green-900/60': toast.type === 'success',
+          'bg-red-100 dark:bg-red-900/60': toast.type === 'error',
+          'bg-yellow-100 dark:bg-yellow-900/60': toast.type === 'warning',
+          'bg-blue-100 dark:bg-blue-900/60': toast.type === 'info',
+          'bg-neutral-100 dark:bg-neutral-700': toast.type === 'loading'
+        }">
+            <div class="flex h-5 w-5 items-center justify-center rounded-full text-white" [ngClass]="{
+            'bg-green-600 dark:bg-green-500': toast.type === 'success',
+            'bg-red-500': toast.type === 'error',
+            'bg-yellow-400 dark:bg-yellow-500': toast.type === 'warning',
+            'bg-blue-500': toast.type === 'info',
+            'bg-neutral-500 dark:bg-neutral-400': toast.type === 'loading'
+          }">
+                <lucide-icon [name]="getIcon(toast)" class="h-3.5 w-3.5"
+                    [class.animate-spin]="toast.type === 'loading'"></lucide-icon>
+            </div>
+        </div>
+
+        <div class="min-w-0 flex-1">
+            <div class="text-sm font-semibold text-gray-800 dark:text-white">
+                {{ toast.title }}
+            </div>
+
+            @if (toast.message) {
+            <div class="mt-0.5 text-sm normal-case"
+                [ngClass]="{ 'text-gray-800 dark:text-white': !toast.title, 'text-gray-500 dark:text-neutral-400': toast.title }">
+                {{ toast.message }}
+            </div>
+            }
+        </div>
+
+        <button type="button"
+            class="shrink-0 rounded-full p-1 text-gray-500 transition hover:bg-black/5 hover:text-gray-700 dark:text-neutral-400 dark:hover:bg-white/10 dark:hover:text-white"
+            (click)="remove(toast.id)">
+            <lucide-icon name="x" class="h-5 w-5"></lucide-icon>
+        </button>
+    </div>
+    }
+</div>

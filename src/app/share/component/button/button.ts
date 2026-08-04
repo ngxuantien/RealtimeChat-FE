@@ -1,8 +1,10 @@
 // button.ts
 import { Component, computed, input } from "@angular/core";
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
     selector: 'app-ui-button',
+    imports: [LucideAngularModule],
     templateUrl: './button.html',
     host: {
         class: 'block'
