@@ -2,7 +2,6 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
-import { CONVERSATIONS } from '@app/pages/chat/mock-data';
 import { ThemeService } from '@app/core/service/theme.service';
 import { AuthService } from '@app/core/service/auth.service';
 import { UserService } from '@app/core/service/user.service';

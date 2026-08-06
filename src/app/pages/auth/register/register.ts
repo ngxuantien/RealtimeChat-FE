@@ -5,6 +5,7 @@ import { LucideCamera, LucideMessageSquare } from '@lucide/angular';
 import { UiInput } from '../../../share/component/input/input';
 import { UiButton } from '../../../share/component/button/button';
 import { AuthService } from '@app/core/service/auth.service';
+import { FlashMessageService } from '@app/core/service/common/flash-message.service';
 
 @Component({
   selector: 'app-register',
@@ -13,6 +14,7 @@ import { AuthService } from '@app/core/service/auth.service';
 })
 export class Register {
   private authService = inject(AuthService);
+  private flashMessage = inject(FlashMessageService);
   private router = inject(Router);
 
   userName = signal('');
@@ -57,7 +59,8 @@ export class Register {
       .subscribe({
         next: () => {
           this.isLoading.set(false);
-          this.router.navigateByUrl('/');
+          this.flashMessage.success('Đăng ký thành công, vui lòng đăng nhập.');
+          this.router.navigateByUrl('/auth/login');
         },
         error: () => {
           this.isLoading.set(false);

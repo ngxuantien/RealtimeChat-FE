@@ -1,17 +1,21 @@
-import { Component, effect, inject, signal } from '@angular/core';
+// chat-detail.ts
+import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map, switchMap } from 'rxjs';
 import { ChatWindow } from '@app/pages/chat/components/chat-window/chat-window';
 import { InfoPanel } from '@app/pages/chat/components/info-panel/info-panel';
-import { MessageItem } from '@app/pages/chat/components/message-list/message-list';
-import { MOCK_MESSAGES } from '@app/pages/chat/mock-data';
+import { Message } from '@app/core/model/message/message.model';
 import { AuthService } from '@app/core/service/auth.service';
 import { ConversationService } from '@app/core/service/conversation.service';
+import { MessageService } from '@app/core/service/message.service';
+import { FlashMessageService } from '@app/core/service/common/flash-message.service';
+import { SignalRService } from '@app/core/service/common/signalr.service';
 import {
   ConversationListItem,
   toConversationListItem,
 } from '@app/core/utils/conversation-display.util';
+import { toMessageItems } from '@app/core/utils/message-display.util';
 
 @Component({
   selector: 'app-chat-detail',
@@ -23,12 +27,21 @@ export class ChatDetail {
   private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
   private conversationService = inject(ConversationService);
+  private messageService = inject(MessageService);
+  private flashMessage = inject(FlashMessageService);
+  private signalRService = inject(SignalRService);
+  private destroyRef = inject(DestroyRef);
 
   conversationId = toSignal(this.route.paramMap.pipe(map((p) => p.get('conversationId')!)));
 
   conversation = signal<ConversationListItem | null>(null);
-  messages = signal<MessageItem[]>([]);
+  rawMessages = signal<Message[]>([]);
+  messages = computed(() =>
+    toMessageItems(this.rawMessages(), this.authService.currentUser()?.userId ?? ''),
+  );
   showInfoPanel = signal(false);
+
+  private joinedConversationId: string | null = null;
 
   constructor() {
     effect(() => {
@@ -54,7 +67,33 @@ export class ChatDetail {
 
     effect(() => {
       const id = this.conversationId();
-      this.messages.set(id ? (MOCK_MESSAGES[id] ?? []) : []);
+      const currentUserId = this.authService.currentUser()?.userId;
+
+      if (!id || !currentUserId) {
+        this.rawMessages.set([]);
+        return;
+      }
+
+      this.messageService.getMessages(id).subscribe((list) => {
+        this.rawMessages.set([...list].reverse());
+      });
+
+      if (this.joinedConversationId && this.joinedConversationId !== id) {
+        this.signalRService.leaveConversation(this.joinedConversationId);
+      }
+      this.signalRService.joinConversation(id);
+      this.joinedConversationId = id;
+    });
+
+    this.signalRService.onMessageReceived.pipe(takeUntilDestroyed()).subscribe((message) => {
+      if (message.conversationId !== this.conversationId()) return;
+      this.appendMessage(message);
+    });
+
+    this.destroyRef.onDestroy(() => {
+      if (this.joinedConversationId) {
+        this.signalRService.leaveConversation(this.joinedConversationId);
+      }
     });
   }
 
@@ -63,14 +102,22 @@ export class ChatDetail {
   }
 
   onSendMessage(content: string) {
-    this.messages.update((list) => [
-      ...list,
-      {
-        id: crypto.randomUUID(),
-        content,
-        time: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
-        isMine: true,
-      },
-    ]);
+    const conversationId = this.conversationId();
+    const currentUserId = this.authService.currentUser()?.userId;
+
+    if (!conversationId || !currentUserId || !content.trim()) return;
+
+    this.messageService
+      .sendMessage({ conversationId, senderId: currentUserId, content })
+      .subscribe({
+        next: (message) => this.appendMessage(message),
+        error: () => this.flashMessage.error('Không thể gửi tin nhắn, thử lại sau.'),
+      });
+  }
+
+  private appendMessage(message: Message) {
+    this.rawMessages.update((list) =>
+      list.some((m) => m.id === message.id) ? list : [...list, message],
+    );
   }
 }

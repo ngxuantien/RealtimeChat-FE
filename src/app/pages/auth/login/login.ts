@@ -5,6 +5,7 @@ import { Router, RouterLink } from "@angular/router";
 import { UiButton } from "@app/share/component/button/button";
 import { UiInput } from "@app/share/component/input/input";
 import { AuthService } from '@app/core/service/auth.service';
+import { FlashMessageService } from '@app/core/service/common/flash-message.service';
 
 @Component({
   selector: 'app-login',
@@ -13,6 +14,7 @@ import { AuthService } from '@app/core/service/auth.service';
 })
 export class Login {
   private authService = inject(AuthService);
+  private readonly flashMessageService = inject(FlashMessageService);
   private router = inject(Router);
 
   phoneNumber = signal('');
@@ -29,6 +31,7 @@ export class Login {
       next: () => {
         this.isLoading.set(false);
         this.router.navigateByUrl('/');
+        this.flashMessageService.show('Đăng nhập thành công', 'success');
       },
       error: () => {
         this.isLoading.set(false);
