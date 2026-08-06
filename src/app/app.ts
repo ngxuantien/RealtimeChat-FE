@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ThemeService } from '@app/core/service/theme.service';
 import { Toast } from '@app/share/component/toast/toast';
+import { SignalRService } from './core/service/common/signalr.service';
 
 @Component({
   selector: 'app-root',
@@ -12,4 +13,9 @@ import { Toast } from '@app/share/component/toast/toast';
 export class App {
   protected readonly title = signal('RealtimeChat-FE');
   private readonly themeService = inject(ThemeService);
+  private readonly signalRService  = inject(SignalRService);
+
+  constructor(){
+    this.signalRService .connect();
+  }
 }
