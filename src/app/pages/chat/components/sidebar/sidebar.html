@@ -53,8 +53,7 @@
         </button>
     </div>
 
-    <div class="flex-1 overflow-y-auto px-3 pb-3">
-
+    <div class="min-h-0 flex-1 px-3 pb-3">
         @if (pinnedConversations.length > 0) {
         <p class="px-2 pb-2 text-xs font-semibold uppercase text-dark-muted">Đã ghim</p>
         @for (item of pinnedConversations; track item.id) {
