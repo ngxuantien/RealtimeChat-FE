@@ -16,6 +16,8 @@ import {
   toConversationListItem,
 } from '@app/core/utils/conversation-display.util';
 import { toMessageItems } from '@app/core/utils/message-display.util';
+import { ConversationMember } from '@app/core/model/conversation/conversation-member.model';
+import { ConversationType } from '@app/core/enums/conversation.enum';
 
 @Component({
   selector: 'app-chat-detail',
@@ -35,9 +37,16 @@ export class ChatDetail {
   conversationId = toSignal(this.route.paramMap.pipe(map((p) => p.get('conversationId')!)));
 
   conversation = signal<ConversationListItem | null>(null);
+  members = signal<ConversationMember[]>([]);
+  isGroupConversation = signal(false);
   rawMessages = signal<Message[]>([]);
   messages = computed(() =>
-    toMessageItems(this.rawMessages(), this.authService.currentUser()?.userId ?? ''),
+    toMessageItems(
+      this.rawMessages(),
+      this.authService.currentUser()?.userId ?? '',
+      this.members(),
+      this.isGroupConversation(),
+    ),
   );
   showInfoPanel = signal(false);
 
@@ -47,7 +56,6 @@ export class ChatDetail {
     effect(() => {
       const id = this.conversationId();
       const currentUserId = this.authService.currentUser()?.userId;
-
       if (!id || !currentUserId) {
         this.conversation.set(null);
         return;
@@ -57,12 +65,14 @@ export class ChatDetail {
         .getById(id)
         .pipe(
           switchMap((conv) =>
-            this.conversationService
-              .getMembers(id)
-              .pipe(map((members) => toConversationListItem(conv, members, currentUserId))),
+            this.conversationService.getMembers(id).pipe(map((members) => ({ conv, members }))),
           ),
         )
-        .subscribe((item) => this.conversation.set(item));
+        .subscribe(({ conv, members }) => {
+          this.conversation.set(toConversationListItem(conv, members, currentUserId));
+          this.members.set(members);
+          this.isGroupConversation.set(conv.type === ConversationType.Group);
+        });
     });
 
     effect(() => {
@@ -75,7 +85,11 @@ export class ChatDetail {
       }
 
       this.messageService.getMessages(id).subscribe((list) => {
+        const ordered = [...list].reverse();
         this.rawMessages.set([...list].reverse());
+
+        const lastMessage = ordered.at(-1);
+        if (lastMessage) this.markConversationAsRead(lastMessage.id);
       });
 
       if (this.joinedConversationId && this.joinedConversationId !== id) {
@@ -119,5 +133,14 @@ export class ChatDetail {
     this.rawMessages.update((list) =>
       list.some((m) => m.id === message.id) ? list : [...list, message],
     );
+    this.markConversationAsRead(message.id);
+  }
+
+  private markConversationAsRead(messageId: string) {
+    const id = this.conversationId();
+    const currentUserId = this.authService.currentUser()?.userId;
+    if (!id || !currentUserId) return;
+
+    this.conversationService.markAsRead(id, currentUserId, messageId).subscribe();
   }
 }

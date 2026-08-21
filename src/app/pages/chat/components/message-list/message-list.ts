@@ -8,8 +8,9 @@ export interface MessageItem {
   content: string;
   time: string;
   isMine: boolean;
-  showTime: boolean;
-  isGroupStart: boolean;
+  showHeader: boolean;
+  senderName: string | null;
+  dateLabel: string | null;
 }
 
 @Component({

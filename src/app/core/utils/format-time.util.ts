@@ -14,3 +14,20 @@ export function formatConversationTime(iso: string | null): string {
 
   return date.toLocaleDateString('vi-VN');
 }
+
+export function formatDateSeparator(iso: string): string {
+  const date = new Date(iso);
+  const now = new Date();
+
+  if (date.toDateString() === now.toDateString()) return 'Hôm nay';
+
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  if (date.toDateString() === yesterday.toDateString()) return 'Hôm qua';
+
+  return date.toLocaleDateString('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: date.getFullYear() === now.getFullYear() ? undefined : 'numeric',
+  });
+}

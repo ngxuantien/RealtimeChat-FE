@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
@@ -14,11 +14,12 @@ import {
 import { User } from '@app/core/model/user/user.model';
 import { NewConversationModal } from '../new-conversation-modal/new-conversation-modal';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ConfirmModal } from "@app/share/component/confirm-modal/confirm-modal";
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.html',
-  imports: [LucideAngularModule, FormsModule, RouterLink, RouterLinkActive, NewConversationModal],
+  imports: [LucideAngularModule, FormsModule, RouterLink, RouterLinkActive, NewConversationModal, ConfirmModal],
 })
 export class Sidebar {
   protected readonly themeService = inject(ThemeService);
@@ -26,14 +27,29 @@ export class Sidebar {
   private userService = inject(UserService);
   private conversationService = inject(ConversationService);
   private router = inject(Router);
+  private readonly readConversationIds = signal<ReadonlySet<string>>(new Set());
 
   activeTab = signal<'message' | 'group'>('message');
   searchTerm = signal('');
+  searchFocused = signal(false);
+
+  showLogoutConfirm = signal(false);
 
   showNewConversationModal = signal(false);
 
   currentUserProfile = signal<User | null>(null);
   conversations = signal<ConversationListItem[]>([]);
+
+  searchResults = computed(() => {
+    const term = this.searchTerm().trim().toLowerCase();
+    if (!term) return [];
+
+    return this.conversations().filter((c) => c.name.toLowerCase().includes(term));
+  });
+
+  showSearchDropdown = computed(() =>
+    this.searchFocused() && this.searchTerm().trim().length > 0,
+  );
 
   activeConversationId = toSignal(
     this.router.events.pipe(
@@ -46,13 +62,13 @@ export class Sidebar {
   get pinnedConversations() {
     return this.conversations()
       .filter((c) => c.isPinned)
-      .map((c) => (c.id === this.activeConversationId() ? { ...c, unreadCount: 0 } : c));
+      .map((c) => (this.readConversationIds().has(c.id) ? { ...c, unreadCount: 0 } : c));
   }
 
   get allConversations() {
     return this.conversations()
       .filter((c) => !c.isPinned)
-      .map((c) => (c.id === this.activeConversationId() ? { ...c, unreadCount: 0 } : c));
+      .map((c) => (this.readConversationIds().has(c.id) ? { ...c, unreadCount: 0 } : c));
   }
 
   constructor() {
@@ -68,8 +84,7 @@ export class Sidebar {
   }
 
   logout() {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+    this.showLogoutConfirm.set(true);
   }
 
   private loadConversations(currentUserId: string) {
@@ -99,5 +114,21 @@ export class Sidebar {
   onConversationCreated() {
     const userId = this.authService.currentUser()?.userId;
     if (userId) this.loadConversations(userId);
+  }
+
+  clearSearch() {
+    this.searchTerm.set('');
+    this.searchFocused.set(false);
+  }
+
+  selectSearchResult(item: ConversationListItem) {
+    this.router.navigate(['/chat', item.id]);
+    this.clearSearch();
+  }
+
+  confirmLogout() {
+    this.showLogoutConfirm.set(false);
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

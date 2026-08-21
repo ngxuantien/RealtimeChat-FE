@@ -33,6 +33,17 @@ export class Register {
     const file = input.files?.[0];
     if (!file) return;
 
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      this.errorMessage.set('Chỉ chấp nhận ảnh JPEG, PNG hoặc WEBP.');
+      return;
+    }
+    if (file.size > 4 * 1024 * 1024) {
+      this.errorMessage.set('Ảnh đại diện không được vượt quá 4MB.');
+      return;
+    }
+
+    this.errorMessage.set('');
     this.avatarFile = file;
     const reader = new FileReader();
     reader.onload = () => this.avatarPreview.set(reader.result as string);
@@ -42,6 +53,11 @@ export class Register {
   register() {
     this.errorMessage.set('');
 
+    if (!this.avatarFile) {
+      this.errorMessage.set('Vui lòng chọn ảnh đại diện.');
+      return;
+    }
+
     if (this.password() !== this.confirmPassword()) {
       this.errorMessage.set('Mật khẩu xác nhận không khớp.');
       return;
@@ -50,12 +66,15 @@ export class Register {
     this.isLoading.set(true);
 
     this.authService
-      .register({
-        displayName: this.userName(),
-        email: this.email(),
-        phoneNumber: this.phoneNumber(),
-        password: this.password(),
-      })
+      .register(
+        {
+          displayName: this.userName(),
+          email: this.email(),
+          phoneNumber: this.phoneNumber(),
+          password: this.password(),
+        },
+        this.avatarFile,
+      )
       .subscribe({
         next: () => {
           this.isLoading.set(false);

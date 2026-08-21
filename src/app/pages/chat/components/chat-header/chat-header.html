@@ -3,9 +3,11 @@
         <a routerLink="/" class="shrink-0 text-dark-muted hover:text-dark-text md:hidden">
             <lucide-icon name="arrow-left" class="h-5 w-5"></lucide-icon>
         </a>
-        <div class="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-neutral-700">
-            @if (avatarUrl()) {
-                <img [src]="avatarUrl()" class="h-full w-full object-cover" alt="" />
+        <div class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-neutral-700">
+            @if (avatarUrl(); as avatar) {
+            <img [src]="avatar" class="h-full w-full object-cover" alt="" />
+            } @else {
+            <lucide-icon name="user" class="h-5 w-5 text-dark-muted"></lucide-icon>
             }
         </div>
         <div class="min-w-0">
