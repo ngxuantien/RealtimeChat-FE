@@ -42,4 +42,9 @@ export class ConversationService {
       },
     );
   }
+
+  markAsRead(conversationId: string, userId: string, messageId: string) {
+    const url = `${this.baseUrl}/${API_ENDPOINT.CONVERSATION.DETAIL}/${conversationId}/members/${userId}/read`;
+    return this.http.patch(url, { messageId });
+  }
 }

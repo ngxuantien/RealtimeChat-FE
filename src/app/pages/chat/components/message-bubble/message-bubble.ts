@@ -10,7 +10,8 @@ export class MessageBubble {
   content = input('');
   time = input('');
   isMine = input(false);
-  showTime = input(true);
+  showHeader = input(true);
+  senderName = input<string | null>(null);
 
   protected readonly bubbleClasses = computed(() =>
     this.isMine() ? 'ml-auto bg-primary text-white' : 'mr-auto bg-dark-surface text-dark-text',

@@ -5,12 +5,12 @@
     <p class="text-[14px] text-[#70707B] leading-5 mb-6 whitespace-pre-line" [innerHTML]="safeMessage"></p>
     <div class="flex items-center gap-3">
       <button
-        class="w-28 py-2 rounded-md text-[#3F3F46] bg-dark-surface text-[14px] font-medium hover:bg-gray-200 transition"
+        class="w-28 py-2 rounded-md text-[#3F3F46] bg-dark-surface text-[14px] font-medium hover:bg-gray-200 transition cursor-pointer"
         (click)="onCancel()">
         {{ closeLabel() }}
       </button>
       <button
-        class="w-28 py-2 rounded-md text-white bg-primary text-[14px] font-medium hover:bg-blue-700 transition"
+        class="w-28 py-2 rounded-md text-white bg-primary text-[14px] font-medium hover:bg-blue-700 transition cursor-pointer"
         (click)="onConfirm()">
         {{ confirmLabel() }}
       </button>

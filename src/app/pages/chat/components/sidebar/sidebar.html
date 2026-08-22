@@ -14,9 +14,12 @@
 
     <div class="flex items-center justify-between border-b border-[#D7DBE3] px-5 py-4">
         <div class="flex items-center gap-3">
-            <div class="h-9 w-9 overflow-hidden rounded-full bg-neutral-700">
-                <img [src]="currentUserProfile()?.avatarUrl || ('https://i.pravatar.cc/150?u=' + currentUserProfile()?.id)"
-                    class="h-full w-full object-cover" alt="" />
+            <div class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-neutral-700">
+                @if (currentUserProfile()?.avatarUrl; as avatar) {
+                <img [src]="avatar" class="h-full w-full object-cover" alt="" />
+                } @else {
+                <lucide-icon name="user" class="h-4.5 w-4.5 text-dark-muted"></lucide-icon>
+                }
             </div>
             <div>
                 <p class="text-sm font-medium">{{ currentUserProfile()?.displayName || 'Đang tải...' }}</p>
@@ -25,15 +28,48 @@
                 </p>
             </div>
         </div>
-        <lucide-icon name="log-out" (click)="logout()" class="h-4 w-4 cursor-pointer"></lucide-icon>
+        <div class="group relative">
+            <lucide-icon name="log-out" (click)="logout()" class="h-4 w-4 cursor-pointer"></lucide-icon>
+            <span
+                class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-dark-surface px-2 py-1 text-xs text-dark-text opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                Đăng xuất
+            </span>
+        </div>
     </div>
 
     <div class="px-5 py-4">
-        <div class="flex items-center gap-2 rounded-lg border border-[#D7DBE3] bg-dark-bg px-3 py-2.5">
+        <div class="relative flex items-center gap-2 rounded-lg border border-[#D7DBE3] bg-dark-bg px-3 py-2.5">
             <lucide-icon name="search" class="h-4 w-4 text-dark-muted"></lucide-icon>
             <input type="text" [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)"
+                (focus)="searchFocused.set(true)" (blur)="searchFocused.set(false)" (keydown.escape)="clearSearch()"
                 placeholder="Tìm kiếm cuộc trò chuyện..."
                 class="w-full bg-transparent text-sm text-dark-text placeholder:text-dark-muted outline-none" />
+
+            @if (showSearchDropdown()) {
+            <div
+                class="absolute inset-x-0 top-full z-10 mt-2 max-h-72 overflow-y-auto rounded-lg border border-[#D7DBE3] bg-dark-surface shadow-lg">
+                @if (searchResults().length > 0) {
+                @for (item of searchResults(); track item.id) {
+                <div (mousedown)="$event.preventDefault()" (click)="selectSearchResult(item)"
+                    class="flex cursor-pointer items-center gap-3 px-3 py-2.5 hover:bg-dark-hover">
+                    <div class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-neutral-700">
+                        @if (item.avatarUrl; as avatar) {
+                        <img [src]="avatar" class="h-full w-full object-cover" alt="" />
+                        } @else {
+                        <lucide-icon name="user" class="h-4.5 w-4.5 text-dark-muted"></lucide-icon>
+                        }
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <p class="truncate text-sm font-medium text-dark-text">{{ item.name }}</p>
+                        <p class="truncate text-xs text-dark-muted">{{ item.lastMessage }}</p>
+                    </div>
+                </div>
+                }
+                } @else {
+                <p class="px-3 py-3 text-sm text-dark-muted">Không tìm thấy cuộc trò chuyện nào</p>
+                }
+            </div>
+            }
         </div>
     </div>
 
@@ -60,7 +96,13 @@
         <div [routerLink]="['/chat', item.id]" routerLinkActive="ring-1 ring-primary"
             class="mb-1 flex cursor-pointer items-center gap-3 rounded-lg bg-primary/15 px-2 py-2.5 hover:bg-primary/20">
             <div class="relative h-11 w-11 shrink-0">
-                <img [src]="item.avatarUrl" class="h-full w-full rounded-full object-cover" alt="" />
+                <div class="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-neutral-700">
+                    @if (item.avatarUrl; as avatar) {
+                    <img [src]="avatar" class="h-full w-full object-cover" alt="" />
+                    } @else {
+                    <lucide-icon name="user" class="h-5 w-5 text-dark-muted"></lucide-icon>
+                    }
+                </div>
                 @if (item.isOnline) {
                 <span
                     class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-dark-surface bg-success"></span>
@@ -90,7 +132,13 @@
         <div [routerLink]="['/chat', item.id]" routerLinkActive="ring-1 ring-primary"
             class="mb-1 flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2.5 hover:bg-dark-hover">
             <div class="relative h-11 w-11 shrink-0">
-                <img [src]="item.avatarUrl" class="h-full w-full rounded-full object-cover" alt="" />
+                <div class="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-neutral-700">
+                    @if (item.avatarUrl; as avatar) {
+                    <img [src]="avatar" class="h-full w-full object-cover" alt="" />
+                    } @else {
+                    <lucide-icon name="user" class="h-5 w-5 text-dark-muted"></lucide-icon>
+                    }
+                </div>
                 @if (item.isOnline) {
                 <span
                     class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-dark-surface bg-success"></span>
@@ -127,4 +175,10 @@
 
 @if (showNewConversationModal()) {
 <app-new-conversation-modal (close)="showNewConversationModal.set(false)" (created)="onConversationCreated()" />
+}
+
+@if(showLogoutConfirm()){
+<app-confirm-modal title="Đăng xuất" message="Bạn có chắc chắn muốn đăng xuất không?"
+    confirmLabel="Đăng xuất" closeLabel="Hủy" (confirmed)="confirmLogout()"
+    (closed)="showLogoutConfirm.set(false)" />
 }
