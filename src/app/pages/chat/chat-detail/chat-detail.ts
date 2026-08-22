@@ -34,6 +34,8 @@ export class ChatDetail {
   private signalRService = inject(SignalRService);
   private destroyRef = inject(DestroyRef);
 
+  showInfoPanel = signal(window.matchMedia('(min-width: 1024px)').matches);
+
   conversationId = toSignal(this.route.paramMap.pipe(map((p) => p.get('conversationId')!)));
 
   conversation = signal<ConversationListItem | null>(null);
@@ -48,7 +50,6 @@ export class ChatDetail {
       this.isGroupConversation(),
     ),
   );
-  showInfoPanel = signal(false);
 
   private joinedConversationId: string | null = null;
 
@@ -103,6 +104,12 @@ export class ChatDetail {
       if (message.conversationId !== this.conversationId()) return;
       this.appendMessage(message);
     });
+
+    this.signalRService.onUserOnlineStatusChanged
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ userId, isOnline }) => {
+        this.conversation.update((c) => (c && c.otherUserId === userId ? { ...c, isOnline } : c));
+      });
 
     this.destroyRef.onDestroy(() => {
       if (this.joinedConversationId) {

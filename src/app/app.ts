@@ -3,19 +3,23 @@ import { RouterOutlet } from '@angular/router';
 import { ThemeService } from '@app/core/service/theme.service';
 import { Toast } from '@app/share/component/toast/toast';
 import { SignalRService } from './core/service/common/signalr.service';
+import { AuthService } from './core/service/auth.service';
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, Toast],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('RealtimeChat-FE');
   private readonly themeService = inject(ThemeService);
-  private readonly signalRService  = inject(SignalRService);
+  private readonly signalRService = inject(SignalRService);
+  private readonly authService = inject(AuthService);
 
-  constructor(){
-    this.signalRService .connect();
+  constructor() {
+    if (this.authService.isLoggedIn) {
+      this.signalRService.connect();
+    }
   }
 }

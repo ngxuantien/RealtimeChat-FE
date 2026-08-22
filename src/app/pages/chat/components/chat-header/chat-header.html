@@ -13,9 +13,9 @@
         <div class="min-w-0">
             <p class="truncate text-sm font-semibold text-dark-text">{{ name() }}</p>
             @if (isOnline()) {
-                <p class="text-xs text-success">Đang hoạt động</p>
+            <p class="text-xs text-success">Đang hoạt động</p>
             } @else {
-                <p class="text-xs text-dark-muted">Ngoại tuyến</p>
+            <p class="text-xs text-dark-muted">Ngoại tuyến</p>
             }
         </div>
     </div>
@@ -23,9 +23,6 @@
         <lucide-icon name="search" class="hidden h-4.5 w-4.5 cursor-pointer hover:text-dark-text sm:block"></lucide-icon>
         <lucide-icon name="phone" class="h-4.5 w-4.5 cursor-pointer hover:text-dark-text"></lucide-icon>
         <lucide-icon name="video" class="hidden h-4.5 w-4.5 cursor-pointer hover:text-dark-text sm:block"></lucide-icon>
-        <button class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary" (click)="toggleInfo.emit()">
-            <lucide-icon name="info" class="h-4 w-4"></lucide-icon>
-        </button>
-        <lucide-icon name="ellipsis" class="h-4.5 w-4.5 cursor-pointer hover:text-dark-text"></lucide-icon>
+        <lucide-icon name="info" class="hidden h-4.5 w-4.5 cursor-pointer hover:text-dark-text sm:block" (click)="toggleInfo.emit()"></lucide-icon>
     </div>
 </div>

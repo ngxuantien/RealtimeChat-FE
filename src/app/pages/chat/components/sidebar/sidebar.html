@@ -83,7 +83,7 @@
             [class]="activeTab() === 'group' ? 'bg-primary text-white' : 'text-dark-muted hover:bg-dark-hover'">
             Nhóm
         </button>
-        <button type="button" (click)="showNewConversationModal.set(true)"
+        <button type="button" (click)="openNewChat()"
             class="ml-auto flex h-7 w-7 items-center justify-center rounded-full text-dark-text hover:bg-dark-hover">
             <lucide-icon name="plus" class="h-4 w-4"></lucide-icon>
         </button>
@@ -165,16 +165,21 @@
     </div>
 
     <div class="border-t border-dark-border p-4">
-        <button type="button" (click)="showNewConversationModal.set(true)"
+        <button type="button" (click)="openNewChat()"
             class="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-medium text-white hover:bg-primary-hover">
             <lucide-icon name="pencil" class="h-4 w-4"></lucide-icon>
-            Tin nhắn mới
+            {{ activeTab() === 'group' ? 'Tạo nhóm mới' : 'Tin nhắn mới' }}
         </button>
     </div>
 </aside>
 
 @if (showNewConversationModal()) {
 <app-new-conversation-modal (close)="showNewConversationModal.set(false)" (created)="onConversationCreated()" />
+}
+
+@if (showNewGroupModal()) {
+<app-new-group-modal [conversations]="conversations()" (close)="showNewGroupModal.set(false)"
+    (created)="onGroupCreated()" />
 }
 
 @if(showLogoutConfirm()){

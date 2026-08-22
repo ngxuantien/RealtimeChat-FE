@@ -1,4 +1,4 @@
-import { Component, output, signal } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { LucideAngularModule } from "lucide-angular";
 
 @Component({
@@ -7,6 +7,9 @@ import { LucideAngularModule } from "lucide-angular";
     imports: [LucideAngularModule],
 })
 export class InfoPanel {
+    name = input('');
+    avatarUrl = input<string | null>();
+    isOnline = input(false);
     close = output<void>();
 
     sharedImages = signal([

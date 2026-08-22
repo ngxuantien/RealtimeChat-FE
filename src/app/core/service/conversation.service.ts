@@ -47,4 +47,11 @@ export class ConversationService {
     const url = `${this.baseUrl}/${API_ENDPOINT.CONVERSATION.DETAIL}/${conversationId}/members/${userId}/read`;
     return this.http.patch(url, { messageId });
   }
+
+  createGroupConversation(payload: { createdByUserId: string; name: string; memberIds: string[] }) {
+    return this.http.post<Conversation>(
+      `${this.baseUrl}/${API_ENDPOINT.CONVERSATION.LIST}/group`,
+      payload,
+    );
+  }
 }
