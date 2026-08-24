@@ -1,0 +1,48 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4" (click)="close.emit()">
+    <div class="flex max-h-[85vh] w-full max-w-sm flex-col rounded-xl border border-dark-border bg-dark-surface p-6" (click)="$event.stopPropagation()">
+        <div class="mb-4 flex items-center justify-between">
+            <h2 class="text-base font-semibold text-dark-text">Tạo nhóm mới</h2>
+            <lucide-icon name="x" class="h-4 w-4 cursor-pointer text-dark-muted hover:text-dark-text" (click)="close.emit()"></lucide-icon>
+        </div>
+
+        <label class="mb-1.5 block text-sm font-medium text-dark-text">Tên nhóm</label>
+        <input type="text" [ngModel]="groupName()" (ngModelChange)="groupName.set($event)"
+            placeholder="Nhập tên nhóm..."
+            class="mb-4 h-11 w-full rounded-lg border border-dark-border bg-dark-bg px-4 text-sm text-dark-text outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30" />
+
+        <label class="mb-1.5 block text-sm font-medium text-dark-text">Thêm thành viên</label>
+        <input type="text" [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)"
+            placeholder="Tìm trong danh sách đã trò chuyện..."
+            class="mb-3 h-10 w-full rounded-lg border border-dark-border bg-dark-bg px-3 text-sm text-dark-text outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30" />
+
+        <div class="min-h-0 flex-1 overflow-y-auto">
+            @if (filteredContacts().length === 0) {
+            <p class="py-4 text-center text-sm text-dark-muted">Không có người liên hệ nào.</p>
+            }
+            @for (contact of filteredContacts(); track contact.userId) {
+            <div (click)="toggleMember(contact.userId)"
+                class="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 hover:bg-dark-hover">
+                <div class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-neutral-700">
+                    @if (contact.avatarUrl; as avatar) {
+                    <img [src]="avatar" class="h-full w-full object-cover" alt="" />
+                    } @else {
+                    <lucide-icon name="user" class="h-4.5 w-4.5 text-dark-muted"></lucide-icon>
+                    }
+                </div>
+                <p class="min-w-0 flex-1 truncate text-sm text-dark-text">{{ contact.name }}</p>
+                <input type="checkbox" [checked]="selectedUserIds().has(contact.userId)"
+                    class="pointer-events-none h-4 w-4 accent-primary" />
+            </div>
+            }
+        </div>
+
+        @if (errorMessage()) {
+        <p class="mt-3 text-sm text-red-400">{{ errorMessage() }}</p>
+        }
+
+        <button type="button" (click)="createGroup()" [disabled]="isCreating()"
+            class="mt-4 flex h-11 w-full items-center justify-center rounded-lg bg-indigo-500 text-sm font-medium text-white transition hover:bg-indigo-600 disabled:opacity-50">
+            Tạo nhóm
+        </button>
+    </div>
+</div>

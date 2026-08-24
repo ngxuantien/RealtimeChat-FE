@@ -12,6 +12,20 @@ export class SignalRService {
   private messageReceived$ = new Subject<Message>();
   private messageEdited$ = new Subject<Message>();
 
+  private userOnlineStatusChanged$ = new Subject<{
+    userId: string;
+    isOnline: boolean;
+    lastSeenAt: string | null;
+  }>();
+  onUserOnlineStatusChanged = this.userOnlineStatusChanged$.asObservable();
+
+  private conversationUpdated$ = new Subject<{
+    conversationId: string;
+    lastMessagePreview: string;
+    lastMessageAt: string;
+  }>();
+  onConversationUpdated = this.conversationUpdated$.asObservable();
+
   onMessageReceived = this.messageReceived$.asObservable();
   onMessageEdited = this.messageEdited$.asObservable();
 
@@ -25,9 +39,16 @@ export class SignalRService {
       .withAutomaticReconnect()
       .build();
 
+    this.hubConnection.on('UserOnlineStatusChanged', (payload) =>
+      this.userOnlineStatusChanged$.next(payload),
+    );
+
     this.hubConnection.on('ReceiveMessage', (message: Message) =>
       this.messageReceived$.next(message),
     );
+
+    this.hubConnection.on('ConversationUpdated', (payload) => this.conversationUpdated$.next(payload));
+    
     this.hubConnection.on('MessageEdited', (message: Message) => this.messageEdited$.next(message));
 
     this.hubConnection.start().catch((err) => console.error('Lỗi kết nối SignalR:', err));

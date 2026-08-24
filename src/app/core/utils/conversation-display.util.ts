@@ -5,6 +5,7 @@ import { formatConversationTime } from './format-time.util';
 
 export interface ConversationListItem {
   id: string;
+  otherUserId: string | null;
   name: string;
   avatarUrl: string | null;
   lastMessage: string;
@@ -30,6 +31,7 @@ export function toConversationListItem(
 
   return {
     id: conversation.id,
+    otherUserId: isGroup ? null : (other?.userId ?? null),
     name,
     avatarUrl,
     lastMessage: conversation.lastMessagePreview ?? 'Chưa có tin nhắn',
