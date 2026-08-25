@@ -1,14 +1,20 @@
 <div class="relative flex min-h-0 min-w-0 flex-1 overflow-hidden">
-    <app-chat-window class="min-w-0 flex-1" [conversationId]="conversationId() ?? null"
-        [contactName]="conversation()?.name ?? ''" [contactAvatar]="conversation()?.avatarUrl ?? null"
-        [isOnline]="conversation()?.isOnline ?? false" [messages]="messages()" (toggleInfo)="toggleInfoPanel()"
-        (sendMessage)="onSendMessage($event)" />
+    <app-chat-window class="min-w-0 flex-1" 
+        [conversationId]="conversationId() ?? null"
+        [contactName]="conversation()?.name ?? ''" 
+        [contactAvatar]="conversation()?.avatarUrl ?? null"
+        [isOnline]="conversation()?.isOnline ?? false" 
+        [isGroup]="conversation()?.isGroup ?? false"
+        [memberCount]="conversation()?.memberCount ?? 0"
+        [messages]="messages()" (toggleInfo)="toggleInfoPanel()"
+        (sendMessage)="onSendMessage($event)"/>
 
     @if (showInfoPanel()) {
     <div class="fixed inset-0 z-40 bg-black/50 lg:hidden" (click)="showInfoPanel.set(false)"></div>
     <app-info-panel
         class="fixed inset-y-0 right-0 z-50 shadow-xl lg:static lg:z-auto lg:w-80 lg:max-w-none lg:shrink-0 lg:shadow-none"
         [name]="conversation()?.name ?? ''" [avatarUrl]="conversation()?.avatarUrl ?? null"
-        [isOnline]="conversation()?.isOnline ?? false" (close)="showInfoPanel.set(false)" />
+        [isOnline]="conversation()?.isOnline ?? false" [isGroup]="conversation()?.isGroup ?? false"
+        [memberCount]="conversation()?.memberCount ?? 0" (close)="showInfoPanel.set(false)" />
     }
 </div>

@@ -1,21 +1,30 @@
-<div class="border-t border-dark-border px-4 py-3 md:px-6 md:py-4">
-    <div class="flex items-center gap-2 rounded-xl border border-dark-border bg-dark-surface px-3 py-2.5 sm:gap-3 sm:px-4">
-        <lucide-icon name="paperclip" class="hidden h-4.5 w-4.5 shrink-0 cursor-pointer text-dark-muted hover:text-dark-text sm:block"></lucide-icon>
-        <lucide-icon name="image" class="hidden h-4.5 w-4.5 shrink-0 cursor-pointer text-dark-muted hover:text-dark-text sm:block"></lucide-icon>
-        <input
-            type="text"
-            [ngModel]="message()"
-            (ngModelChange)="message.set($event)"
-            (keydown.enter)="onSend()"
+<div class="border-t border-dark-border px-4 py-4 md:px-6">
+    <input #imageInput type="file" accept="image/*" class="hidden" (change)="onImageSelected($event)" />
+    <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)" />
+
+    <div
+        class="flex h-11 items-center gap-2 rounded-xl border border-dark-border bg-dark-surface px-3 sm:gap-3 sm:px-4">
+        @if (isRecording()) {
+        <lucide-icon name="mic" class="h-4.5 w-4.5 shrink-0 text-danger"></lucide-icon>
+        <span class="flex-1 text-sm text-danger">Đang ghi âm... {{ recordSeconds() }}s</span>
+        } @else {
+        <lucide-icon name="paperclip" (click)="pickFile()"
+            class="hidden h-4.5 w-4.5 shrink-0 cursor-pointer text-dark-muted hover:text-dark-text sm:block"></lucide-icon>
+        <lucide-icon name="image" (click)="pickImage()"
+            class="hidden h-4.5 w-4.5 shrink-0 cursor-pointer text-dark-muted hover:text-dark-text sm:block"></lucide-icon>
+        <input type="text" [ngModel]="message()" (ngModelChange)="message.set($event)" (keydown.enter)="onSend()"
             placeholder="Nhập tin nhắn..."
-            class="min-w-0 flex-1 bg-transparent text-sm text-dark-text placeholder:text-dark-muted outline-none"
-        />
-        <lucide-icon name="smile" class="hidden h-4.5 w-4.5 shrink-0 cursor-pointer text-dark-muted hover:text-dark-text sm:block"></lucide-icon>
-        <button
-            type="button"
-            (click)="onSend()"
-            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-white hover:bg-primary-hover"
-        >
+            class="min-w-0 flex-1 bg-transparent text-sm text-dark-text placeholder:text-dark-muted outline-none" />
+        <lucide-icon name="smile"
+            class="hidden h-4.5 w-4.5 shrink-0 cursor-pointer text-dark-muted hover:text-dark-text sm:block"></lucide-icon>
+        }
+
+        <lucide-icon [name]="isRecording() ? 'square' : 'mic'" (click)="toggleRecording()"
+            class="h-4.5 w-4.5 shrink-0 cursor-pointer"
+            [class]="isRecording() ? 'text-danger' : 'text-dark-muted hover:text-dark-text'"></lucide-icon>
+
+        <button type="button" (click)="onSend()"
+            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-white hover:bg-primary-hover">
             <lucide-icon name="send" class="h-4 w-4"></lucide-icon>
         </button>
     </div>
