@@ -56,7 +56,7 @@
                         @if (item.avatarUrl; as avatar) {
                         <img [src]="avatar" class="h-full w-full object-cover" alt="" />
                         } @else {
-                        <lucide-icon name="user" class="h-4.5 w-4.5 text-dark-muted"></lucide-icon>
+                        <lucide-icon [name]="item.isGroup ? 'users' : 'user'" class="h-4.5 w-4.5 text-dark-muted"></lucide-icon>
                         }
                     </div>
                     <div class="min-w-0 flex-1">
@@ -100,10 +100,15 @@
                     @if (item.avatarUrl; as avatar) {
                     <img [src]="avatar" class="h-full w-full object-cover" alt="" />
                     } @else {
-                    <lucide-icon name="user" class="h-5 w-5 text-dark-muted"></lucide-icon>
+                    <lucide-icon [name]="item.isGroup ? 'users' : 'user'" class="h-5 w-5 text-dark-muted"></lucide-icon>
                     }
                 </div>
-                @if (item.isOnline) {
+                @if (item.isGroup) {
+                <span
+                    class="absolute -bottom-0.5 -right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 border-dark-bg bg-primary">
+                    <lucide-icon name="users" class="h-2.5 w-2.5 text-white"></lucide-icon>
+                </span>
+                } @else if (item.isOnline) {
                 <span
                     class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-dark-surface bg-success"></span>
                 }
@@ -136,10 +141,15 @@
                     @if (item.avatarUrl; as avatar) {
                     <img [src]="avatar" class="h-full w-full object-cover" alt="" />
                     } @else {
-                    <lucide-icon name="user" class="h-5 w-5 text-dark-muted"></lucide-icon>
+                    <lucide-icon [name]="item.isGroup ? 'users' : 'user'" class="h-5 w-5 text-dark-muted"></lucide-icon>
                     }
                 </div>
-                @if (item.isOnline) {
+                @if (item.isGroup) {
+                <span
+                    class="absolute -bottom-0.5 -right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 border-dark-bg bg-primary">
+                    <lucide-icon name="users" class="h-2.5 w-2.5 text-white"></lucide-icon>
+                </span>
+                } @else if (item.isOnline) {
                 <span
                     class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-dark-surface bg-success"></span>
                 }
@@ -166,7 +176,7 @@
 
     <div class="border-t border-dark-border p-4">
         <button type="button" (click)="openNewChat()"
-            class="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-medium text-white hover:bg-primary-hover">
+            class="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary text-sm font-medium text-white hover:bg-primary-hover">
             <lucide-icon name="pencil" class="h-4 w-4"></lucide-icon>
             {{ activeTab() === 'group' ? 'Tạo nhóm mới' : 'Tin nhắn mới' }}
         </button>

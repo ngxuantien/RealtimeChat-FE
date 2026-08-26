@@ -4,6 +4,7 @@ export enum MessageType {
     Video = 3,
     File = 4,
     System = 5,
+    Voice = 6,
 }
 
 export enum MessageStatus {

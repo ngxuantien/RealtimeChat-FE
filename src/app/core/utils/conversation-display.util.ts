@@ -13,6 +13,8 @@ export interface ConversationListItem {
   unreadCount: number;
   isOnline: boolean;
   isPinned: boolean;
+  isGroup: boolean;
+  memberCount: number;
 }
 
 export function toConversationListItem(
@@ -38,6 +40,8 @@ export function toConversationListItem(
     time: formatConversationTime(conversation.lastMessageAt),
     unreadCount,
     isOnline,
+    isGroup,
     isPinned: me?.isPinned ?? false,
+    memberCount: members.length,
   };
 }

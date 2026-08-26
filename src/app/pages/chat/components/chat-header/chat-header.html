@@ -3,16 +3,25 @@
         <a routerLink="/" class="shrink-0 text-dark-muted hover:text-dark-text md:hidden">
             <lucide-icon name="arrow-left" class="h-5 w-5"></lucide-icon>
         </a>
-        <div class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-neutral-700">
-            @if (avatarUrl(); as avatar) {
-            <img [src]="avatar" class="h-full w-full object-cover" alt="" />
-            } @else {
-            <lucide-icon name="user" class="h-5 w-5 text-dark-muted"></lucide-icon>
+        <div class="relative h-10 w-10 shrink-0">
+            <div class="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-neutral-700">
+                @if (avatarUrl(); as avatar) {
+                <img [src]="avatar" class="h-full w-full object-cover" alt="" />
+                } @else {
+                <lucide-icon [name]="isGroup() ? 'users' : 'user'" class="h-5 w-5 text-dark-muted"></lucide-icon>
+                }
+            </div>
+            @if (isGroup()) {
+            <span class="absolute -bottom-0.5 -right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 border-dark-bg bg-primary">
+                <lucide-icon name="users" class="h-2.5 w-2.5 text-white"></lucide-icon>
+            </span>
             }
         </div>
         <div class="min-w-0">
             <p class="truncate text-sm font-semibold text-dark-text">{{ name() }}</p>
-            @if (isOnline()) {
+            @if (isGroup()) {
+            <p class="text-xs text-dark-muted">{{ memberCount() }} thành viên</p>
+            } @else if (isOnline()) {
             <p class="text-xs text-success">Đang hoạt động</p>
             } @else {
             <p class="text-xs text-dark-muted">Ngoại tuyến</p>

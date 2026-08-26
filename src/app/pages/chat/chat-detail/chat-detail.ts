@@ -18,6 +18,7 @@ import {
 import { toMessageItems } from '@app/core/utils/message-display.util';
 import { ConversationMember } from '@app/core/model/conversation/conversation-member.model';
 import { ConversationType } from '@app/core/enums/conversation.enum';
+import { AttachmentPayload } from '../components/chat-input-bar/chat-input-bar';
 
 @Component({
   selector: 'app-chat-detail',
@@ -134,6 +135,29 @@ export class ChatDetail {
         next: (message) => this.appendMessage(message),
         error: () => this.flashMessage.error('Không thể gửi tin nhắn, thử lại sau.'),
       });
+  }
+
+  onSendAttachment({file, type, caption }: AttachmentPayload){
+    const conversationId = this.conversationId();
+    const currentUserId = this.authService.currentUser()?.userId;
+    if (!conversationId || !currentUserId) return;
+
+    this.messageService.uploadAttachment(file).subscribe({
+      next: (attachment) => {
+        this.messageService.sendMessage({
+          conversationId,
+          senderId: currentUserId,
+          content: caption ?? '',
+          type,
+          attachments: [attachment],
+        })
+        .subscribe({
+          next: (message) => this.appendMessage(message),
+          error: () => this.flashMessage.error('Không thể gửi tệp, thử lại sau'),
+        });
+      },
+      error: () => this.flashMessage.error('Không thể tải lên tệp, thử lại sau'),
+    });
   }
 
   private appendMessage(message: Message) {
