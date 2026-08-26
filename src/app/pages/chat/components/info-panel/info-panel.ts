@@ -10,6 +10,8 @@ export class InfoPanel {
     name = input('');
     avatarUrl = input<string | null>();
     isOnline = input(false);
+    isGroup = input(false);
+    memberCount = input(0);
     close = output<void>();
 
     sharedImages = signal([

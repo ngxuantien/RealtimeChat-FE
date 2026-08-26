@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from 'environments/environment';
 import { API_ENDPOINT } from '../constants/api-endpoint.constant';
-import { Message } from '../model/message/message.model';
+import { Message, MessageAttachment } from '../model/message/message.model';
 import { MessageType } from '../enums/message.enum';
 
 export interface SendMessagePayload {
@@ -11,6 +11,7 @@ export interface SendMessagePayload {
     content: string;
     type?: MessageType;
     replyToMessageId?: string | null;
+    attachments?: MessageAttachment[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -33,7 +34,15 @@ export class MessageService {
             type: payload.type ?? MessageType.Text,
             content: payload.content,
             replyToMessageId: payload.replyToMessageId ?? null,
-            attachments: [],
+            attachments: payload.attachments ?? [],
         });
+    }
+
+    uploadAttachment(file: File){
+        const url = `${this.baseUrl}/${API_ENDPOINT.MESSAGE.BASE}/attachments`;
+        const formData = new FormData();
+        formData.append('file', file);
+
+        return this.http.post<MessageAttachment>(url, formData);
     }
 }

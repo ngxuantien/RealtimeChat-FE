@@ -18,6 +18,7 @@ import {
 import { toMessageItems } from '@app/core/utils/message-display.util';
 import { ConversationMember } from '@app/core/model/conversation/conversation-member.model';
 import { ConversationType } from '@app/core/enums/conversation.enum';
+import { AttachmentPayload } from '../components/chat-input-bar/chat-input-bar';
 
 @Component({
   selector: 'app-chat-detail',

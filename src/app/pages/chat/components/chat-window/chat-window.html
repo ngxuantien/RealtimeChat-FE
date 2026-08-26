@@ -3,10 +3,12 @@
         [name]="contactName()"
         [avatarUrl]="contactAvatar()"
         [isOnline]="isOnline()"
+        [isGroup]="isGroup()"
+        [memberCount]="memberCount()"
         (toggleInfo)="toggleInfo.emit()"
     />
 
     <app-message-list [messages]="messages()" />
 
-    <app-chat-input-bar (send)="sendMessage.emit($event)" />
+    <app-chat-input-bar (send)="sendMessage.emit($event)" (sendAttachment)="sendAttachment.emit($event)" />
 </section>
