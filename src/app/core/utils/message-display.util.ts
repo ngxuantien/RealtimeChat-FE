@@ -39,6 +39,8 @@ export function toMessageItems(
       senderName: !isMine && isGroup ? (sender?.displayName ?? 'Người dùng') : null,
       dateLabel:
         !prevDate || !isSameDay(current, prevDate) ? formatDateSeparator(message.createdAt) : null,
+      type: message.type,
+      attachments: message.attachments,
     };
   });
 }

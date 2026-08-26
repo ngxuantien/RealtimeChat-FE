@@ -1,5 +1,7 @@
 // message-list.ts
 import { Component, effect, ElementRef, input, viewChild } from '@angular/core';
+import { MessageType } from '@app/core/enums/message.enum';
+import { MessageAttachment } from '@app/core/model/message/message.model';
 import { MessageBubble } from '@app/pages/chat/components/message-bubble/message-bubble';
 import { LucideAngularModule } from 'lucide-angular';
 
@@ -11,6 +13,8 @@ export interface MessageItem {
   showHeader: boolean;
   senderName: string | null;
   dateLabel: string | null;
+  type: MessageType;
+  attachments: MessageAttachment[];
 }
 
 @Component({
@@ -26,7 +30,7 @@ export class MessageList {
 
   constructor() {
     effect(() => {
-      this.messages(); // đọc để effect chạy lại mỗi khi danh sách đổi
+      this.messages();
 
       setTimeout(() => {
         const el = this.scrollContainer()?.nativeElement;

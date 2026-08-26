@@ -14,8 +14,15 @@
         <span class="rounded-full bg-dark-surface px-3 py-1 text-xs font-medium text-dark-muted">{{ msg.dateLabel }}</span>
     </div>
     }
-    <app-message-bubble [content]="msg.content" [time]="msg.time" [isMine]="msg.isMine"
-        [showHeader]="msg.showHeader" [senderName]="msg.senderName" [class.mt-3]="msg.showHeader && !msg.dateLabel" />
+    <app-message-bubble 
+        [content]="msg.content" 
+        [time]="msg.time" 
+        [isMine]="msg.isMine"
+        [showHeader]="msg.showHeader" 
+        [senderName]="msg.senderName" 
+        [type]="msg.type"
+        [attachments]="msg.attachments"
+        [class.mt-3]="msg.showHeader && !msg.dateLabel" />
     }
 </div>
 }

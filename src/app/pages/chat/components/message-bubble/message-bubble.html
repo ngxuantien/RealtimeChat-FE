@@ -7,7 +7,29 @@
         {{ time() }}
     </span>
     }
+    @switch(type()) {
+    @case (MessageType.Image) {
+    <img [src]="attachments()[0]?.fileUrl" class="max-w-[85%] rounded-2xl object-cover sm:max-w-md" alt="" />
+    }
+    @case (MessageType.Voice) {
+    <div class="flex items-center gap-2 rounded-2xl px-4 py-2.5" [class]="bubbleClasses()">
+        <audio controls [src]="attachments()[0]?.fileUrl" class="h-9 max-w-56"></audio>
+    </div>
+    }
+    @case (MessageType.File) {
+    <a [href]="attachments()[0]?.fileUrl" target="_blank" rel="noopener"
+        class="flex max-w-[85%] items-center gap-3 rounded-2xl px-4 py-2.5 sm:max-w-md" [class]="bubbleClasses()">
+        <lucide-icon name="file" class="h-5 w-5 shrink-0"></lucide-icon>
+        <div class="min-w-0">
+            <p class="truncate text-sm">{{ attachments()[0]?.fileName }}</p>
+            <p class="text-xs opacity-70">{{ formattedSize() }}</p>
+        </div>
+    </a>
+    }
+    @default {
     <div class="max-w-[85%] rounded-2xl px-4 py-2.5 text-sm wrap-break-words sm:max-w-md" [class]="bubbleClasses()">
         {{ content() }}
     </div>
+    }
+    }
 </div>
