@@ -137,6 +137,29 @@ export class ChatDetail {
       });
   }
 
+  onSendAttachment({file, type, caption }: AttachmentPayload){
+    const conversationId = this.conversationId();
+    const currentUserId = this.authService.currentUser()?.userId;
+    if (!conversationId || !currentUserId) return;
+
+    this.messageService.uploadAttachment(file).subscribe({
+      next: (attachment) => {
+        this.messageService.sendMessage({
+          conversationId,
+          senderId: currentUserId,
+          content: caption ?? '',
+          type,
+          attachments: [attachment],
+        })
+        .subscribe({
+          next: (message) => this.appendMessage(message),
+          error: () => this.flashMessage.error('Không thể gửi tệp, thử lại sau'),
+        });
+      },
+      error: () => this.flashMessage.error('Không thể tải lên tệp, thử lại sau'),
+    });
+  }
+
   private appendMessage(message: Message) {
     this.rawMessages.update((list) =>
       list.some((m) => m.id === message.id) ? list : [...list, message],

@@ -7,7 +7,8 @@
         [isGroup]="conversation()?.isGroup ?? false"
         [memberCount]="conversation()?.memberCount ?? 0"
         [messages]="messages()" (toggleInfo)="toggleInfoPanel()"
-        (sendMessage)="onSendMessage($event)"/>
+        (sendMessage)="onSendMessage($event)"
+        (sendAttachment)="onSendAttachment($event)" />
 
     @if (showInfoPanel()) {
     <div class="fixed inset-0 z-40 bg-black/50 lg:hidden" (click)="showInfoPanel.set(false)"></div>

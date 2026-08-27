@@ -1,5 +1,13 @@
 // chat-input-bar.ts
-import { Component, ElementRef, output, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MessageType } from '@app/core/enums/message.enum';
 import { LucideAngularModule } from 'lucide-angular';
@@ -7,6 +15,7 @@ import { LucideAngularModule } from 'lucide-angular';
 export interface AttachmentPayload {
   file: File;
   type: MessageType;
+  caption?: string;
 }
 
 @Component({
@@ -16,6 +25,13 @@ export interface AttachmentPayload {
   host: { class: 'shrink-0' },
 })
 export class ChatInputBar {
+  protected readonly MessageType = MessageType;
+  private destroyRef = inject(DestroyRef);
+
+  pendingFile = signal<File | null>(null);
+  pendingType = signal<MessageType | null>(null);
+  pendingPreviewUrl = signal<string | null>(null);
+
   message = signal('');
   isRecording = signal(false);
   recordSeconds = signal(0);
@@ -31,6 +47,16 @@ export class ChatInputBar {
   private recordTimer: ReturnType<typeof setInterval> | null = null;
 
   onSend() {
+    const file = this.pendingFile();
+    const type = this.pendingType();
+    if (file && type !== null) {
+      const caption = this.message().trim();
+      this.sendAttachment.emit({ file, type, caption: caption || undefined });
+      this.message.set('');
+      this.removePending();
+      return;
+    }
+
     const value = this.message().trim();
     if (!value) return;
     this.send.emit(value);
@@ -48,15 +74,27 @@ export class ChatInputBar {
   onImageSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
-    if (file) this.sendAttachment.emit({ file, type: MessageType.Image });
+    if (file) this.setPending(file, MessageType.Image);
     input.value = '';
   }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
-    if (file) this.sendAttachment.emit({ file, type: MessageType.File });
+    if (file) this.setPending(file, MessageType.File);
     input.value = '';
+  }
+
+  removePending() {
+    this.clearPendingPreviewUrl();
+    this.pendingFile.set(null);
+    this.pendingType.set(null);
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   }
 
   async toggleRecording() {
@@ -95,5 +133,21 @@ export class ChatInputBar {
     } catch {
       // người dùng từ chối quyền micro hoặc trình duyệt không hỗ trợ
     }
+  }
+
+  private setPending(file: File, type: MessageType) {
+    this.clearPendingPreviewUrl();
+    this.pendingFile.set(file);
+    this.pendingType.set(type);
+
+    if (type === MessageType.Image || type === MessageType.Voice) {
+      this.pendingPreviewUrl.set(URL.createObjectURL(file));
+    }
+  }
+
+  private clearPendingPreviewUrl() {
+    const url = this.pendingPreviewUrl();
+    if (url) URL.revokeObjectURL(url);
+    this.pendingPreviewUrl.set(null);
   }
 }
