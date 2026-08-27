@@ -26,6 +26,9 @@ export class SignalRService {
   }>();
   onConversationUpdated = this.conversationUpdated$.asObservable();
 
+  private messageDeleted$ = new Subject<{messageId: string; conversationId: string}>();
+  onMessageDeleted = this.messageDeleted$.asObservable();
+
   onMessageReceived = this.messageReceived$.asObservable();
   onMessageEdited = this.messageEdited$.asObservable();
 
@@ -50,6 +53,8 @@ export class SignalRService {
     this.hubConnection.on('ConversationUpdated', (payload) => this.conversationUpdated$.next(payload));
     
     this.hubConnection.on('MessageEdited', (message: Message) => this.messageEdited$.next(message));
+
+    this.hubConnection.on('MessageDeleted', (payload) => this.messageDeleted$.next(payload));
 
     this.hubConnection.start().catch((err) => console.error('Lỗi kết nối SignalR:', err));
   }

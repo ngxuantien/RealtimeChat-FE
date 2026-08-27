@@ -18,7 +18,14 @@ import {
 import { toMessageItems } from '@app/core/utils/message-display.util';
 import { ConversationMember } from '@app/core/model/conversation/conversation-member.model';
 import { ConversationType } from '@app/core/enums/conversation.enum';
-import { AttachmentPayload } from '../components/chat-input-bar/chat-input-bar';
+import {
+  AttachmentBatchPayload,
+  EditTarget,
+  ReplyTarget,
+} from '../components/chat-input-bar/chat-input-bar';
+import { MessageAction } from '../components/message-bubble/message-bubble';
+import { MessageItem } from '../components/message-list/message-list';
+import { Upload } from 'lucide-angular';
 
 @Component({
   selector: 'app-chat-detail',
@@ -43,6 +50,9 @@ export class ChatDetail {
   members = signal<ConversationMember[]>([]);
   isGroupConversation = signal(false);
   rawMessages = signal<Message[]>([]);
+  replyTarget = signal<ReplyTarget | null>(null);
+  editTarget = signal<EditTarget | null>(null);
+
   messages = computed(() =>
     toMessageItems(
       this.rawMessages(),
@@ -112,6 +122,18 @@ export class ChatDetail {
         this.conversation.update((c) => (c && c.otherUserId === userId ? { ...c, isOnline } : c));
       });
 
+    this.signalRService.onMessageEdited.pipe(takeUntilDestroyed()).subscribe((message) => {
+      if (message.conversationId !== this.conversationId()) return;
+      this.replaceMessage(message);
+    });
+
+    this.signalRService.onMessageDeleted
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ messageId, conversationId }) => {
+        if (conversationId !== this.conversationId()) return;
+        this.markMessageDeletedLocally(messageId);
+      });
+
     this.destroyRef.onDestroy(() => {
       if (this.joinedConversationId) {
         this.signalRService.leaveConversation(this.joinedConversationId);
@@ -129,35 +151,89 @@ export class ChatDetail {
 
     if (!conversationId || !currentUserId || !content.trim()) return;
 
+    const replyToMessageId = this.replyTarget()?.id ?? null;
+
     this.messageService
-      .sendMessage({ conversationId, senderId: currentUserId, content })
+      .sendMessage({ conversationId, senderId: currentUserId, content, replyToMessageId })
       .subscribe({
-        next: (message) => this.appendMessage(message),
+        next: (message) => {
+          (this.appendMessage(message), this.replyTarget.set(null));
+        },
         error: () => this.flashMessage.error('Không thể gửi tin nhắn, thử lại sau.'),
       });
   }
 
-  onSendAttachment({file, type, caption }: AttachmentPayload){
+  onSendAttachment({ files, caption }: AttachmentBatchPayload) {
     const conversationId = this.conversationId();
     const currentUserId = this.authService.currentUser()?.userId;
-    if (!conversationId || !currentUserId) return;
+    if (!conversationId || !currentUserId || files.length === 0) return;
 
-    this.messageService.uploadAttachment(file).subscribe({
-      next: (attachment) => {
-        this.messageService.sendMessage({
-          conversationId,
-          senderId: currentUserId,
-          content: caption ?? '',
-          type,
-          attachments: [attachment],
-        })
-        .subscribe({
-          next: (message) => this.appendMessage(message),
-          error: () => this.flashMessage.error('Không thể gửi tệp, thử lại sau'),
-        });
-      },
-      error: () => this.flashMessage.error('Không thể tải lên tệp, thử lại sau'),
+    files.forEach(({ file, type }, index) => {
+      this.messageService.uploadAttachment(file).subscribe({
+        next: (attachment) => {
+          this.messageService
+            .sendMessage({
+              conversationId,
+              senderId: currentUserId,
+              content: index === 0 ? (caption ?? '') : '',
+              type,
+              attachments: [attachment],
+            })
+            .subscribe({
+              next: (message) => this.appendMessage(message),
+              error: () => this.flashMessage.error('Không thể gửi tệp, thử lại sau'),
+            });
+        },
+        error: () => this.flashMessage.error('Không thể tải lên tệp, thử lại sau'),
+      });
     });
+  }
+
+  onMessageAction({ action, message }: { action: MessageAction; message: MessageItem }) {
+    switch (action) {
+      case 'reply':
+        this.editTarget.set(null);
+        this.replyTarget.set({ id: message.id, preview: message.content || 'Tệp đính kèm' });
+        break;
+      case 'edit':
+        this.replyTarget.set(null);
+        this.editTarget.set({ id: message.id, content: message.content });
+        break;
+      case 'delete':
+        this.deleteMessage(message.id);
+        break;
+    }
+  }
+
+  onSaveEdit({ id, content }: { id: string; content: string }) {
+    const currentUserId = this.authService.currentUser()?.userId;
+    if (!currentUserId) return;
+
+    this.messageService.editMessage(id, currentUserId, content).subscribe({
+      next: (updated) => this.replaceMessage(updated),
+      error: () => this.flashMessage.error('Không thể sửa tin nhắn, thử lại sau.'),
+    });
+    this.editTarget.set(null);
+  }
+
+  private deleteMessage(messageId: string) {
+    const currentUserId = this.authService.currentUser()?.userId;
+    if (!currentUserId) return;
+
+    this.messageService.deleteMessage(messageId, currentUserId).subscribe({
+      next: () => this.markMessageDeletedLocally(messageId),
+      error: () => this.flashMessage.error('Không thể xóa tin nhắn, thử lại sau.'),
+    });
+  }
+
+  private replaceMessage(updated: Message) {
+    this.rawMessages.update((list) => list.map((m) => (m.id === updated.id ? updated : m)));
+  }
+
+  private markMessageDeletedLocally(messageId: string) {
+    this.rawMessages.update((list) =>
+      list.map((m) => (m.id === messageId ? { ...m, isDeleted: true, content: '' } : m)),
+    );
   }
 
   private appendMessage(message: Message) {

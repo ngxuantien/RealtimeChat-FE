@@ -5,31 +5,96 @@
         <span class="font-medium text-dark-text">{{ senderName() }}</span> ·
         }
         {{ time() }}
+        @if (editedAt()) { · đã chỉnh sửa }
     </span>
     }
-    @switch(type()) {
-    @case (MessageType.Image) {
-    <img [src]="attachments()[0]?.fileUrl" class="max-w-[85%] rounded-2xl object-cover sm:max-w-md" alt="" />
-    }
-    @case (MessageType.Voice) {
-    <div class="flex items-center gap-2 rounded-2xl px-4 py-2.5" [class]="bubbleClasses()">
-        <audio controls [src]="attachments()[0]?.fileUrl" class="h-9 max-w-56"></audio>
-    </div>
-    }
-    @case (MessageType.File) {
-    <a [href]="attachments()[0]?.fileUrl" target="_blank" rel="noopener"
-        class="flex max-w-[85%] items-center gap-3 rounded-2xl px-4 py-2.5 sm:max-w-md" [class]="bubbleClasses()">
-        <lucide-icon name="file" class="h-5 w-5 shrink-0"></lucide-icon>
-        <div class="min-w-0">
-            <p class="truncate text-sm">{{ attachments()[0]?.fileName }}</p>
-            <p class="text-xs opacity-70">{{ formattedSize() }}</p>
+
+    <div class="group/msg flex items-center gap-1" [class]="isMine() ? 'flex-row-reverse' : ''">
+        <div class="relative max-w-[85%] sm:max-w-md">
+            @if (isDeleted()) {
+            <div class="rounded-2xl px-4 py-2.5 text-sm italic text-dark-muted" [class]="bubbleClasses()">
+                Tin nhắn đã bị xóa
+            </div>
+            } @else {
+            @if (replyPreview()) {
+            <div class="mb-1 rounded-lg border-l-2 px-2 py-1 text-xs text-dark-muted"
+                [class]="isMine() ? 'border-white/50 bg-white/10' : 'border-primary/50 bg-black/5 dark:bg-white/5'">
+                {{ replyPreview() }}
+            </div>
+            }
+            @switch (type()) {
+            @case (MessageType.Image) {
+            <div class="flex flex-col gap-1.5">
+                <img [src]="attachments()[0]?.fileUrl" class="rounded-2xl object-cover" alt="" />
+                @if (content()) {
+                <div class="rounded-2xl px-4 py-2 text-sm wrap-break-words" [class]="bubbleClasses()">{{ content() }}
+                </div>
+                }
+            </div>
+            }
+            @case (MessageType.Voice) {
+            <div class="flex flex-col gap-1.5">
+                <div class="flex items-center gap-2 rounded-2xl px-4 py-2.5" [class]="bubbleClasses()">
+                    <audio controls [src]="attachments()[0]?.fileUrl" class="h-9 max-w-56"></audio>
+                </div>
+                @if (content()) {
+                <div class="rounded-2xl px-4 py-2 text-sm wrap-break-words" [class]="bubbleClasses()">{{ content() }}
+                </div>
+                }
+            </div>
+            }
+            @case (MessageType.File) {
+            <div class="flex flex-col gap-1.5">
+                <a [href]="attachments()[0]?.fileUrl" [download]="attachments()[0]?.fileName" target="_blank"
+                    rel="noopener" class="flex items-center gap-3 rounded-2xl px-4 py-2.5" [class]="bubbleClasses()">
+                    <lucide-icon name="file" class="h-5 w-5 shrink-0"></lucide-icon>
+                    <div class="min-w-0">
+                        <p class="truncate text-sm">{{ attachments()[0]?.fileName }}</p>
+                        <p class="text-xs opacity-70">{{ formattedSize() }}</p>
+                    </div>
+                </a>
+                @if (content()) {
+                <div class="rounded-2xl px-4 py-2 text-sm wrap-break-words" [class]="bubbleClasses()">{{ content() }}
+                </div>
+                }
+            </div>
+            }
+            @default {
+            <div class="rounded-2xl px-4 py-2.5 text-sm wrap-break-words" [class]="bubbleClasses()">
+                {{ content() }}
+            </div>
+            }
+            }
+            }
         </div>
-    </a>
-    }
-    @default {
-    <div class="max-w-[85%] rounded-2xl px-4 py-2.5 text-sm wrap-break-words sm:max-w-md" [class]="bubbleClasses()">
-        {{ content() }}
+
+        @if (!isDeleted()) {
+        <div class="relative shrink-0 opacity-0 transition-opacity group-hover/msg:opacity-100">
+            <button #menuButton type="button" (click)="toggleMenu()"
+                class="flex h-7 w-7 items-center justify-center rounded-full text-dark-muted hover:bg-dark-hover hover:text-dark-text">
+                <lucide-icon name="ellipsis" class="h-4 w-4"></lucide-icon>
+            </button>
+
+            @if (showMenu()) {
+            <div class="absolute z-10 w-36 rounded-lg border border-dark-border bg-dark-surface py-1 shadow-lg"
+                [class]="(isMine() ? 'right-0' : 'left-0') + ' ' + (openUpward() ? 'bottom-full mb-1' : 'top-full mt-1')">
+                <button type="button" (click)="selectAction('reply')"
+                    class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-dark-text hover:bg-dark-hover">
+                    <lucide-icon name="reply" class="h-4 w-4"></lucide-icon> Trả lời
+                </button>
+                @if (isMine()) {
+                <button type="button" (click)="selectAction('edit')"
+                    class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-dark-text hover:bg-dark-hover">
+                    <lucide-icon name="pencil" class="h-4 w-4"></lucide-icon> Chỉnh sửa
+                </button>
+                <button type="button" (click)="selectAction('delete')"
+                    class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-danger hover:bg-dark-hover">
+                    <lucide-icon name="trash" class="h-4 w-4"></lucide-icon> Xóa
+                </button>
+                }
+            </div>
+            }
+        </div>
+        }
     </div>
-    }
-    }
 </div>

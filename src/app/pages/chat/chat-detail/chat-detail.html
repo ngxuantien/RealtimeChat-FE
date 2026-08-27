@@ -6,9 +6,16 @@
         [isOnline]="conversation()?.isOnline ?? false" 
         [isGroup]="conversation()?.isGroup ?? false"
         [memberCount]="conversation()?.memberCount ?? 0"
-        [messages]="messages()" (toggleInfo)="toggleInfoPanel()"
+        [replyTarget]="replyTarget()" 
+        [editTarget]="editTarget()"
+        [messages]="messages()" 
+        (toggleInfo)="toggleInfoPanel()"
         (sendMessage)="onSendMessage($event)"
-        (sendAttachment)="onSendAttachment($event)" />
+        (sendAttachment)="onSendAttachment($event)"
+        (messageAction)="onMessageAction($event)"
+        (saveEdit)="onSaveEdit($event)"
+        (cancelReply)="replyTarget.set(null)"
+        (cancelEdit)="editTarget.set(null)" />
 
     @if (showInfoPanel()) {
     <div class="fixed inset-0 z-40 bg-black/50 lg:hidden" (click)="showInfoPanel.set(false)"></div>

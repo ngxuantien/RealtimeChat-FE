@@ -1,8 +1,8 @@
 // message-list.ts
-import { Component, effect, ElementRef, input, viewChild } from '@angular/core';
+import { Component, effect, ElementRef, input, output, viewChild } from '@angular/core';
 import { MessageType } from '@app/core/enums/message.enum';
 import { MessageAttachment } from '@app/core/model/message/message.model';
-import { MessageBubble } from '@app/pages/chat/components/message-bubble/message-bubble';
+import { MessageAction, MessageBubble } from '@app/pages/chat/components/message-bubble/message-bubble';
 import { LucideAngularModule } from 'lucide-angular';
 
 export interface MessageItem {
@@ -15,6 +15,9 @@ export interface MessageItem {
   dateLabel: string | null;
   type: MessageType;
   attachments: MessageAttachment[];
+  isDeleted: boolean;
+  editedAt: string | null;
+  replyPreview: string | null;
 }
 
 @Component({
@@ -25,6 +28,7 @@ export interface MessageItem {
 })
 export class MessageList {
   messages = input<MessageItem[]>([]);
+  messageAction = output<{ action: MessageAction; message: MessageItem }>();
 
   private scrollContainer = viewChild<ElementRef<HTMLDivElement>>('scrollContainer');
 
