@@ -30,6 +30,10 @@ export function toMessageItems(
     const isMine = message.senderId === currentUserId;
     const sender = members.find((m) => m.userId === message.senderId);
 
+    const replyToMessage = message.replyToMessageId
+      ? messages.find((m) => m.id === message.replyToMessageId)
+      : null;
+
     return {
       id: message.id,
       content: message.content,
@@ -37,10 +41,14 @@ export function toMessageItems(
       isMine,
       showHeader: !sameGroupAsPrev,
       senderName: !isMine && isGroup ? (sender?.displayName ?? 'Người dùng') : null,
-      dateLabel:
-        !prevDate || !isSameDay(current, prevDate) ? formatDateSeparator(message.createdAt) : null,
+      dateLabel: !prevDate || !isSameDay(current, prevDate) ? formatDateSeparator(message.createdAt) : null,
       type: message.type,
-      attachments: message.attachments,
+      attachments: message.isDeleted ? [] : message.attachments,
+      isDeleted: message.isDeleted,
+      editedAt: message.editedAt,
+      replyPreview: message.replyToMessageId
+        ? (replyToMessage?.content || '[Tệp đính kèm]').slice(0, 80)
+        : null,
     };
   });
 }

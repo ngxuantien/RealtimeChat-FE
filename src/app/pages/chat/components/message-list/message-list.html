@@ -15,6 +15,7 @@
     </div>
     }
     <app-message-bubble 
+        [id]="msg.id"
         [content]="msg.content" 
         [time]="msg.time" 
         [isMine]="msg.isMine"
@@ -22,6 +23,10 @@
         [senderName]="msg.senderName" 
         [type]="msg.type"
         [attachments]="msg.attachments"
+        [isDeleted]="msg.isDeleted" 
+        [editedAt]="msg.editedAt" 
+        [replyPreview]="msg.replyPreview"
+        (action)="messageAction.emit({ action: $event, message: msg })"
         [class.mt-3]="msg.showHeader && !msg.dateLabel" />
     }
 </div>

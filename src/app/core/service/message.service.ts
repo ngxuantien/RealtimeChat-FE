@@ -45,4 +45,14 @@ export class MessageService {
 
         return this.http.post<MessageAttachment>(url, formData);
     }
+
+    editMessage(messageId: string, userId: string, content: string) {
+        const url = `${this.baseUrl}/${API_ENDPOINT.MESSAGE.BASE}/${messageId}/user/${userId}`;
+        return this.http.put<Message>(url, { content });
+    }
+
+    deleteMessage(messageId: string, userId: string) {
+        const url = `${this.baseUrl}/${API_ENDPOINT.MESSAGE.BASE}/${messageId}/user/${userId}`;
+        return this.http.delete(url);
+    }
 }

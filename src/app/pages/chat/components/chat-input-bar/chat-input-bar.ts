@@ -1,9 +1,10 @@
-// chat-input-bar.ts
 import {
   Component,
   DestroyRef,
+  effect,
   ElementRef,
   inject,
+  input,
   output,
   signal,
   viewChild,
@@ -12,11 +13,24 @@ import { FormsModule } from '@angular/forms';
 import { MessageType } from '@app/core/enums/message.enum';
 import { LucideAngularModule } from 'lucide-angular';
 
-export interface AttachmentPayload {
+const MAX_PENDING_FILES = 5;
+
+export interface PendingFile {
   file: File;
   type: MessageType;
+}
+
+export interface AttachmentBatchPayload {
+  files: PendingFile[];
   caption?: string;
 }
+
+interface PendingItem extends PendingFile {
+  previewUrl: string | null;
+}
+
+export interface ReplyTarget { id: string; preview: string }
+export interface EditTarget { id: string; content: string }
 
 @Component({
   selector: 'app-chat-input-bar',
@@ -26,18 +40,25 @@ export interface AttachmentPayload {
 })
 export class ChatInputBar {
   protected readonly MessageType = MessageType;
+  protected readonly maxPendingFiles = MAX_PENDING_FILES;
+
   private destroyRef = inject(DestroyRef);
 
-  pendingFile = signal<File | null>(null);
-  pendingType = signal<MessageType | null>(null);
-  pendingPreviewUrl = signal<string | null>(null);
+  pendingFiles = signal<PendingItem[]>([]);
 
   message = signal('');
   isRecording = signal(false);
   recordSeconds = signal(0);
 
   send = output<string>();
-  sendAttachment = output<AttachmentPayload>();
+  sendAttachment = output<AttachmentBatchPayload>();
+
+  replyTo = input<ReplyTarget | null>(null);
+  editingMessage = input<EditTarget | null>(null);
+
+  saveEdit = output<{ id: string; content: string }>();
+  cancelReply = output<void>();
+  cancelEdit = output<void>();
 
   private imageInput = viewChild<ElementRef<HTMLInputElement>>('imageInput');
   private fileInput = viewChild<ElementRef<HTMLInputElement>>('fileInput');
@@ -46,14 +67,34 @@ export class ChatInputBar {
   private audioChunks: Blob[] = [];
   private recordTimer: ReturnType<typeof setInterval> | null = null;
 
+  constructor() {
+    this.destroyRef.onDestroy(() => this.clearAllPreviewUrls());
+
+    effect(() => {
+      const editing = this.editingMessage();
+      if(editing) this.message.set(editing.content);
+    });
+  }
+
   onSend() {
-    const file = this.pendingFile();
-    const type = this.pendingType();
-    if (file && type !== null) {
-      const caption = this.message().trim();
-      this.sendAttachment.emit({ file, type, caption: caption || undefined });
+    const editing = this.editingMessage();
+    if(editing){
+      const value = this.message().trim();
+      if(!value) return;
+      this.saveEdit.emit({id: editing.id, content: value});
       this.message.set('');
-      this.removePending();
+      return;
+    }
+
+    const pending = this.pendingFiles();
+    if (pending.length > 0) {
+      const caption = this.message().trim();
+      this.sendAttachment.emit({
+        files: pending.map(({ file, type }) => ({ file, type })),
+        caption: caption || undefined,
+      });
+      this.message.set('');
+      this.pendingFiles.set([]);
       return;
     }
 
@@ -73,22 +114,20 @@ export class ChatInputBar {
 
   onImageSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (file) this.setPending(file, MessageType.Image);
+    this.addPendingFiles(Array.from(input.files ?? []), MessageType.Image);
     input.value = '';
   }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (file) this.setPending(file, MessageType.File);
+    this.addPendingFiles(Array.from(input.files ?? []), MessageType.File);
     input.value = '';
   }
 
-  removePending() {
-    this.clearPendingPreviewUrl();
-    this.pendingFile.set(null);
-    this.pendingType.set(null);
+  removePending(index: number) {
+    const item = this.pendingFiles()[index];
+    if (item?.previewUrl) URL.revokeObjectURL(item.previewUrl);
+    this.pendingFiles.update((list) => list.filter((_, i) => i !== index));
   }
 
   formatFileSize(bytes: number): string {
@@ -102,6 +141,8 @@ export class ChatInputBar {
       this.mediaRecorder?.stop();
       return;
     }
+
+    if (this.pendingFiles().length >= MAX_PENDING_FILES) return;
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -117,7 +158,7 @@ export class ChatInputBar {
         const blob = new Blob(this.audioChunks, { type: mimeType });
         const file = new File([blob], `voice-${Date.now()}.${extension}`, { type: mimeType });
 
-        this.sendAttachment.emit({ file, type: MessageType.Voice });
+        this.addPendingFiles([file], MessageType.Voice);
         this.mediaRecorder = null;
         this.isRecording.set(false);
         if (this.recordTimer) {
@@ -135,19 +176,25 @@ export class ChatInputBar {
     }
   }
 
-  private setPending(file: File, type: MessageType) {
-    this.clearPendingPreviewUrl();
-    this.pendingFile.set(file);
-    this.pendingType.set(type);
+  private addPendingFiles(files: File[], type: MessageType) {
+    if (files.length === 0) return;
 
-    if (type === MessageType.Image || type === MessageType.Voice) {
-      this.pendingPreviewUrl.set(URL.createObjectURL(file));
-    }
+    const remainingSlots = MAX_PENDING_FILES - this.pendingFiles().length;
+    if (remainingSlots <= 0) return;
+
+    const items: PendingItem[] = files.slice(0, remainingSlots).map((file) => ({
+      file,
+      type,
+      previewUrl:
+        type === MessageType.Image || type === MessageType.Voice ? URL.createObjectURL(file) : null,
+    }));
+
+    this.pendingFiles.update((list) => [...list, ...items]);
   }
 
-  private clearPendingPreviewUrl() {
-    const url = this.pendingPreviewUrl();
-    if (url) URL.revokeObjectURL(url);
-    this.pendingPreviewUrl.set(null);
+  private clearAllPreviewUrls() {
+    for (const item of this.pendingFiles()) {
+      if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
+    }
   }
 }
