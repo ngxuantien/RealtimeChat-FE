@@ -28,7 +28,7 @@ export class UiButton {
         };
 
         const variantMap: Record<string, string> = {
-            primary: 'bg-primary text-white hover:bg-[#0E67C7]',
+            primary: 'bg-primary-main text-white hover:bg-primary-700',
         };
 
         return [

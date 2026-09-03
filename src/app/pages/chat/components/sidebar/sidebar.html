@@ -1,9 +1,9 @@
-<aside class="flex h-full w-full flex-col bg-dark-bg text-dark-text">
-    <div class="flex items-center justify-between border-b border-[#D7DBE3] px-4 py-5">
+<aside class="flex h-full w-full flex-col bg-bg-card text-text-heading">
+    <div class="flex items-center justify-between border-b border-border-300 px-4 py-5">
         <div class="flex items-center gap-1">
-            <div class="flex h-6 w-6 items-center justify-center rounded-lg bg-primary">
+            <div class="flex h-6 w-6 items-center justify-center rounded-lg bg-primary-main">
             </div>
-            <span class="font-semibold text-dark-text">ChatFlow</span>
+            <span class="font-semibold text-text-heading">ChatFlow</span>
         </div>
         <div class="flex items-center gap-2">
             <lucide-icon [name]="themeService.theme() === 'dark' ? 'sun' : 'moon'" class="w-5 h-5 cursor-pointer"
@@ -12,18 +12,18 @@
         </div>
     </div>
 
-    <div class="flex items-center justify-between border-b border-[#D7DBE3] px-5 py-4">
+    <div class="flex items-center justify-between border-b border-border-300 px-5 py-4">
         <div class="flex items-center gap-3">
             <div class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-neutral-700">
                 @if (currentUserProfile()?.avatarUrl; as avatar) {
                 <img [src]="avatar" class="h-full w-full object-cover" alt="" />
                 } @else {
-                <lucide-icon name="user" class="h-4.5 w-4.5 text-dark-muted"></lucide-icon>
+                <lucide-icon name="user" class="h-4.5 w-4.5 text-text-secondary"></lucide-icon>
                 }
             </div>
             <div>
                 <p class="text-sm font-medium">{{ currentUserProfile()?.displayName || 'Đang tải...' }}</p>
-                <p class="text-xs" [class]="currentUserProfile()?.isOnline ? 'text-success' : 'text-dark-muted'">
+                <p class="text-xs" [class]="currentUserProfile()?.isOnline ? 'text-green-main' : 'text-text-secondary'">
                     {{ currentUserProfile()?.isOnline ? 'Đang hoạt động' : 'Ngoại tuyến' }}
                 </p>
             </div>
@@ -31,42 +31,42 @@
         <div class="group relative">
             <lucide-icon name="log-out" (click)="logout()" class="h-4 w-4 cursor-pointer"></lucide-icon>
             <span
-                class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-dark-surface px-2 py-1 text-xs text-dark-text opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-bg-hover px-2 py-1 text-xs text-text-heading opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
                 Đăng xuất
             </span>
         </div>
     </div>
 
     <div class="px-5 py-4">
-        <div class="relative flex items-center gap-2 rounded-lg border border-[#D7DBE3] bg-dark-bg px-3 py-2.5">
-            <lucide-icon name="search" class="h-4 w-4 text-dark-muted"></lucide-icon>
+        <div class="relative flex items-center gap-2 rounded-lg border border-border-300 bg-bg-card px-3 py-2.5">
+            <lucide-icon name="search" class="h-4 w-4 text-text-secondary"></lucide-icon>
             <input type="text" [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)"
                 (focus)="searchFocused.set(true)" (blur)="searchFocused.set(false)" (keydown.escape)="clearSearch()"
                 placeholder="Tìm kiếm cuộc trò chuyện..."
-                class="w-full bg-transparent text-sm text-dark-text placeholder:text-dark-muted outline-none" />
+                class="w-full bg-transparent text-sm text-text-heading placeholder:text-text-secondary outline-none" />
 
             @if (showSearchDropdown()) {
             <div
-                class="absolute inset-x-0 top-full z-10 mt-2 max-h-72 overflow-y-auto rounded-lg border border-[#D7DBE3] bg-dark-surface shadow-lg">
+                class="absolute inset-x-0 top-full z-10 mt-2 max-h-72 overflow-y-auto rounded-lg border border-border-300 bg-bg-hover shadow-lg">
                 @if (searchResults().length > 0) {
                 @for (item of searchResults(); track item.id) {
                 <div (mousedown)="$event.preventDefault()" (click)="selectSearchResult(item)"
-                    class="flex cursor-pointer items-center gap-3 px-3 py-2.5 hover:bg-dark-hover">
+                    class="flex cursor-pointer items-center gap-3 px-3 py-2.5 hover:bg-neutral-100">
                     <div class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-neutral-700">
                         @if (item.avatarUrl; as avatar) {
                         <img [src]="avatar" class="h-full w-full object-cover" alt="" />
                         } @else {
-                        <lucide-icon [name]="item.isGroup ? 'users' : 'user'" class="h-4.5 w-4.5 text-dark-muted"></lucide-icon>
+                        <lucide-icon [name]="item.isGroup ? 'users' : 'user'" class="h-4.5 w-4.5 text-text-secondary"></lucide-icon>
                         }
                     </div>
                     <div class="min-w-0 flex-1">
-                        <p class="truncate text-sm font-medium text-dark-text">{{ item.name }}</p>
-                        <p class="truncate text-xs text-dark-muted">{{ item.lastMessage }}</p>
+                        <p class="truncate text-sm font-medium text-text-heading">{{ item.name }}</p>
+                        <p class="truncate text-xs text-text-secondary">{{ item.lastMessage }}</p>
                     </div>
                 </div>
                 }
                 } @else {
-                <p class="px-3 py-3 text-sm text-dark-muted">Không tìm thấy cuộc trò chuyện nào</p>
+                <p class="px-3 py-3 text-sm text-text-secondary">Không tìm thấy cuộc trò chuyện nào</p>
                 }
             </div>
             }
@@ -76,53 +76,53 @@
     <div class="flex items-center gap-2 px-5 pb-4">
         <button type="button" (click)="setTab('message')"
             class="rounded-full px-4 py-1.5 text-sm font-medium transition"
-            [class]="activeTab() === 'message' ? 'bg-primary text-white' : 'text-dark-muted hover:bg-dark-hover'">
+            [class]="activeTab() === 'message' ? 'bg-primary-main text-white' : 'text-text-secondary hover:bg-neutral-100'">
             Tin nhắn
         </button>
         <button type="button" (click)="setTab('group')" class="rounded-full px-4 py-1.5 text-sm font-medium transition"
-            [class]="activeTab() === 'group' ? 'bg-primary text-white' : 'text-dark-muted hover:bg-dark-hover'">
+            [class]="activeTab() === 'group' ? 'bg-primary-main text-white' : 'text-text-secondary hover:bg-neutral-100'">
             Nhóm
         </button>
         <button type="button" (click)="openNewChat()"
-            class="ml-auto flex h-7 w-7 items-center justify-center rounded-full text-dark-text hover:bg-dark-hover">
+            class="ml-auto flex h-7 w-7 items-center justify-center rounded-full text-text-heading hover:bg-neutral-100">
             <lucide-icon name="plus" class="h-4 w-4"></lucide-icon>
         </button>
     </div>
 
     <div class="min-h-0 flex-1 px-3 pb-3">
         @if (pinnedConversations.length > 0) {
-        <p class="px-2 pb-2 text-xs font-semibold uppercase text-dark-muted">Đã ghim</p>
+        <p class="px-2 pb-2 text-xs font-semibold uppercase text-text-secondary">Đã ghim</p>
         @for (item of pinnedConversations; track item.id) {
-        <div [routerLink]="['/chat', item.id]" routerLinkActive="ring-1 ring-primary"
-            class="mb-1 flex cursor-pointer items-center gap-3 rounded-lg bg-primary/15 px-2 py-2.5 hover:bg-primary/20">
+        <div [routerLink]="['/chat', item.id]" routerLinkActive="ring-1 ring-primary-main"
+            class="mb-1 flex cursor-pointer items-center gap-3 rounded-lg bg-primary-main/15 px-2 py-2.5 hover:bg-primary-main/20">
             <div class="relative h-11 w-11 shrink-0">
                 <div class="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-neutral-700">
                     @if (item.avatarUrl; as avatar) {
                     <img [src]="avatar" class="h-full w-full object-cover" alt="" />
                     } @else {
-                    <lucide-icon [name]="item.isGroup ? 'users' : 'user'" class="h-5 w-5 text-dark-muted"></lucide-icon>
+                    <lucide-icon [name]="item.isGroup ? 'users' : 'user'" class="h-5 w-5 text-text-secondary"></lucide-icon>
                     }
                 </div>
                 @if (item.isGroup) {
                 <span
-                    class="absolute -bottom-0.5 -right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 border-dark-bg bg-primary">
+                    class="absolute -bottom-0.5 -right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 border-bg-card bg-primary-main">
                     <lucide-icon name="users" class="h-2.5 w-2.5 text-white"></lucide-icon>
                 </span>
                 } @else if (item.isOnline) {
                 <span
-                    class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-dark-surface bg-success"></span>
+                    class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-bg-hover bg-green-main"></span>
                 }
             </div>
             <div class="min-w-0 flex-1">
                 <div class="flex items-center justify-between">
-                    <p class="truncate text-sm font-medium text-primary">{{ item.name }}</p>
-                    <span class="shrink-0 text-xs text-dark-muted">{{ item.time }}</span>
+                    <p class="truncate text-sm font-medium text-primary-main">{{ item.name }}</p>
+                    <span class="shrink-0 text-xs text-text-secondary">{{ item.time }}</span>
                 </div>
                 <div class="flex items-center justify-between">
-                    <p class="truncate text-xs text-dark-muted">{{ item.lastMessage }}</p>
+                    <p class="truncate text-xs text-text-secondary">{{ item.lastMessage }}</p>
                     @if (item.unreadCount > 0) {
                     <span
-                        class="ml-2 flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-primary px-1.5 text-xs font-medium text-white">
+                        class="ml-2 flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-primary-main px-1.5 text-xs font-medium text-white">
                         {{ item.unreadCount }}
                     </span>
                     }
@@ -130,40 +130,40 @@
             </div>
         </div>
         }
-        <p class="mt-4 px-2 pb-2 text-xs font-semibold uppercase text-dark-muted">Tất cả</p>
+        <p class="mt-4 px-2 pb-2 text-xs font-semibold uppercase text-text-secondary">Tất cả</p>
         }
 
         @for (item of allConversations; track item.id) {
-        <div [routerLink]="['/chat', item.id]" routerLinkActive="ring-1 ring-primary"
-            class="mb-1 flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2.5 hover:bg-dark-hover">
+        <div [routerLink]="['/chat', item.id]" routerLinkActive="ring-1 ring-primary-main"
+            class="mb-1 flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2.5 hover:bg-neutral-100">
             <div class="relative h-11 w-11 shrink-0">
                 <div class="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-neutral-700">
                     @if (item.avatarUrl; as avatar) {
                     <img [src]="avatar" class="h-full w-full object-cover" alt="" />
                     } @else {
-                    <lucide-icon [name]="item.isGroup ? 'users' : 'user'" class="h-5 w-5 text-dark-muted"></lucide-icon>
+                    <lucide-icon [name]="item.isGroup ? 'users' : 'user'" class="h-5 w-5 text-text-secondary"></lucide-icon>
                     }
                 </div>
                 @if (item.isGroup) {
                 <span
-                    class="absolute -bottom-0.5 -right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 border-dark-bg bg-primary">
+                    class="absolute -bottom-0.5 -right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 border-bg-card bg-primary-main">
                     <lucide-icon name="users" class="h-2.5 w-2.5 text-white"></lucide-icon>
                 </span>
                 } @else if (item.isOnline) {
                 <span
-                    class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-dark-surface bg-success"></span>
+                    class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-bg-hover bg-green-main"></span>
                 }
             </div>
             <div class="min-w-0 flex-1">
                 <div class="flex items-center justify-between">
-                    <p class="truncate text-sm font-medium text-dark-text">{{ item.name }}</p>
-                    <span class="shrink-0 text-xs text-dark-muted">{{ item.time }}</span>
+                    <p class="truncate text-sm font-medium text-text-heading">{{ item.name }}</p>
+                    <span class="shrink-0 text-xs text-text-secondary">{{ item.time }}</span>
                 </div>
                 <div class="flex items-center justify-between">
-                    <p class="truncate text-xs text-dark-muted">{{ item.lastMessage }}</p>
+                    <p class="truncate text-xs text-text-secondary">{{ item.lastMessage }}</p>
                     @if (item.unreadCount > 0) {
                     <span
-                        class="ml-2 flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-primary px-1.5 text-xs font-medium text-white">
+                        class="ml-2 flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-primary-main px-1.5 text-xs font-medium text-white">
                         {{ item.unreadCount }}
                     </span>
                     }
@@ -174,9 +174,9 @@
 
     </div>
 
-    <div class="border-t border-dark-border p-4">
+    <div class="border-t border-border-300 p-4">
         <button type="button" (click)="openNewChat()"
-            class="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary text-sm font-medium text-white hover:bg-primary-hover">
+            class="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary-main text-sm font-medium text-white hover:bg-primary-700">
             <lucide-icon name="pencil" class="h-4 w-4"></lucide-icon>
             {{ activeTab() === 'group' ? 'Tạo nhóm mới' : 'Tin nhắn mới' }}
         </button>

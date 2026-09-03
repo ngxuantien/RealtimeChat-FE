@@ -1,17 +1,17 @@
 @if (messages().length === 0) {
 <div class="flex flex-1 min-h-0 flex-col items-center justify-center gap-3">
-    <div class="flex h-14 w-14 items-center justify-center rounded-full bg-dark-surface">
-        <lucide-icon name="message-circle" class="h-6 w-6 text-dark-muted"></lucide-icon>
+    <div class="flex h-14 w-14 items-center justify-center rounded-full bg-bg-hover">
+        <lucide-icon name="message-circle" class="h-6 w-6 text-text-secondary"></lucide-icon>
     </div>
-    <p class="font-medium text-dark-text">Chưa có tin nhắn nào</p>
-    <p class="text-sm text-dark-muted">Hãy bắt đầu cuộc trò chuyện!</p>
+    <p class="font-medium text-text-heading">Chưa có tin nhắn nào</p>
+    <p class="text-sm text-text-secondary">Hãy bắt đầu cuộc trò chuyện!</p>
 </div>
 } @else {
 <div #scrollContainer class="flex flex-1 min-h-0 flex-col gap-0.5 overflow-y-auto px-4 py-5">
     @for (msg of messages(); track msg.id) {
     @if (msg.dateLabel) {
     <div class="my-3 flex items-center justify-center">
-        <span class="rounded-full bg-dark-surface px-3 py-1 text-xs font-medium text-dark-muted">{{ msg.dateLabel }}</span>
+        <span class="rounded-full bg-bg-hover px-3 py-1 text-xs font-medium text-text-secondary">{{ msg.dateLabel }}</span>
     </div>
     }
     <app-message-bubble 
