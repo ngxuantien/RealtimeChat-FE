@@ -1,8 +1,8 @@
 <div class="flex flex-col gap-1" [class]="wrapperClasses()">
     @if (showHeader()) {
-    <span class="px-1 text-xs text-dark-muted">
+    <span class="px-1 text-xs text-text-secondary">
         @if (senderName()) {
-        <span class="font-medium text-dark-text">{{ senderName() }}</span> ·
+        <span class="font-medium text-text-heading">{{ senderName() }}</span> ·
         }
         {{ time() }}
         @if (editedAt()) { · đã chỉnh sửa }
@@ -12,13 +12,13 @@
     <div class="group/msg flex items-center gap-1" [class]="isMine() ? 'flex-row-reverse' : ''">
         <div class="relative max-w-[85%] sm:max-w-md">
             @if (isDeleted()) {
-            <div class="rounded-2xl px-4 py-2.5 text-sm italic text-dark-muted" [class]="bubbleClasses()">
+            <div class="rounded-2xl px-4 py-2.5 text-sm italic text-text-secondary" [class]="bubbleClasses()">
                 Tin nhắn đã bị xóa
             </div>
             } @else {
             @if (replyPreview()) {
-            <div class="mb-1 rounded-lg border-l-2 px-2 py-1 text-xs text-dark-muted"
-                [class]="isMine() ? 'border-white/50 bg-white/10' : 'border-primary/50 bg-black/5 dark:bg-white/5'">
+            <div class="mb-1 rounded-lg border-l-2 px-2 py-1 text-xs text-text-secondary"
+                [class]="isMine() ? 'border-white/50 bg-white/10' : 'border-primary-main/50 bg-black/5 dark:bg-white/5'">
                 {{ replyPreview() }}
             </div>
             }
@@ -71,24 +71,24 @@
         @if (!isDeleted()) {
         <div class="relative shrink-0 opacity-0 transition-opacity group-hover/msg:opacity-100">
             <button #menuButton type="button" (click)="toggleMenu()"
-                class="flex h-7 w-7 items-center justify-center rounded-full text-dark-muted hover:bg-dark-hover hover:text-dark-text">
+                class="flex h-7 w-7 items-center justify-center rounded-full text-text-secondary hover:bg-neutral-100 hover:text-text-heading">
                 <lucide-icon name="ellipsis" class="h-4 w-4"></lucide-icon>
             </button>
 
             @if (showMenu()) {
-            <div class="absolute z-10 w-36 rounded-lg border border-dark-border bg-dark-surface py-1 shadow-lg"
+            <div class="absolute z-10 w-36 rounded-lg border border-border-300 bg-bg-hover py-1 shadow-lg"
                 [class]="(isMine() ? 'right-0' : 'left-0') + ' ' + (openUpward() ? 'bottom-full mb-1' : 'top-full mt-1')">
                 <button type="button" (click)="selectAction('reply')"
-                    class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-dark-text hover:bg-dark-hover">
+                    class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-text-heading hover:bg-neutral-100">
                     <lucide-icon name="reply" class="h-4 w-4"></lucide-icon> Trả lời
                 </button>
                 @if (isMine()) {
                 <button type="button" (click)="selectAction('edit')"
-                    class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-dark-text hover:bg-dark-hover">
+                    class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-text-heading hover:bg-neutral-100">
                     <lucide-icon name="pencil" class="h-4 w-4"></lucide-icon> Chỉnh sửa
                 </button>
                 <button type="button" (click)="selectAction('delete')"
-                    class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-danger hover:bg-dark-hover">
+                    class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-main hover:bg-neutral-100">
                     <lucide-icon name="trash" class="h-4 w-4"></lucide-icon> Xóa
                 </button>
                 }

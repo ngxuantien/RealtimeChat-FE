@@ -1,9 +1,9 @@
-<div class="rounded-xl border border-dark-border bg-dark-surface p-4 sm:p-6">
+<div class="rounded-xl border border-border-300 bg-bg-hover p-4 sm:p-6">
     <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
         <div>
-            <h2 class="text-base font-semibold text-dark-text">{{ title() }}</h2>
+            <h2 class="text-base font-semibold text-text-heading">{{ title() }}</h2>
             @if (description()) {
-            <p class="mt-1 text-sm text-dark-muted">{{ description() }}</p>
+            <p class="mt-1 text-sm text-text-secondary">{{ description() }}</p>
             }
         </div>
         <ng-content select="[card-action]"></ng-content>

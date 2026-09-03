@@ -2,11 +2,11 @@
     <div
         class="w-full max-w-105 rounded-3xl bg-white px-10 py-9 shadow-[0_15px_40px_rgba(0,0,0,0.08)] dark:bg-neutral-900 dark:shadow-none">
         <div class="mb-6 flex flex-col items-center">
-            <div class="mb-4 flex h-15 w-15 items-center justify-center rounded-[18px] bg-primary">
+            <div class="mb-4 flex h-15 w-15 items-center justify-center rounded-[18px] bg-primary-main">
                 <svg lucideMessageSquare class="h-8 w-8 text-white"></svg>
             </div>
 
-            <h1 class="text-[24px] font-bold leading-none text-dark-text dark:text-white">
+            <h1 class="text-[24px] font-bold leading-none text-text-heading dark:text-white">
                 Tạo tài khoản mới
             </h1>
 
@@ -19,7 +19,7 @@
             <input #fileInput type="file" accept="image/*" class="hidden" (change)="onAvatarSelected($event)" />
 
             <button type="button" (click)="fileInput.click()"
-                class="relative flex h-20 w-20 items-center justify-center rounded-full border-2 border-dashed border-primary text-primary ">
+                class="relative flex h-20 w-20 items-center justify-center rounded-full border-2 border-dashed border-primary-main text-primary-main ">
 
                 @if (avatarPreview()) {
                 <img [src]="avatarPreview()" class="h-full w-full object-cover rounded-full" alt="Ảnh đại diện" />
@@ -28,7 +28,7 @@
                 }
 
                 <span
-                    class="absolute -right-1 bottom-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white cursor-pointer">
+                    class="absolute -right-1 bottom-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary-main text-white cursor-pointer">
                     <svg lucideCamera class="h-4 w-4"></svg>
                 </span>
             </button>
@@ -63,9 +63,9 @@
                 </app-ui-button>
             </div>
 
-            <p class="text-center text-sm text-[#566474] dark:text-neutral-400">
+            <p class="text-center text-sm text-text-secondary dark:text-neutral-400">
                 Đã có tài khoản?
-                <a routerLink="/auth/login" class="font-semibold text-primary cursor-pointer">
+                <a routerLink="/auth/login" class="font-semibold text-primary-main cursor-pointer">
                     Đăng nhập
                 </a>
             </p>

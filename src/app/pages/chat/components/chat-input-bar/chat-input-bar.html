@@ -1,75 +1,75 @@
-<div class="border-t border-dark-border px-4 py-4 md:px-6">
+<div class="border-t border-border-300 px-4 py-4 md:px-6">
     <input #imageInput type="file" accept="image/*" multiple class="hidden" (change)="onImageSelected($event)" />
     <input #fileInput type="file" multiple class="hidden" (change)="onFileSelected($event)" />
 
     @if(replyTo(); as reply){
-    <div class="mb-2 flex items-center justify-between rounded-lg border-l-2 border-primary bg-dark-surface px-3 py-2">
+    <div class="mb-2 flex items-center justify-between rounded-lg border-l-2 border-primary-main bg-bg-hover px-3 py-2">
         <div class="min-w-0">
-            <p class="text-xs font-medium text-primary">Trả lời</p>
-            <p class="truncate text-xs text-dark-muted">{{ reply.preview }}</p>
+            <p class="text-xs font-medium text-primary-main">Trả lời</p>
+            <p class="truncate text-xs text-text-secondary">{{ reply.preview }}</p>
         </div>
         <lucide-icon name="x" (click)="cancelReply.emit()"
-            class="h-4 w-4 shrink-0 cursor-pointer text-dark-muted hover:text-dark-text"></lucide-icon>
+            class="h-4 w-4 shrink-0 cursor-pointer text-text-secondary hover:text-text-heading"></lucide-icon>
     </div>
     }
 
     @if (editingMessage()) {
-    <div class="mb-2 flex items-center justify-between rounded-lg border-l-2 border-warning bg-dark-surface px-3 py-2">
-        <p class="text-xs font-medium text-warning">Đang chỉnh sửa tin nhắn</p>
+    <div class="mb-2 flex items-center justify-between rounded-lg border-l-2 border-yellow-main bg-bg-hover px-3 py-2">
+        <p class="text-xs font-medium text-yellow-main">Đang chỉnh sửa tin nhắn</p>
         <lucide-icon name="x" (click)="cancelEdit.emit()"
-            class="h-4 w-4 shrink-0 cursor-pointer text-dark-muted hover:text-dark-text"></lucide-icon>
+            class="h-4 w-4 shrink-0 cursor-pointer text-text-secondary hover:text-text-heading"></lucide-icon>
     </div>
     }
 
     @if (pendingFiles().length > 0) {
-    <div class="mb-2 flex flex-wrap items-center gap-2 rounded-xl border border-dark-border bg-dark-surface p-2">
+    <div class="mb-2 flex flex-wrap items-center gap-2 rounded-xl border border-border-300 bg-bg-hover p-2">
         @for (item of pendingFiles(); track $index) {
         <div class="relative h-14 w-14 shrink-0">
             @if (item.type === MessageType.Image && item.previewUrl; as url) {
             <img [src]="url" class="h-full w-full rounded-lg object-cover" alt="" />
             } @else if (item.type === MessageType.Voice) {
-            <div class="flex h-full w-full items-center justify-center rounded-lg bg-dark-bg">
-                <lucide-icon name="mic" class="h-5 w-5 text-dark-muted"></lucide-icon>
+            <div class="flex h-full w-full items-center justify-center rounded-lg bg-bg-card">
+                <lucide-icon name="mic" class="h-5 w-5 text-text-secondary"></lucide-icon>
             </div>
             } @else {
-            <div class="flex h-full w-full flex-col items-center justify-center gap-0.5 rounded-lg bg-dark-bg px-1">
-                <lucide-icon name="file" class="h-4 w-4 text-dark-muted"></lucide-icon>
-                <span class="w-full truncate text-center text-[9px] text-dark-muted">{{ item.file.name }}</span>
+            <div class="flex h-full w-full flex-col items-center justify-center gap-0.5 rounded-lg bg-bg-card px-1">
+                <lucide-icon name="file" class="h-4 w-4 text-text-secondary"></lucide-icon>
+                <span class="w-full truncate text-center text-[9px] text-text-secondary">{{ item.file.name }}</span>
             </div>
             }
             <button type="button" (click)="removePending($index)"
-                class="absolute -right-1.5 -top-1.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-dark-muted text-dark-bg hover:bg-dark-text">
+                class="absolute -right-1.5 -top-1.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-text-secondary text-bg-card hover:bg-text-heading">
                 <lucide-icon name="x" class="h-3 w-3"></lucide-icon>
             </button>
         </div>
         }
-        <span class="px-1 text-xs text-dark-muted">{{ pendingFiles().length }}/{{ maxPendingFiles }}</span>
+        <span class="px-1 text-xs text-text-secondary">{{ pendingFiles().length }}/{{ maxPendingFiles }}</span>
     </div>
     }
 
     <div
-        class="flex h-11 items-center gap-2 rounded-xl border border-dark-border bg-dark-surface px-3 sm:gap-3 sm:px-4">
+        class="flex h-11 items-center gap-2 rounded-xl border border-border-300 bg-bg-hover px-3 sm:gap-3 sm:px-4">
         @if (isRecording()) {
-        <lucide-icon name="mic" class="h-4.5 w-4.5 shrink-0 text-danger"></lucide-icon>
-        <span class="flex-1 text-sm text-danger">Đang ghi âm... {{ recordSeconds() }}s</span>
+        <lucide-icon name="mic" class="h-4.5 w-4.5 shrink-0 text-red-main"></lucide-icon>
+        <span class="flex-1 text-sm text-red-main">Đang ghi âm... {{ recordSeconds() }}s</span>
         } @else {
         <lucide-icon name="paperclip" (click)="pickFile()"
-            class="hidden h-4.5 w-4.5 shrink-0 cursor-pointer text-dark-muted hover:text-dark-text sm:block"></lucide-icon>
+            class="hidden h-4.5 w-4.5 shrink-0 cursor-pointer text-text-secondary hover:text-text-heading sm:block"></lucide-icon>
         <lucide-icon name="image" (click)="pickImage()"
-            class="hidden h-4.5 w-4.5 shrink-0 cursor-pointer text-dark-muted hover:text-dark-text sm:block"></lucide-icon>
+            class="hidden h-4.5 w-4.5 shrink-0 cursor-pointer text-text-secondary hover:text-text-heading sm:block"></lucide-icon>
         <input type="text" [ngModel]="message()" (ngModelChange)="message.set($event)" (keydown.enter)="onSend()"
             [placeholder]="pendingFiles().length > 0 ? 'Thêm chú thích (tuỳ chọn)...' : 'Nhập tin nhắn...'"
-            class="min-w-0 flex-1 bg-transparent text-sm text-dark-text placeholder:text-dark-muted outline-none" />
+            class="min-w-0 flex-1 bg-transparent text-sm text-text-heading placeholder:text-text-secondary outline-none" />
         <lucide-icon name="smile"
-            class="hidden h-4.5 w-4.5 shrink-0 cursor-pointer text-dark-muted hover:text-dark-text sm:block"></lucide-icon>
+            class="hidden h-4.5 w-4.5 shrink-0 cursor-pointer text-text-secondary hover:text-text-heading sm:block"></lucide-icon>
         }
 
         <lucide-icon [name]="isRecording() ? 'square' : 'mic'" (click)="toggleRecording()"
             class="h-4.5 w-4.5 shrink-0 cursor-pointer"
-            [class]="isRecording() ? 'text-danger' : 'text-dark-muted hover:text-dark-text'"></lucide-icon>
+            [class]="isRecording() ? 'text-red-main' : 'text-text-secondary hover:text-text-heading'"></lucide-icon>
 
         <button type="button" (click)="onSend()"
-            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-white hover:bg-primary-hover">
+            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary-main text-white hover:bg-primary-700">
             <lucide-icon name="send" class="h-4 w-4"></lucide-icon>
         </button>
     </div>
