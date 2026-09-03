@@ -34,7 +34,7 @@ export class MessageBubble {
   private menuButton = viewChild<ElementRef<HTMLButtonElement>>('menuButton');
 
   protected readonly bubbleClasses = computed(() =>
-    this.isMine() ? 'ml-auto bg-primary text-white' : 'mr-auto bg-dark-surface text-dark-text',
+    this.isMine() ? 'ml-auto bg-primary-main text-white' : 'mr-auto bg-bg-hover text-text-heading',
   );
 
   protected readonly wrapperClasses = computed(() => (this.isMine() ? 'items-end' : 'items-start'));

@@ -1,11 +1,11 @@
 <div class="mx-auto flex max-w-3xl flex-col gap-6">
     <div>
-        <h1 class="text-2xl font-bold text-dark-text">Thông báo</h1>
-        <p class="mt-1 text-sm text-dark-muted">Kiểm soát khi nào và cách bạn nhận thông báo</p>
+        <h1 class="text-2xl font-bold text-text-heading">Thông báo</h1>
+        <p class="mt-1 text-sm text-text-secondary">Kiểm soát khi nào và cách bạn nhận thông báo</p>
     </div>
 
     <app-settings-card title="Thông báo tin nhắn" description="Chọn loại tin nhắn nào sẽ kích hoạt thông báo">
-        <div class="flex flex-col divide-y divide-dark-border">
+        <div class="flex flex-col divide-y divide-border-300">
             <app-settings-toggle-row icon="message-square" label="Tin nhắn trực tiếp"
                 description="Thông báo khi nhận tin nhắn riêng từ người khác" [(checked)]="directMessages" />
             <app-settings-toggle-row icon="users" label="Tin nhắn nhóm"
@@ -16,7 +16,7 @@
     </app-settings-card>
 
     <app-settings-card title="Âm thanh & Hiển thị" description="Cách thông báo xuất hiện trên thiết bị của bạn">
-        <div class="flex flex-col divide-y divide-dark-border">
+        <div class="flex flex-col divide-y divide-border-300">
             <app-settings-toggle-row icon="volume-2" label="Âm thanh thông báo"
                 description="Phát âm thanh khi nhận tin nhắn mới" [(checked)]="notificationSound" />
             <app-settings-toggle-row icon="monitor" label="Thông báo trên màn hình"
@@ -27,7 +27,7 @@
     </app-settings-card>
 
     <app-settings-card title="Lịch thông báo" description="Đặt giờ yên tĩnh để không bị làm phiền">
-        <div class="flex flex-col divide-y divide-dark-border">
+        <div class="flex flex-col divide-y divide-border-300">
             <app-settings-toggle-row label="Không làm phiền"
                 description="Tắt tất cả thông báo âm thanh. Bạn vẫn nhận tin nhắn nhưng không có âm thanh" [(checked)]="doNotDisturb" />
         </div>

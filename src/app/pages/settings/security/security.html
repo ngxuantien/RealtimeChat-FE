@@ -1,50 +1,50 @@
 <div class="mx-auto flex max-w-3xl flex-col gap-6">
     <div>
-        <h1 class="text-2xl font-bold text-dark-text">Bảo mật</h1>
-        <p class="mt-1 text-sm text-dark-muted">Bảo vệ tài khoản của bạn với các tùy chọn bảo mật nâng cao</p>
+        <h1 class="text-2xl font-bold text-text-heading">Bảo mật</h1>
+        <p class="mt-1 text-sm text-text-secondary">Bảo vệ tài khoản của bạn với các tùy chọn bảo mật nâng cao</p>
     </div>
 
     <!-- Đổi mật khẩu -->
-    <div class="rounded-xl border border-dark-border bg-dark-surface p-4 sm:p-6">
-        <h2 class="text-base font-semibold text-dark-text">Đổi mật khẩu</h2>
-        <p class="mt-1 text-sm text-dark-muted">Nên thay đổi mật khẩu định kỳ để bảo vệ tài khoản</p>
+    <div class="rounded-xl border border-border-300 bg-bg-hover p-4 sm:p-6">
+        <h2 class="text-base font-semibold text-text-heading">Đổi mật khẩu</h2>
+        <p class="mt-1 text-sm text-text-secondary">Nên thay đổi mật khẩu định kỳ để bảo vệ tài khoản</p>
 
         <form class="mt-5 flex flex-col gap-4" (ngSubmit)="updatePassword()">
             <div>
-                <label for="current-password" class="mb-1.5 block text-sm font-medium text-dark-text">Mật khẩu hiện tại</label>
+                <label for="current-password" class="mb-1.5 block text-sm font-medium text-text-heading">Mật khẩu hiện tại</label>
                 <div class="relative">
                     <input id="current-password" [type]="showCurrentPassword() ? 'text' : 'password'" name="currentPassword"
                         [ngModel]="currentPassword()" (ngModelChange)="currentPassword.set($event)"
-                        class="h-11 w-full rounded-lg border border-dark-border bg-dark-bg px-4 pr-11 text-sm text-dark-text outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30" />
+                        class="h-11 w-full rounded-lg border border-border-300 bg-bg-card px-4 pr-11 text-sm text-text-heading outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30" />
                     <button type="button" (click)="showCurrentPassword.set(!showCurrentPassword())"
-                        class="absolute top-1/2 right-3 -translate-y-1/2 text-dark-muted hover:text-dark-text">
+                        class="absolute top-1/2 right-3 -translate-y-1/2 text-text-secondary hover:text-text-heading">
                         <lucide-icon [name]="showCurrentPassword() ? 'eye-off' : 'eye'" class="h-4 w-4"></lucide-icon>
                     </button>
                 </div>
             </div>
 
             <div>
-                <label for="new-password" class="mb-1.5 block text-sm font-medium text-dark-text">Mật khẩu mới</label>
-                <p class="mb-1.5 text-xs text-dark-muted">Tối thiểu 8 ký tự, bao gồm chữ hoa và số</p>
+                <label for="new-password" class="mb-1.5 block text-sm font-medium text-text-heading">Mật khẩu mới</label>
+                <p class="mb-1.5 text-xs text-text-secondary">Tối thiểu 8 ký tự, bao gồm chữ hoa và số</p>
                 <div class="relative">
                     <input id="new-password" [type]="showNewPassword() ? 'text' : 'password'" name="newPassword"
                         [ngModel]="newPassword()" (ngModelChange)="newPassword.set($event)"
-                        class="h-11 w-full rounded-lg border border-dark-border bg-dark-bg px-4 pr-11 text-sm text-dark-text outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30" />
+                        class="h-11 w-full rounded-lg border border-border-300 bg-bg-card px-4 pr-11 text-sm text-text-heading outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30" />
                     <button type="button" (click)="showNewPassword.set(!showNewPassword())"
-                        class="absolute top-1/2 right-3 -translate-y-1/2 text-dark-muted hover:text-dark-text">
+                        class="absolute top-1/2 right-3 -translate-y-1/2 text-text-secondary hover:text-text-heading">
                         <lucide-icon [name]="showNewPassword() ? 'eye-off' : 'eye'" class="h-4 w-4"></lucide-icon>
                     </button>
                 </div>
             </div>
 
             <div>
-                <label for="confirm-password" class="mb-1.5 block text-sm font-medium text-dark-text">Xác nhận mật khẩu mới</label>
+                <label for="confirm-password" class="mb-1.5 block text-sm font-medium text-text-heading">Xác nhận mật khẩu mới</label>
                 <div class="relative">
                     <input id="confirm-password" [type]="showConfirmPassword() ? 'text' : 'password'" name="confirmPassword"
                         [ngModel]="confirmPassword()" (ngModelChange)="confirmPassword.set($event)"
-                        class="h-11 w-full rounded-lg border border-dark-border bg-dark-bg px-4 pr-11 text-sm text-dark-text outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30" />
+                        class="h-11 w-full rounded-lg border border-border-300 bg-bg-card px-4 pr-11 text-sm text-text-heading outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30" />
                     <button type="button" (click)="showConfirmPassword.set(!showConfirmPassword())"
-                        class="absolute top-1/2 right-3 -translate-y-1/2 text-dark-muted hover:text-dark-text">
+                        class="absolute top-1/2 right-3 -translate-y-1/2 text-text-secondary hover:text-text-heading">
                         <lucide-icon [name]="showConfirmPassword() ? 'eye-off' : 'eye'" class="h-4 w-4"></lucide-icon>
                     </button>
                 </div>
@@ -61,14 +61,14 @@
     </div>
 
     <!-- 2FA -->
-    <div class="flex items-start justify-between gap-4 rounded-xl border border-dark-border bg-dark-surface p-4 sm:p-6">
+    <div class="flex items-start justify-between gap-4 rounded-xl border border-border-300 bg-bg-hover p-4 sm:p-6">
         <div class="flex items-start gap-4">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-indigo-500/15">
                 <lucide-icon name="smartphone" class="h-5 w-5 text-indigo-400"></lucide-icon>
             </div>
             <div>
-                <h2 class="text-base font-semibold text-dark-text">Xác thực hai yếu tố (2FA)</h2>
-                <p class="mt-1 text-sm text-dark-muted">
+                <h2 class="text-base font-semibold text-text-heading">Xác thực hai yếu tố (2FA)</h2>
+                <p class="mt-1 text-sm text-text-secondary">
                     Thêm một lớp bảo vệ bằng cách yêu cầu mã xác thực từ ứng dụng như Google Authenticator khi đăng nhập từ thiết bị mới.
                 </p>
             </div>
@@ -77,11 +77,11 @@
     </div>
 
     <!-- Phiên đăng nhập -->
-    <div class="rounded-xl border border-dark-border bg-dark-surface p-4 sm:p-6">
+    <div class="rounded-xl border border-border-300 bg-bg-hover p-4 sm:p-6">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <h2 class="text-base font-semibold text-dark-text">Phiên đăng nhập đang hoạt động</h2>
-                <p class="mt-1 text-sm text-dark-muted">{{ sessions().length }} thiết bị đang đăng nhập</p>
+                <h2 class="text-base font-semibold text-text-heading">Phiên đăng nhập đang hoạt động</h2>
+                <p class="mt-1 text-sm text-text-secondary">{{ sessions().length }} thiết bị đang đăng nhập</p>
             </div>
             <button type="button" (click)="logoutAll()"
                 class="self-start rounded-lg border border-red-500/30 px-4 py-2 text-sm font-medium text-red-400 transition hover:bg-red-500/10 sm:self-auto">
@@ -89,21 +89,21 @@
             </button>
         </div>
 
-        <div class="mt-5 flex flex-col divide-y divide-dark-border">
+        <div class="mt-5 flex flex-col divide-y divide-border-300">
             @for (session of sessions(); track session.id) {
             <div class="flex items-center justify-between gap-4 py-4 first:pt-0 last:pb-0">
                 <div class="flex items-center gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-dark-hover">
-                        <lucide-icon [name]="session.icon" class="h-5 w-5 text-dark-muted"></lucide-icon>
+                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-100">
+                        <lucide-icon [name]="session.icon" class="h-5 w-5 text-text-secondary"></lucide-icon>
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
-                            <p class="text-sm font-medium text-dark-text">{{ session.device }}</p>
+                            <p class="text-sm font-medium text-text-heading">{{ session.device }}</p>
                             @if (session.current) {
                             <span class="rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-medium text-emerald-400">Thiết bị này</span>
                             }
                         </div>
-                        <p class="text-xs text-dark-muted">{{ session.location }} · {{ session.lastActive }}</p>
+                        <p class="text-xs text-text-secondary">{{ session.location }} · {{ session.lastActive }}</p>
                     </div>
                 </div>
                 @if (!session.current) {

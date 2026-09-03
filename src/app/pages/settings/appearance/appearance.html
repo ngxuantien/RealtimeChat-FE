@@ -1,13 +1,13 @@
 <div class="mx-auto flex max-w-3xl flex-col gap-6">
     <div>
-        <h1 class="text-2xl font-bold text-dark-text">Giao diện</h1>
-        <p class="mt-1 text-sm text-dark-muted">Tùy chỉnh chủ đề hiển thị của ứng dụng</p>
+        <h1 class="text-2xl font-bold text-text-heading">Giao diện</h1>
+        <p class="mt-1 text-sm text-text-secondary">Tùy chỉnh chủ đề hiển thị của ứng dụng</p>
     </div>
 
     <app-settings-card title="Chủ đề" description="Chọn giao diện sáng hoặc tối. Lựa chọn được lưu lại cho lần truy cập sau">
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <button type="button" (click)="select('light')" class="rounded-xl border-2 p-4 text-left transition"
-                [class]="themeService.theme() === 'light' ? 'border-indigo-500' : 'border-dark-border hover:border-dark-muted'">
+                [class]="themeService.theme() === 'light' ? 'border-indigo-500' : 'border-border-300 hover:border-text-secondary'">
                 <div class="mb-3 overflow-hidden rounded-lg border border-neutral-200">
                     <div class="flex items-center gap-1 bg-neutral-100 px-2 py-1.5">
                         <span class="h-1.5 w-1.5 rounded-full bg-red-400"></span>
@@ -24,8 +24,8 @@
                 </div>
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <lucide-icon name="sun" class="h-4 w-4 text-dark-text"></lucide-icon>
-                        <span class="text-sm font-medium text-dark-text">Sáng</span>
+                        <lucide-icon name="sun" class="h-4 w-4 text-text-heading"></lucide-icon>
+                        <span class="text-sm font-medium text-text-heading">Sáng</span>
                     </div>
                     @if (themeService.theme() === 'light') {
                     <lucide-icon name="circle-check-big" class="h-4 w-4 text-indigo-400"></lucide-icon>
@@ -34,7 +34,7 @@
             </button>
 
             <button type="button" (click)="select('dark')" class="rounded-xl border-2 p-4 text-left transition"
-                [class]="themeService.theme() === 'dark' ? 'border-indigo-500' : 'border-dark-border hover:border-dark-muted'">
+                [class]="themeService.theme() === 'dark' ? 'border-indigo-500' : 'border-border-300 hover:border-text-secondary'">
                 <div class="mb-3 overflow-hidden rounded-lg border border-neutral-800">
                     <div class="flex items-center gap-1 bg-neutral-800 px-2 py-1.5">
                         <span class="h-1.5 w-1.5 rounded-full bg-red-400"></span>
@@ -51,8 +51,8 @@
                 </div>
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <lucide-icon name="moon" class="h-4 w-4 text-dark-text"></lucide-icon>
-                        <span class="text-sm font-medium text-dark-text">Tối</span>
+                        <lucide-icon name="moon" class="h-4 w-4 text-text-heading"></lucide-icon>
+                        <span class="text-sm font-medium text-text-heading">Tối</span>
                     </div>
                     @if (themeService.theme() === 'dark') {
                     <lucide-icon name="circle-check-big" class="h-4 w-4 text-indigo-400"></lucide-icon>

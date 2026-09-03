@@ -25,7 +25,7 @@ export class MainLayout {
 
   protected readonly sidebarClass = computed(
     () =>
-      `${this.isConversationOpen() ? 'hidden' : 'flex'} md:flex w-full md:w-80 shrink-0 border-r border-[#D7DBE3] shadow-xl`,
+      `${this.isConversationOpen() ? 'hidden' : 'flex'} md:flex w-full md:w-80 shrink-0 border-r border-border-300 shadow-xl`,
   );
 
   protected readonly contentClass = computed(

@@ -1,15 +1,15 @@
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4" (click)="close.emit()">
-    <div class="w-full max-w-sm rounded-xl border border-dark-border bg-dark-surface p-6" (click)="$event.stopPropagation()">
+    <div class="w-full max-w-sm rounded-xl border border-border-300 bg-bg-hover p-6" (click)="$event.stopPropagation()">
         <div class="mb-4 flex items-center justify-between">
-            <h2 class="text-base font-semibold text-dark-text">Tin nhắn mới</h2>
-            <lucide-icon name="x" class="h-4 w-4 cursor-pointer text-dark-muted hover:text-dark-text" (click)="close.emit()"></lucide-icon>
+            <h2 class="text-base font-semibold text-text-heading">Tin nhắn mới</h2>
+            <lucide-icon name="x" class="h-4 w-4 cursor-pointer text-text-secondary hover:text-text-heading" (click)="close.emit()"></lucide-icon>
         </div>
 
-        <label class="mb-1.5 block text-sm font-medium text-dark-text">Số điện thoại</label>
+        <label class="mb-1.5 block text-sm font-medium text-text-heading">Số điện thoại</label>
         <div class="flex gap-2">
             <input type="tel" [ngModel]="phoneNumber()" (ngModelChange)="phoneNumber.set($event)"
                 (keydown.enter)="search()" placeholder="Nhập số điện thoại..."
-                class="h-11 flex-1 rounded-lg border border-dark-border bg-dark-bg px-4 text-sm text-dark-text outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30" />
+                class="h-11 flex-1 rounded-lg border border-border-300 bg-bg-card px-4 text-sm text-text-heading outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30" />
             <button type="button" (click)="search()" [disabled]="isSearching()"
                 class="flex h-11 shrink-0 items-center justify-center rounded-lg bg-indigo-500 px-4 text-sm font-medium text-white transition hover:bg-indigo-600 disabled:opacity-50">
                 <lucide-icon name="search" class="h-4 w-4"></lucide-icon>
@@ -21,12 +21,12 @@
         }
 
         @if (foundUser(); as user) {
-        <div class="mt-4 flex items-center justify-between gap-3 rounded-lg border border-dark-border p-3">
+        <div class="mt-4 flex items-center justify-between gap-3 rounded-lg border border-border-300 p-3">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-neutral-700">
                 @if (user.avatarUrl; as avatar) {
                 <img [src]="avatar" class="h-full w-full object-cover" alt="" />
                 } @else {
-                <lucide-icon name="user" class="h-5 w-5 text-dark-muted"></lucide-icon>
+                <lucide-icon name="user" class="h-5 w-5 text-text-secondary"></lucide-icon>
                 }
             </div>
             <button type="button" (click)="startConversation()" [disabled]="isCreating()"

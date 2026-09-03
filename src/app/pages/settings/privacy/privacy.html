@@ -1,11 +1,11 @@
 <div class="mx-auto flex max-w-3xl flex-col gap-6">
     <div>
-        <h1 class="text-2xl font-bold text-dark-text">Quyền riêng tư</h1>
-        <p class="mt-1 text-sm text-dark-muted">Kiểm soát ai có thể xem thông tin và liên hệ với bạn</p>
+        <h1 class="text-2xl font-bold text-text-heading">Quyền riêng tư</h1>
+        <p class="mt-1 text-sm text-text-secondary">Kiểm soát ai có thể xem thông tin và liên hệ với bạn</p>
     </div>
 
     <app-settings-card title="Trạng thái hiện diện" description="Quản lý thông tin hoạt động hiển thị với người khác">
-        <div class="flex flex-col divide-y divide-dark-border">
+        <div class="flex flex-col divide-y divide-border-300">
             <app-settings-toggle-row label="Hiển thị trạng thái online"
                 description="Cho phép người khác thấy bạn đang hoạt động hay không (chấm xanh)" [(checked)]="showOnlineStatus" />
             <app-settings-toggle-row label="Hiển thị lần hoạt động cuối"
@@ -16,7 +16,7 @@
     </app-settings-card>
 
     <app-settings-card title="Liên hệ & Nhắn tin" description="Kiểm soát ai có thể nhắn tin và mời bạn vào nhóm">
-        <div class="flex flex-col divide-y divide-dark-border">
+        <div class="flex flex-col divide-y divide-border-300">
             <app-settings-toggle-row label="Cho phép mọi người nhắn tin"
                 description="Khi tắt, chỉ những người trong danh sách bạn bè mới có thể nhắn tin cho bạn" [(checked)]="allowMessagesFromAnyone" />
             <app-settings-toggle-row label="Hồ sơ công khai"
@@ -29,20 +29,20 @@
     <app-settings-card title="Danh sách chặn" [description]="blockedUsers().length + ' người dùng đang bị chặn'">
         <div card-action>
             <button type="button"
-                class="flex items-center gap-2 rounded-lg border border-dark-border px-3 py-1.5 text-sm font-medium text-indigo-400 transition hover:bg-dark-hover">
+                class="flex items-center gap-2 rounded-lg border border-border-300 px-3 py-1.5 text-sm font-medium text-indigo-400 transition hover:bg-neutral-100">
                 <lucide-icon name="plus" class="h-4 w-4"></lucide-icon>
                 Chặn người dùng
             </button>
         </div>
 
-        <div class="flex flex-col divide-y divide-dark-border">
+        <div class="flex flex-col divide-y divide-border-300">
             @for (user of blockedUsers(); track user.id) {
             <div class="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0">
                 <div class="flex items-center gap-3">
                     <img [src]="user.avatarUrl" class="h-9 w-9 rounded-full object-cover" alt="" />
                     <div>
-                        <p class="text-sm font-medium text-dark-text">{{ user.name }}</p>
-                        <p class="text-xs text-dark-muted">Đã chặn ngày {{ user.blockedAt }}</p>
+                        <p class="text-sm font-medium text-text-heading">{{ user.name }}</p>
+                        <p class="text-xs text-text-secondary">Đã chặn ngày {{ user.blockedAt }}</p>
                     </div>
                 </div>
                 <button type="button" (click)="unblockUser(user.id)"
