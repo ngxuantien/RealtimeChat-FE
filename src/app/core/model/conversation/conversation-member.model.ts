@@ -5,4 +5,5 @@ export interface ConversationMember {
     isOnline: boolean;
     role: string;
     isPinned: boolean;
+    isMuted: boolean;
 }

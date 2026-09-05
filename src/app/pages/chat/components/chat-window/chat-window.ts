@@ -24,6 +24,11 @@ export class ChatWindow {
     replyTarget = input<ReplyTarget | null>(null);
     editTarget = input<EditTarget | null>(null);
 
+    isMuted = input(false);
+
+    toggleSearch = output<void>();
+    toggleMute = output<void>();
+    deleteHistory = output<void>();
     toggleInfo = output<void>();
     sendMessage = output<string>();
     messageAction = output<{ action: MessageAction; message: MessageItem }>();

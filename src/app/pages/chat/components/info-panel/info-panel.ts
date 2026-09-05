@@ -1,4 +1,9 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, effect, inject, input, output, signal } from '@angular/core';
+import { MessageType } from '@app/core/enums/message.enum';
+import { ConversationMember } from '@app/core/model/conversation/conversation-member.model';
+import { Message } from '@app/core/model/message/message.model';
+import { MessageService } from '@app/core/service/message.service';
+import { formatConversationTime } from '@app/core/utils/format-time.util';
 import { LucideAngularModule } from "lucide-angular";
 
 @Component({
@@ -7,19 +12,41 @@ import { LucideAngularModule } from "lucide-angular";
     imports: [LucideAngularModule],
 })
 export class InfoPanel {
-    name = input('');
-    avatarUrl = input<string | null>();
-    isOnline = input(false);
-    isGroup = input(false);
-    memberCount = input(0);
+    private messageService = inject(MessageService);
+
+    protected readonly MessageType = MessageType;
+
+    conversationId = input<string | null>(null);
+    members = input<ConversationMember[]>([]);
     close = output<void>();
 
-    sharedImages = signal([
-        'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=200',
-        'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=200',
-        'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=200',
-        'https://images.unsplash.com/photo-1497366216548-37526070297c?w=200',
-        'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=200',
-        'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=200',
-    ]);
+    attachments = signal<Message[]>([]);
+    isLoading = signal(false);
+
+    constructor(){
+        effect(() => {
+            const id = this.conversationId();
+            if(!id){
+                this.attachments.set([]);
+                return;
+            }
+
+            this.isLoading.set(true);
+            this.messageService.getAttachments(id).subscribe({
+                next: (message) => {
+                    this.isLoading.set(false);
+                    this.attachments.set(message);
+                },
+                error: () => this.isLoading.set(false),
+            });
+        });
+    }
+
+    senderName(senderId: string): string{
+        return this.members().find((m) => m.userId == senderId)?.displayName ?? 'Người dùng';
+    }
+
+    formatDate(iso: string) : string{
+        return formatConversationTime(iso);
+    }
 }

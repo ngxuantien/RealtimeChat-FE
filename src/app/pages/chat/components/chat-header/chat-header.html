@@ -28,10 +28,25 @@
             }
         </div>
     </div>
-    <div class="flex shrink-0 items-center gap-3 text-text-secondary sm:gap-4">
-        <lucide-icon name="search" class="hidden h-4.5 w-4.5 cursor-pointer hover:text-text-heading sm:block"></lucide-icon>
+    <div class="relative flex shrink-0 items-center gap-3 text-text-secondary sm:gap-4">
+        <lucide-icon name="search" (click)="toggleSearch.emit()" class="hidden h-4.5 w-4.5 cursor-pointer hover:text-text-heading sm:block"></lucide-icon>
         <lucide-icon name="phone" class="h-4.5 w-4.5 cursor-pointer hover:text-text-heading"></lucide-icon>
-        <lucide-icon name="video" class="hidden h-4.5 w-4.5 cursor-pointer hover:text-text-heading sm:block"></lucide-icon>
-        <lucide-icon name="info" class="hidden h-4.5 w-4.5 cursor-pointer hover:text-text-heading sm:block" (click)="toggleInfo.emit()"></lucide-icon>
+        <lucide-icon name="info" (click)="toggleInfo.emit()" class="hidden h-4.5 w-4.5 cursor-pointer hover:text-text-heading sm:block"></lucide-icon>
+        <lucide-icon name="ellipsis" (click)="toggleMoreMenu()" class="h-4.5 w-4.5 cursor-pointer hover:text-text-heading"></lucide-icon>
+
+        @if(showMoreMenu()){
+        <div class="absolute right-0 top-full z-20 mt-2 w-48 rounded-lg border border-border-300 bg-bg-card py-1 shadow-lg">
+            <button type="button" (click)="onToggleMute()"
+                class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-text-heading hover:bg-bg-hover">
+                <lucide-icon [name]="isMuted() ? 'bell' : 'bell-off'" class="h-4 w-4"></lucide-icon>
+                {{ isMuted() ? 'Bật thông báo' : 'Tắt thông báo' }}
+            </button>
+            <button type="button" (click)="onDeleteHistory()"
+                class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-main hover:bg-bg-hover">
+                <lucide-icon name="trash" class="h-4 w-4"></lucide-icon>
+                Xóa lịch sử trò chuyện
+            </button>
+        </div>
+        }
     </div>
 </div>

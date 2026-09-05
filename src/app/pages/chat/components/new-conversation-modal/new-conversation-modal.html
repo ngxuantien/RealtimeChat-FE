@@ -2,35 +2,44 @@
     <div class="w-full max-w-sm rounded-xl border border-border-300 bg-bg-hover p-6" (click)="$event.stopPropagation()">
         <div class="mb-4 flex items-center justify-between">
             <h2 class="text-base font-semibold text-text-heading">Tin nhắn mới</h2>
-            <lucide-icon name="x" class="h-4 w-4 cursor-pointer text-text-secondary hover:text-text-heading" (click)="close.emit()"></lucide-icon>
+            <lucide-icon name="x" class="h-4 w-4 cursor-pointer text-text-secondary hover:text-text-heading"
+                (click)="close.emit()"></lucide-icon>
         </div>
 
         <label class="mb-1.5 block text-sm font-medium text-text-heading">Số điện thoại</label>
-        <div class="flex gap-2">
-            <input type="tel" [ngModel]="phoneNumber()" (ngModelChange)="phoneNumber.set($event)"
-                (keydown.enter)="search()" placeholder="Nhập số điện thoại..."
-                class="h-11 flex-1 rounded-lg border border-border-300 bg-bg-card px-4 text-sm text-text-heading outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30" />
-            <button type="button" (click)="search()" [disabled]="isSearching()"
-                class="flex h-11 shrink-0 items-center justify-center rounded-lg bg-indigo-500 px-4 text-sm font-medium text-white transition hover:bg-indigo-600 disabled:opacity-50">
-                <lucide-icon name="search" class="h-4 w-4"></lucide-icon>
-            </button>
+        <div
+            class="flex items-center gap-2 rounded-lg border border-border-300 bg-bg-card px-3 py-2.5 transition focus-within:border-primary-main focus-within:ring-2 focus-within:ring-primary-100">
+            <lucide-icon name="search" class="h-4 w-4 shrink-0 text-text-secondary"></lucide-icon>
+            <input type="tel" inputmode="numeric" [ngModel]="phoneNumber()" (ngModelChange)="onPhoneChange($event)"
+                placeholder="Nhập số điện thoại..." maxlength="10"
+                class="w-full bg-transparent text-sm text-text-heading placeholder:text-text-secondary outline-none" />
+            @if (isSearching()) {
+            <lucide-icon name="loader-circle" class="h-4 w-4 shrink-0 animate-spin text-text-secondary"></lucide-icon>
+            }
         </div>
 
         @if (errorMessage()) {
-        <p class="mt-3 text-sm text-red-400">{{ errorMessage() }}</p>
+        <p class="mt-3 text-sm text-red-main">{{ errorMessage() }}</p>
         }
 
         @if (foundUser(); as user) {
         <div class="mt-4 flex items-center justify-between gap-3 rounded-lg border border-border-300 p-3">
-            <div class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-neutral-700">
-                @if (user.avatarUrl; as avatar) {
-                <img [src]="avatar" class="h-full w-full object-cover" alt="" />
-                } @else {
-                <lucide-icon name="user" class="h-5 w-5 text-text-secondary"></lucide-icon>
-                }
+            <div class="flex items-center gap-3">
+                <div
+                    class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-neutral-700">
+                    @if (user.avatarUrl; as avatar) {
+                    <img [src]="avatar" class="h-full w-full object-cover" alt="" />
+                    } @else {
+                    <lucide-icon name="user" class="h-5 w-5 text-text-secondary"></lucide-icon>
+                    }
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-text-heading">{{ user.displayName }}</p>
+                    <p class="text-xs text-text-secondary">{{ user.phoneNumber }}</p>
+                </div>
             </div>
             <button type="button" (click)="startConversation()" [disabled]="isCreating()"
-                class="rounded-lg bg-indigo-500 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-indigo-600 disabled:opacity-50">
+                class="rounded-lg bg-primary-main px-3 py-1.5 text-sm font-medium text-white transition hover:bg-primary-700 disabled:opacity-50">
                 Nhắn tin
             </button>
         </div>
