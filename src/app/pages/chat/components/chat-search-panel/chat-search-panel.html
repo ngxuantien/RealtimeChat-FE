@@ -1,0 +1,33 @@
+<aside class="flex h-full flex-col border-l border-border-300 bg-bg-card">
+    <div class="flex items-center justify-between border-b border-border-300 px-4 py-5">
+        <span class="font-semibold text-text-heading">Tìm trong đoạn chat</span>
+        <lucide-icon name="x" class="h-5 w-5 cursor-pointer text-text-secondary hover:text-text-heading"
+            (click)="close.emit()"></lucide-icon>
+    </div>
+
+    <div class="px-4 py-3">
+        <div class="flex items-center gap-2 rounded-lg border border-border-300 bg-bg-hover px-3 py-2.5">
+            <lucide-icon name="search" class="h-4 w-4 text-text-secondary"></lucide-icon>
+            <input type="text" [ngModel]="keyword()" (ngModelChange)="keyword.set($event)" placeholder="Nhập từ khoá..."
+                class="w-full bg-transparent text-sm text-text-heading placeholder:text-text-secondary outline-none" />
+        </div>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-2 pb-4">
+        @if (keyword().trim().length === 0) {
+        <p class="py-10 text-center text-sm text-text-secondary">Nhập từ khoá để tìm tin nhắn trong đoạn chat này.</p>
+        } @else if (results().length === 0) {
+        <p class="py-10 text-center text-sm text-text-secondary">Không tìm thấy tin nhắn phù hợp.</p>
+        } @else {
+        @for (msg of results(); track msg.id) {
+        <div (click)="jumpTo.emit(msg.id)" class="cursor-pointer rounded-lg px-3 py-2.5 hover:bg-bg-hover">
+            <div class="flex items-center justify-between">
+                <p class="text-sm font-medium text-text-heading">{{ msg.isMine ? 'Bạn' : (msg.senderName ?? '') }}</p>
+                <span class="text-xs text-text-secondary">{{ msg.time }}</span>
+            </div>
+            <p class="truncate text-sm text-text-secondary">{{ msg.content }}</p>
+        </div>
+        }
+        }
+    </div>
+</aside>

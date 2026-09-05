@@ -1,6 +1,6 @@
 // chat-detail.ts
 import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map, switchMap } from 'rxjs';
 import { ChatWindow } from '@app/pages/chat/components/chat-window/chat-window';
@@ -26,10 +26,12 @@ import {
 import { MessageAction } from '../components/message-bubble/message-bubble';
 import { MessageItem } from '../components/message-list/message-list';
 import { Upload } from 'lucide-angular';
+import { ChatSearchPanel } from "../components/chat-search-panel/chat-search-panel";
+import { ConfirmModal } from "@app/share/component/confirm-modal/confirm-modal";
 
 @Component({
   selector: 'app-chat-detail',
-  imports: [ChatWindow, InfoPanel],
+  imports: [ChatWindow, InfoPanel, ChatSearchPanel, ConfirmModal],
   templateUrl: './chat-detail.html',
   host: { class: 'flex min-h-0 flex-1' },
 })
@@ -41,6 +43,7 @@ export class ChatDetail {
   private flashMessage = inject(FlashMessageService);
   private signalRService = inject(SignalRService);
   private destroyRef = inject(DestroyRef);
+  private router = inject(Router);
 
   showInfoPanel = signal(window.matchMedia('(min-width: 1024px)').matches);
 
@@ -52,6 +55,9 @@ export class ChatDetail {
   rawMessages = signal<Message[]>([]);
   replyTarget = signal<ReplyTarget | null>(null);
   editTarget = signal<EditTarget | null>(null);
+
+  pendingDeleteMessageId = signal<string | null>(null);
+  showDeleteHistoryConfirm = signal(false);
 
   messages = computed(() =>
     toMessageItems(
@@ -131,7 +137,7 @@ export class ChatDetail {
       .pipe(takeUntilDestroyed())
       .subscribe(({ messageId, conversationId }) => {
         if (conversationId !== this.conversationId()) return;
-        this.markMessageDeletedLocally(messageId);
+        this.removeMessageLocally(messageId);
       });
 
     this.destroyRef.onDestroy(() => {
@@ -141,8 +147,62 @@ export class ChatDetail {
     });
   }
 
+  sidePanelMode = signal<'files' | 'search' | null>(
+    window.matchMedia('(min-width: 1024px)').matches ? 'files' : null,
+  );
+
+  isMuted = computed(() => {
+    const currentUserId = this.authService.currentUser()?.userId;
+    return this.members().find((m) => m.userId === currentUserId)?.isMuted ?? false;
+  });
+
   toggleInfoPanel() {
-    this.showInfoPanel.update((v) => !v);
+    this.sidePanelMode.update((mode) => (mode === 'files' ? null : 'files'));
+  }
+
+  toggleSearchPanel() {
+    this.sidePanelMode.update((mode) => (mode === 'search' ? null : 'search'));
+  }
+
+  onToggleMute() {
+    const conversationId = this.conversationId();
+    if (!conversationId) return;
+
+    this.conversationService.updateMute(conversationId, !this.isMuted()).subscribe({
+      next: () => {
+        this.members.update((list) =>
+          list.map((m) =>
+            m.userId === this.authService.currentUser()?.userId
+              ? { ...m, isMuted: !this.isMuted() }
+              : m,
+          ),
+        );
+      },
+      error: () => this.flashMessage.error('Không thể cập nhật thông báo, thử lại sau.'),
+    });
+  }
+
+  onDeleteHistory(){
+    this.showDeleteHistoryConfirm.set(true);
+  }
+
+  confirmDeleteHistory() {
+    this.showDeleteHistoryConfirm.set(false);
+    const conversationId = this.conversationId();
+    const currentUserId = this.authService.currentUser()?.userId;
+    if (!conversationId || !currentUserId) return;
+
+    this.conversationService.deleteConversation(conversationId, currentUserId).subscribe({
+        next: () => this.router.navigateByUrl('/'),
+        error: () => this.flashMessage.error('Không thể xóa lịch sử trò chuyện, thử lại sau.'),
+    });
+  }
+
+  onJumpToMessage(messageId: string) {
+    this.sidePanelMode.set(null);
+    setTimeout(() => {
+        document.getElementById(`message-${messageId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 50);
   }
 
   onSendMessage(content: string) {
@@ -200,7 +260,7 @@ export class ChatDetail {
         this.editTarget.set({ id: message.id, content: message.content });
         break;
       case 'delete':
-        this.deleteMessage(message.id);
+        this.pendingDeleteMessageId.set(message.id);
         break;
     }
   }
@@ -216,24 +276,24 @@ export class ChatDetail {
     this.editTarget.set(null);
   }
 
-  private deleteMessage(messageId: string) {
+  confirmDeleteMessage() {
+    const messageId = this.pendingDeleteMessageId();
     const currentUserId = this.authService.currentUser()?.userId;
-    if (!currentUserId) return;
+    this.pendingDeleteMessageId.set(null);
+    if (!messageId || !currentUserId) return;
 
     this.messageService.deleteMessage(messageId, currentUserId).subscribe({
-      next: () => this.markMessageDeletedLocally(messageId),
+      next: () => this.removeMessageLocally(messageId),
       error: () => this.flashMessage.error('Không thể xóa tin nhắn, thử lại sau.'),
     });
   }
 
-  private replaceMessage(updated: Message) {
-    this.rawMessages.update((list) => list.map((m) => (m.id === updated.id ? updated : m)));
+  private removeMessageLocally(messageId: string) {
+    this.rawMessages.update((list) => list.filter((m) => m.id !== messageId));
   }
 
-  private markMessageDeletedLocally(messageId: string) {
-    this.rawMessages.update((list) =>
-      list.map((m) => (m.id === messageId ? { ...m, isDeleted: true, content: '' } : m)),
-    );
+  private replaceMessage(updated: Message) {
+    this.rawMessages.update((list) => list.map((m) => (m.id === updated.id ? updated : m)));
   }
 
   private appendMessage(message: Message) {
@@ -250,4 +310,6 @@ export class ChatDetail {
 
     this.conversationService.markAsRead(id, currentUserId, messageId).subscribe();
   }
+
+
 }

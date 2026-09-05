@@ -16,6 +16,7 @@
     }
     <app-message-bubble 
         [id]="msg.id"
+        [attr.id]="'message-' + msg.id"
         [content]="msg.content" 
         [time]="msg.time" 
         [isMine]="msg.isMine"

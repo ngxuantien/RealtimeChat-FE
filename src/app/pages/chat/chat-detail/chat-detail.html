@@ -1,28 +1,37 @@
-<div class="relative flex min-h-0 min-w-0 flex-1 overflow-hidden">
-    <app-chat-window class="min-w-0 flex-1" 
-        [conversationId]="conversationId() ?? null"
-        [contactName]="conversation()?.name ?? ''" 
-        [contactAvatar]="conversation()?.avatarUrl ?? null"
-        [isOnline]="conversation()?.isOnline ?? false" 
-        [isGroup]="conversation()?.isGroup ?? false"
-        [memberCount]="conversation()?.memberCount ?? 0"
-        [replyTarget]="replyTarget()" 
-        [editTarget]="editTarget()"
-        [messages]="messages()" 
-        (toggleInfo)="toggleInfoPanel()"
-        (sendMessage)="onSendMessage($event)"
-        (sendAttachment)="onSendAttachment($event)"
-        (messageAction)="onMessageAction($event)"
-        (saveEdit)="onSaveEdit($event)"
-        (cancelReply)="replyTarget.set(null)"
-        (cancelEdit)="editTarget.set(null)" />
+<app-chat-window class="min-w-0 flex-1" [conversationId]="conversationId() ?? null"
+    [contactName]="conversation()?.name ?? ''" [contactAvatar]="conversation()?.avatarUrl ?? null"
+    [isOnline]="conversation()?.isOnline ?? false" [isGroup]="conversation()?.isGroup ?? false"
+    [memberCount]="conversation()?.memberCount ?? 0" [isMuted]="isMuted()" [replyTarget]="replyTarget()"
+    [editTarget]="editTarget()" [messages]="messages()" (toggleInfo)="toggleInfoPanel()"
+    (toggleSearch)="toggleSearchPanel()" (toggleMute)="onToggleMute()" (deleteHistory)="onDeleteHistory()"
+    (sendMessage)="onSendMessage($event)" (sendAttachment)="onSendAttachment($event)"
+    (messageAction)="onMessageAction($event)" (saveEdit)="onSaveEdit($event)" (cancelReply)="replyTarget.set(null)"
+    (cancelEdit)="editTarget.set(null)" />
 
-    @if (showInfoPanel()) {
-    <div class="fixed inset-0 z-40 bg-black/50 lg:hidden" (click)="showInfoPanel.set(false)"></div>
-    <app-info-panel
-        class="fixed inset-y-0 right-0 z-50 shadow-xl lg:static lg:z-auto lg:w-80 lg:max-w-none lg:shrink-0 lg:shadow-none"
-        [name]="conversation()?.name ?? ''" [avatarUrl]="conversation()?.avatarUrl ?? null"
-        [isOnline]="conversation()?.isOnline ?? false" [isGroup]="conversation()?.isGroup ?? false"
-        [memberCount]="conversation()?.memberCount ?? 0" (close)="showInfoPanel.set(false)" />
-    }
-</div>
+@if (sidePanelMode() === 'files') {
+<div class="fixed inset-0 z-40 bg-black/50 lg:hidden" (click)="sidePanelMode.set(null)"></div>
+<app-info-panel
+    class="fixed inset-y-0 right-0 z-50 shadow-xl lg:static lg:z-auto lg:w-96 lg:max-w-none lg:shrink-0 lg:shadow-none"
+    [conversationId]="conversationId() ?? null" [members]="members()" (close)="sidePanelMode.set(null)" />
+}
+
+@if (sidePanelMode() === 'search') {
+<div class="fixed inset-0 z-40 bg-black/50 lg:hidden" (click)="sidePanelMode.set(null)"></div>
+<app-chat-search-panel
+    class="fixed inset-y-0 right-0 z-50 shadow-xl lg:static lg:z-auto lg:w-96 lg:max-w-none lg:shrink-0 lg:shadow-none"
+    [messages]="messages()" (close)="sidePanelMode.set(null)" (jumpTo)="onJumpToMessage($event)" />
+}
+
+@if (pendingDeleteMessageId()) {
+<app-confirm-modal title="Xóa tin nhắn"
+    message="Bạn có chắc chắn muốn xóa tin nhắn này không?" confirmLabel="Xóa"
+    closeLabel="Hủy" (confirmed)="confirmDeleteMessage()" (closed)="pendingDeleteMessageId.set(null)" />
+}
+
+@if(showDeleteHistoryConfirm()){
+    <app-confirm-modal title="Xóa lịch sử trò chuyện"
+    message="Toàn bộ tin nhắn trong đoạn chat này sẽ bị xóa."
+    confirmLabel="Xóa" closeLabel="Hủy"
+    (confirmed)="confirmDeleteHistory()"
+    (closed)="showDeleteHistoryConfirm.set(false)" />
+}

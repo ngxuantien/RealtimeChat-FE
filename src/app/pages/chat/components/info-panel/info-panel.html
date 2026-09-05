@@ -1,101 +1,43 @@
-<aside class="flex h-full flex-col border-l border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
-
-    <div class="flex items-center justify-between border-b border-neutral-200 px-4 py-5 dark:border-neutral-800">
-        <span class="font-semibold text-neutral-900 dark:text-white">Thông tin liên hệ</span>
-        <lucide-icon name="x"
-            class="h-5 w-5 cursor-pointer text-neutral-600 hover:text-neutral-800 dark:text-neutral-500 dark:hover:text-neutral-300"
-            (click)="close.emit()"></lucide-icon>
+<aside class="flex h-full flex-col border-l border-border-300 bg-bg-card">
+    <div class="flex items-center justify-between border-b border-border-300 px-4 py-5">
+        <span class="font-semibold text-text-heading">File đã gửi</span>
+        <lucide-icon name="x" class="h-5 w-5 cursor-pointer text-text-secondary hover:text-text-heading" (click)="close.emit()"></lucide-icon>
     </div>
 
-    <div class="flex-1 overflow-y-auto px-5 py-6">
-
-        <!-- Profile -->
-        <div class="mb-6 flex flex-col items-center text-center">
-            <div class="relative mb-3 h-20 w-20">
-                <div
-                    class="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-800">
-                    @if (avatarUrl(); as avatar) {
-                    <img [src]="avatar" class="h-full w-full object-cover" alt="" />
+    <div class="flex-1 overflow-y-auto px-3 py-4">
+        @if(isLoading()){
+            <p class="py-6 text-center text-sm text-text-secondary">Đang tải...</p>
+        }
+        @else if (attachments().length === 0) {
+            <div class="flex flex-col items-center gap-2 py-10 text-center">
+                <lucide-icon name="folder" class="h-8 w-8 text-text-secondary"></lucide-icon>
+                <p class="text-sm text-text-secondary">Chưa có file nào được chia sẻ</p>
+            </div>
+        }
+        @else {
+            <div class="flex flex-col gap-1">
+                @for (message of attachments(); track message.id) {
+                @for (attachment of message.attachments; track attachment.fileUrl) {
+                <a [href]="attachment.fileUrl" target="_blank" rel="noopener"
+                    class="flex items-center gap-3 rounded-lg px-2 py-2.5 hover:bg-bg-hover">
+                    @if (message.type === MessageType.Image) {
+                    <img [src]="attachment.fileUrl" class="h-10 w-10 shrink-0 rounded-lg object-cover" alt="" />
                     } @else {
-                    <lucide-icon [name]="isGroup() ? 'users' : 'user'" class="h-8 w-8 text-neutral-400"></lucide-icon>
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-bg-hover">
+                        <lucide-icon [name]="message.type === MessageType.Voice ? 'mic' : 'file'"
+                            class="h-4 w-4 text-text-secondary"></lucide-icon>
+                    </div>
                     }
-                </div>
-                @if (isGroup()) {
-                <span
-                    class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-primary-main dark:border-neutral-950">
-                    <lucide-icon name="users" class="h-3 w-3 text-white"></lucide-icon>
-                </span>
-                } @else if (isOnline()) {
-                <span
-                    class="absolute bottom-1 right-1 h-3 w-3 rounded-full border-2 border-white bg-green-main dark:border-neutral-950"></span>
+                    <div class="min-w-0 flex-1">
+                        <p class="truncate text-sm text-text-heading">{{ attachment.fileName }}</p>
+                        <p class="truncate text-xs text-text-secondary">
+                            {{ senderName(message.senderId) }}, {{ formatDate(message.createdAt) }}
+                        </p>
+                    </div>
+                </a>
+                }
                 }
             </div>
-            <p class="font-semibold text-neutral-900 dark:text-white">{{ name() }}</p>
-            @if (isGroup()) {
-            <span
-                class="mt-2 inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1 text-xs text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
-                {{ memberCount() }} thành viên
-            </span>
-            } @else if (isOnline()) {
-            <span
-                class="mt-2 inline-flex items-center gap-1.5 rounded-full bg-green-main/10 px-3 py-1 text-xs text-green-main">
-                <span class="h-1.5 w-1.5 rounded-full bg-green-main"></span>
-                Đang hoạt động
-            </span>
-            } @else {
-            <span
-                class="mt-2 inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1 text-xs text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
-                Ngoại tuyến
-            </span>
-            }
-        </div>
-
-        <!-- Actions -->
-        <div
-            class="mb-6 grid grid-cols-3 gap-3 border-y border-neutral-200 py-4 text-center text-xs text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
-            <div
-                class="flex cursor-pointer flex-col items-center gap-1.5 hover:text-neutral-700 dark:hover:text-neutral-200">
-                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
-                    <lucide-icon name="bell-off" class="h-4 w-4"></lucide-icon>
-                </div>
-                Tắt thông báo
-            </div>
-            <div
-                class="flex cursor-pointer flex-col items-center gap-1.5 hover:text-neutral-700 dark:hover:text-neutral-200">
-                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
-                    <lucide-icon name="shield" class="h-4 w-4"></lucide-icon>
-                </div>
-                Chặn
-            </div>
-            <div class="flex cursor-pointer flex-col items-center gap-1.5 hover:text-red-main">
-                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
-                    <lucide-icon name="trash" class="h-4 w-4"></lucide-icon>
-                </div>
-                Xóa
-            </div>
-        </div>
-
-        <!-- Shared media -->
-        <div class="mb-3 flex items-center justify-between">
-            <span class="text-xs font-semibold uppercase text-neutral-500 dark:text-neutral-400">Ảnh & file đã chia
-                sẻ</span>
-            <a class="cursor-pointer text-xs font-medium text-primary-main">Xem tất cả (6)</a>
-        </div>
-        <div class="grid grid-cols-3 gap-2">
-            @for (img of sharedImages(); track img) {
-            <img [src]="img" class="aspect-square rounded-lg object-cover" alt="" />
-            }
-        </div>
-
+        }
     </div>
-
-    <!-- Danger zone -->
-    <div class="border-t border-border-300 p-4">
-        <button
-            class="flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-red-main/20 bg-red-main/5 text-sm font-medium text-red-main hover:bg-red-main/10">
-            <lucide-icon name="trash" class="h-4 w-4"></lucide-icon>
-            Xóa cuộc trò chuyện
-        </button>
-    </div>
-
 </aside>
