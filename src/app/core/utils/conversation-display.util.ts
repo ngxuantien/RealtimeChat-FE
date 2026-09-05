@@ -9,6 +9,7 @@ export interface ConversationListItem {
   name: string;
   avatarUrl: string | null;
   lastMessage: string;
+  lastMessageAt: string | null;
   time: string;
   unreadCount: number;
   isOnline: boolean;
@@ -37,6 +38,7 @@ export function toConversationListItem(
     name,
     avatarUrl,
     lastMessage: conversation.lastMessagePreview ?? 'Chưa có tin nhắn',
+    lastMessageAt: conversation.lastMessageAt,
     time: formatConversationTime(conversation.lastMessageAt),
     unreadCount,
     isOnline,

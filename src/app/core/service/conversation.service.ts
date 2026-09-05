@@ -54,4 +54,14 @@ export class ConversationService {
       payload,
     );
   }
+
+  updateMute(conversationId: string, isMuted: boolean){
+    const url = `${this.baseUrl}/${API_ENDPOINT.CONVERSATION.DETAIL}/${conversationId}/members/mute`;
+    return this.http.patch(url, { isMuted });
+  }
+
+  deleteConversation(conversationId: string, userId: string) {
+    const url = `${this.baseUrl}/${API_ENDPOINT.CONVERSATION.LIST}/${conversationId}/user/${userId}`;
+    return this.http.delete(url);
+  }
 }

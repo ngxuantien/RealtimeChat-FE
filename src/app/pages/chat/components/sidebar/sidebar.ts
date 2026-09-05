@@ -71,15 +71,23 @@ export class Sidebar {
   );
 
   get pinnedConversations() {
-    return this.conversations()
-      .filter((c) => c.isPinned)
-      .map((c) => (this.readConversationIds().has(c.id) ? { ...c, unreadCount: 0 } : c));
+    return this.sortByLatest(this.conversations().filter((c) => c.isPinned)).map((c) =>
+      this.readConversationIds().has(c.id) ? { ...c, unreadCount: 0 } : c,
+    );
   }
 
   get allConversations() {
-    return this.conversations()
-      .filter((c) => !c.isPinned)
-      .map((c) => (this.readConversationIds().has(c.id) ? { ...c, unreadCount: 0 } : c));
+      return this.sortByLatest(this.conversations().filter((c) => !c.isPinned)).map((c) =>
+        this.readConversationIds().has(c.id) ? { ...c, unreadCount: 0 } : c,
+      );
+  }
+
+  private sortByLatest(items: ConversationListItem[]): ConversationListItem[]{
+    return [...items].sort((a, b) => {
+      const timeA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0;
+      const timeB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0;
+      return timeB - timeA;
+    })
   }
 
   constructor() {
@@ -106,6 +114,7 @@ export class Sidebar {
               ? {
                   ...c,
                   lastMessage: lastMessagePreview,
+                  lastMessageAt,
                   time: formatConversationTime(lastMessageAt),
                 }
               : c,

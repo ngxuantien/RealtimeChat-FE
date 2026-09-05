@@ -1,16 +1,11 @@
 <section class="flex min-h-0 flex-1 flex-col bg-bg-card">
-    <app-chat-header
-        [name]="contactName()"
-        [avatarUrl]="contactAvatar()"
-        [isOnline]="isOnline()"
-        [isGroup]="isGroup()"
-        [memberCount]="memberCount()"
-        (toggleInfo)="toggleInfo.emit()"
-    />
+    <app-chat-header [name]="contactName()" [avatarUrl]="contactAvatar()" [isOnline]="isOnline()" [isGroup]="isGroup()"
+        [memberCount]="memberCount()" [isMuted]="isMuted()" (toggleInfo)="toggleInfo.emit()"
+        (toggleSearch)="toggleSearch.emit()" (toggleMute)="toggleMute.emit()" (deleteHistory)="deleteHistory.emit()" />
 
     <app-message-list [messages]="messages()" (messageAction)="messageAction.emit($event)" />
 
-    <app-chat-input-bar [replyTo]="replyTarget()" [editingMessage]="editTarget()"
-        (send)="sendMessage.emit($event)" (sendAttachment)="sendAttachment.emit($event)"
-        (saveEdit)="saveEdit.emit($event)" (cancelReply)="cancelReply.emit()" (cancelEdit)="cancelEdit.emit()" />
+    <app-chat-input-bar [replyTo]="replyTarget()" [editingMessage]="editTarget()" (send)="sendMessage.emit($event)"
+        (sendAttachment)="sendAttachment.emit($event)" (saveEdit)="saveEdit.emit($event)"
+        (cancelReply)="cancelReply.emit()" (cancelEdit)="cancelEdit.emit()" />
 </section>
