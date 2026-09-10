@@ -12,14 +12,18 @@
 <div class="fixed inset-0 z-40 bg-black/50 lg:hidden" (click)="sidePanelMode.set(null)"></div>
 <app-info-panel
     class="fixed inset-y-0 right-0 z-50 shadow-xl lg:static lg:z-auto lg:w-96 lg:max-w-none lg:shrink-0 lg:shadow-none"
-    [conversationId]="conversationId() ?? null" [members]="members()" (close)="sidePanelMode.set(null)" />
+    [conversationId]="conversationId() ?? null" [members]="members()"
+    [isGroup]="conversation()?.isGroup ?? false" [createdBy]="conversation()?.createdBy ?? null"
+    (close)="sidePanelMode.set(null)"
+    (memberRemoved)="onMembersChanged()" (memberAdded)="onMembersChanged()"
+    (leftGroup)="onLeftGroupOrDeleted()" (groupDeleted)="onLeftGroupOrDeleted()" />
 }
 
 @if (sidePanelMode() === 'search') {
 <div class="fixed inset-0 z-40 bg-black/50 lg:hidden" (click)="sidePanelMode.set(null)"></div>
 <app-chat-search-panel
     class="fixed inset-y-0 right-0 z-50 shadow-xl lg:static lg:z-auto lg:w-96 lg:max-w-none lg:shrink-0 lg:shadow-none"
-    [messages]="messages()" (close)="sidePanelMode.set(null)" (jumpTo)="onJumpToMessage($event)" />
+    [messages]="messages()" [members]="members()" (close)="sidePanelMode.set(null)" (jumpTo)="onJumpToMessage($event)" />
 }
 
 @if (pendingDeleteMessageId()) {

@@ -26,8 +26,8 @@ import {
 import { MessageAction } from '../components/message-bubble/message-bubble';
 import { MessageItem } from '../components/message-list/message-list';
 import { Upload } from 'lucide-angular';
-import { ChatSearchPanel } from "../components/chat-search-panel/chat-search-panel";
-import { ConfirmModal } from "@app/share/component/confirm-modal/confirm-modal";
+import { ChatSearchPanel } from '../components/chat-search-panel/chat-search-panel';
+import { ConfirmModal } from '@app/share/component/confirm-modal/confirm-modal';
 
 @Component({
   selector: 'app-chat-detail',
@@ -182,7 +182,7 @@ export class ChatDetail {
     });
   }
 
-  onDeleteHistory(){
+  onDeleteHistory() {
     this.showDeleteHistoryConfirm.set(true);
   }
 
@@ -193,15 +193,17 @@ export class ChatDetail {
     if (!conversationId || !currentUserId) return;
 
     this.conversationService.deleteConversation(conversationId, currentUserId).subscribe({
-        next: () => this.router.navigateByUrl('/'),
-        error: () => this.flashMessage.error('Không thể xóa lịch sử trò chuyện, thử lại sau.'),
+      next: () => this.router.navigateByUrl('/'),
+      error: () => this.flashMessage.error('Không thể xóa lịch sử trò chuyện, thử lại sau.'),
     });
   }
 
   onJumpToMessage(messageId: string) {
     this.sidePanelMode.set(null);
     setTimeout(() => {
-        document.getElementById(`message-${messageId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document
+        .getElementById(`message-${messageId}`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 50);
   }
 
@@ -311,5 +313,14 @@ export class ChatDetail {
     this.conversationService.markAsRead(id, currentUserId, messageId).subscribe();
   }
 
+  onMembersChanged() {
+    const id = this.conversationId();
+    if (!id) return;
+    this.conversationService.getMembers(id).subscribe((members) => this.members.set(members));
+  }
 
+  onLeftGroupOrDeleted() {
+    this.sidePanelMode.set(null);
+    this.router.navigateByUrl('/');
+  }
 }

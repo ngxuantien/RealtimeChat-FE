@@ -7,6 +7,7 @@ import { LucideAngularModule } from 'lucide-angular';
 
 export interface MessageItem {
   id: string;
+  senderId: string;
   content: string;
   time: string;
   isMine: boolean;

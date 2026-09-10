@@ -1,5 +1,5 @@
 // chat-header.ts
-import { Component, computed, input, output, signal } from "@angular/core";
+import { Component, computed, ElementRef, HostListener, inject, input, output, signal } from "@angular/core";
 import { LucideAngularModule } from 'lucide-angular';
 import { RouterLink } from '@angular/router';
 import { ConversationType } from "@app/core/enums/conversation.enum";
@@ -11,6 +11,8 @@ import { ConversationType } from "@app/core/enums/conversation.enum";
     host: { class: 'shrink-0' },
 })
 export class ChatHeader {
+    private elementRef = inject(ElementRef);
+    
     name = input('');
     avatarUrl = input<string | null>(null);
     isOnline = input(false);
@@ -37,5 +39,14 @@ export class ChatHeader {
     onDeleteHistory(){
         this.showMoreMenu.set(false);
         this.deleteHistory.emit();
+    }
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: MouseEvent){
+        if(!this.showMoreMenu()) return;
+
+        if(!this.elementRef.nativeElement.contains(event.target)){
+            this.showMoreMenu.set(false);
+        }
     }
 }

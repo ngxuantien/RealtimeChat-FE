@@ -36,6 +36,7 @@ export function toMessageItems(
 
     return {
       id: message.id,
+      senderId: message.senderId,
       content: message.content,
       time: current.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
       isMine,
