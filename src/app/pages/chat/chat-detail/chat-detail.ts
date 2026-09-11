@@ -1,5 +1,5 @@
 // chat-detail.ts
-import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map, switchMap } from 'rxjs';
@@ -71,6 +71,11 @@ export class ChatDetail {
   private joinedConversationId: string | null = null;
 
   constructor() {
+    this.signalRService.onReconnected.pipe(takeUntilDestroyed()).subscribe(() => {
+      const id = this.conversationId();
+      if (id) this.signalRService.joinConversation(id);
+    });
+
     effect(() => {
       const id = this.conversationId();
       const currentUserId = this.authService.currentUser()?.userId;
@@ -138,6 +143,15 @@ export class ChatDetail {
       .subscribe(({ messageId, conversationId }) => {
         if (conversationId !== this.conversationId()) return;
         this.removeMessageLocally(messageId);
+      });
+
+    this.signalRService.onMessageRead
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ conversationId, userId, lastReadMessageId }) => {
+        if (conversationId !== this.conversationId()) return;
+        this.members.update((list) =>
+          list.map((m) => (m.userId === userId ? { ...m, lastReadMessageId } : m)),
+        );
       });
 
     this.destroyRef.onDestroy(() => {
@@ -322,5 +336,12 @@ export class ChatDetail {
   onLeftGroupOrDeleted() {
     this.sidePanelMode.set(null);
     this.router.navigateByUrl('/');
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    if (!window.matchMedia('(min-width: 1024px)').matches) {
+      this.sidePanelMode.set(null);
+    }
   }
 }

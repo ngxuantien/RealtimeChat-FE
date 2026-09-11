@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
@@ -39,7 +39,6 @@ export class Sidebar {
   private conversationService = inject(ConversationService);
   private signalRService = inject(SignalRService);
   private router = inject(Router);
-  private readonly readConversationIds = signal<ReadonlySet<string>>(new Set());
 
   activeTab = signal<'message' | 'group'>('message');
   searchTerm = signal('');
@@ -72,13 +71,13 @@ export class Sidebar {
 
   get pinnedConversations() {
     return this.sortByLatest(this.conversations().filter((c) => c.isPinned)).map((c) =>
-      this.readConversationIds().has(c.id) ? { ...c, unreadCount: 0 } : c,
+      c.id === this.activeConversationId() ? { ...c, unreadCount: 0 } : c,
     );
   }
 
   get allConversations() {
       return this.sortByLatest(this.conversations().filter((c) => !c.isPinned)).map((c) =>
-        this.readConversationIds().has(c.id) ? { ...c, unreadCount: 0 } : c,
+        c.id === this.activeConversationId() ? { ...c, unreadCount: 0 } : c,
       );
   }
 
@@ -107,7 +106,10 @@ export class Sidebar {
 
     this.signalRService.onConversationUpdated
       .pipe(takeUntilDestroyed())
-      .subscribe(({ conversationId, lastMessagePreview, lastMessageAt }) => {
+      .subscribe(({ conversationId, lastMessagePreview, lastMessageAt, senderId }) => {
+        const isMine = senderId === this.authService.currentUser()?.userId;
+        const isOpen = this.activeConversationId() === conversationId;
+
         this.conversations.update((list) =>
           list.map((c) =>
             c.id === conversationId
@@ -116,6 +118,7 @@ export class Sidebar {
                   lastMessage: lastMessagePreview,
                   lastMessageAt,
                   time: formatConversationTime(lastMessageAt),
+                  unreadCount: isMine || isOpen ? c.unreadCount : c.unreadCount + 1,
                 }
               : c,
           ),

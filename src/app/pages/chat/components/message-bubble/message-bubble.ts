@@ -26,6 +26,7 @@ export class MessageBubble {
   isDeleted = input(false);
   editedAt = input<string | null>(null);
   replyPreview = input<string | null>(null);
+  seen = input(false);
 
   action = output<MessageAction>();
 

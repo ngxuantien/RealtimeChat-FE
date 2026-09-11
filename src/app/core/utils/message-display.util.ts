@@ -15,6 +15,24 @@ export function toMessageItems(
   members: ConversationMember[],
   isGroup: boolean,
 ): MessageItem[] {
+  const otherMembers = members.filter((m) => m.userId !== currentUserId);
+  const indexById = new Map(messages.map((m, i) => [m.id, i]));
+
+  const isReadByMember = (member: ConversationMember, messageIndex: number) => {
+    const lastReadIndex = member.lastReadMessageId
+      ? indexById.get(member.lastReadMessageId)
+      : undefined;
+    return lastReadIndex !== undefined && lastReadIndex >= messageIndex;
+  };
+
+  let lastMineIndex = -1;
+  for (let i = messages.length - 1; i >= 0; i--) {
+    if (messages[i].senderId === currentUserId) {
+      lastMineIndex = i;
+      break;
+    }
+  }
+
   return messages.map((message, index) => {
     const prev = messages[index - 1];
     const current = new Date(message.createdAt);
@@ -34,6 +52,11 @@ export function toMessageItems(
       ? messages.find((m) => m.id === message.replyToMessageId)
       : null;
 
+    const seen =
+      index === lastMineIndex &&
+      otherMembers.length > 0 &&
+      otherMembers.every((m) => isReadByMember(m, index));
+
     return {
       id: message.id,
       senderId: message.senderId,
@@ -42,7 +65,8 @@ export function toMessageItems(
       isMine,
       showHeader: !sameGroupAsPrev,
       senderName: !isMine && isGroup ? (sender?.displayName ?? 'Người dùng') : null,
-      dateLabel: !prevDate || !isSameDay(current, prevDate) ? formatDateSeparator(message.createdAt) : null,
+      dateLabel:
+        !prevDate || !isSameDay(current, prevDate) ? formatDateSeparator(message.createdAt) : null,
       type: message.type,
       attachments: message.isDeleted ? [] : message.attachments,
       isDeleted: message.isDeleted,
@@ -50,6 +74,7 @@ export function toMessageItems(
       replyPreview: message.replyToMessageId
         ? (replyToMessage?.content || '[Tệp đính kèm]').slice(0, 80)
         : null,
+      seen,
     };
   });
 }

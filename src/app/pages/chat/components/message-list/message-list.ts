@@ -19,6 +19,7 @@ export interface MessageItem {
   isDeleted: boolean;
   editedAt: string | null;
   replyPreview: string | null;
+  seen: boolean;
 }
 
 @Component({
