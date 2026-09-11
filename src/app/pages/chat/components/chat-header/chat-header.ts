@@ -1,41 +1,70 @@
 // chat-header.ts
-import { Component, computed, input, output, signal } from "@angular/core";
+import {
+  Component,
+  computed,
+  ElementRef,
+  HostListener,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 import { RouterLink } from '@angular/router';
-import { ConversationType } from "@app/core/enums/conversation.enum";
+import { ConversationType } from '@app/core/enums/conversation.enum';
 
 @Component({
-    selector: 'app-chat-header',
-    imports: [LucideAngularModule, RouterLink],
-    templateUrl: './chat-header.html',
-    host: { class: 'shrink-0' },
+  selector: 'app-chat-header',
+  imports: [LucideAngularModule, RouterLink],
+  templateUrl: './chat-header.html',
+  host: { class: 'shrink-0' },
 })
 export class ChatHeader {
-    name = input('');
-    avatarUrl = input<string | null>(null);
-    isOnline = input(false);
-    isGroup = input(false);
-    memberCount = input(0);
-    isMuted = input(false);
+  private elementRef = inject(ElementRef);
 
-    toggleInfo = output<void>();
-    toggleSearch = output<void>();
-    toggleMute = output<void>();
-    deleteHistory = output<void>();
+  name = input('');
+  avatarUrl = input<string | null>(null);
+  isOnline = input(false);
+  isGroup = input(false);
+  memberCount = input(0);
+  isMuted = input(false);
 
-    showMoreMenu = signal(false);
+  toggleInfo = output<void>();
+  toggleSearch = output<void>();
+  toggleMute = output<void>();
+  deleteHistory = output<void>();
 
-    toggleMoreMenu(){
-        this.showMoreMenu.update((v) => !v);
+  showMoreMenu = signal(false);
+
+  toggleMoreMenu() {
+    this.showMoreMenu.update((v) => !v);
+  }
+
+  onToggleMute() {
+    this.showMoreMenu.set(false);
+    this.toggleMute.emit();
+  }
+
+  onDeleteHistory() {
+    this.showMoreMenu.set(false);
+    this.deleteHistory.emit();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.showMoreMenu()) return;
+
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.showMoreMenu.set(false);
     }
+  }
+  onToggleSearch() {
+    this.showMoreMenu.set(false);
+    this.toggleSearch.emit();
+  }
 
-    onToggleMute(){
-        this.showMoreMenu.set(false);
-        this.toggleMute.emit();
-    }
-
-    onDeleteHistory(){
-        this.showMoreMenu.set(false);
-        this.deleteHistory.emit();
-    }
+  onToggleInfo() {
+    this.showMoreMenu.set(false);
+    this.toggleInfo.emit();
+  }
 }

@@ -2,6 +2,7 @@ import { Component, computed, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 import { MessageItem } from '@app/pages/chat/components/message-list/message-list';
+import { ConversationMember } from '@app/core/model/conversation/conversation-member.model';
 
 @Component({
     selector: 'app-chat-search-panel',
@@ -10,6 +11,7 @@ import { MessageItem } from '@app/pages/chat/components/message-list/message-lis
 })
 export class ChatSearchPanel {
     messages = input<MessageItem[]>([]);
+    members = input<ConversationMember[]>([]);
     close = output<void>();
     jumpTo = output<string>();
 
@@ -24,4 +26,8 @@ export class ChatSearchPanel {
             .slice()
             .reverse();
     });
+
+    senderName(senderId: string): string{
+        return this.members().find((m) => m.userId === senderId)?.displayName ?? "Người dùng";
+    }
 }

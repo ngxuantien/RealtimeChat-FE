@@ -47,30 +47,35 @@
     </div>
     }
 
-    <div
-        class="flex h-11 items-center gap-2 rounded-xl border border-border-300 bg-bg-hover px-3 sm:gap-3 sm:px-4">
+    <div class="flex flex-col gap-2 rounded-xl border border-border-300 bg-bg-hover px-3 py-2 sm:h-11 sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-0">
         @if (isRecording()) {
-        <lucide-icon name="mic" class="h-4.5 w-4.5 shrink-0 text-red-main"></lucide-icon>
-        <span class="flex-1 text-sm text-red-main">Đang ghi âm... {{ recordSeconds() }}s</span>
+        <div class="flex items-center gap-2">
+            <lucide-icon name="mic" class="h-4.5 w-4.5 shrink-0 text-red-main"></lucide-icon>
+            <span class="flex-1 text-sm text-red-main">Đang ghi âm... {{ recordSeconds() }}s</span>
+        </div>
         } @else {
-        <lucide-icon name="paperclip" (click)="pickFile()"
-            class="hidden h-4.5 w-4.5 shrink-0 cursor-pointer text-text-secondary hover:text-text-heading sm:block"></lucide-icon>
-        <lucide-icon name="image" (click)="pickImage()"
-            class="hidden h-4.5 w-4.5 shrink-0 cursor-pointer text-text-secondary hover:text-text-heading sm:block"></lucide-icon>
         <input type="text" [ngModel]="message()" (ngModelChange)="message.set($event)" (keydown.enter)="onSend()"
             [placeholder]="pendingFiles().length > 0 ? 'Thêm chú thích (tuỳ chọn)...' : 'Nhập tin nhắn...'"
             class="min-w-0 flex-1 bg-transparent text-sm text-text-heading placeholder:text-text-secondary outline-none" />
-        <lucide-icon name="smile"
-            class="hidden h-4.5 w-4.5 shrink-0 cursor-pointer text-text-secondary hover:text-text-heading sm:block"></lucide-icon>
         }
 
-        <lucide-icon [name]="isRecording() ? 'square' : 'mic'" (click)="toggleRecording()"
-            class="h-4.5 w-4.5 shrink-0 cursor-pointer"
-            [class]="isRecording() ? 'text-red-main' : 'text-text-secondary hover:text-text-heading'"></lucide-icon>
+        <div class="flex shrink-0 items-center justify-end gap-2 sm:gap-3">
+            @if (!isRecording()) {
+            <lucide-icon name="paperclip" (click)="pickFile()"
+                class="h-4.5 w-4.5 shrink-0 cursor-pointer text-text-secondary hover:text-text-heading"></lucide-icon>
+            <lucide-icon name="image" (click)="pickImage()"
+                class="h-4.5 w-4.5 shrink-0 cursor-pointer text-text-secondary hover:text-text-heading"></lucide-icon>
+            <lucide-icon name="smile"
+                class="h-4.5 w-4.5 shrink-0 cursor-pointer text-text-secondary hover:text-text-heading"></lucide-icon>
+            }
+            <lucide-icon [name]="isRecording() ? 'square' : 'mic'" (click)="toggleRecording()"
+                class="h-4.5 w-4.5 shrink-0 cursor-pointer"
+                [class]="isRecording() ? 'text-red-main' : 'text-text-secondary hover:text-text-heading'"></lucide-icon>
 
-        <button type="button" (click)="onSend()"
-            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary-main text-white hover:bg-primary-700">
-            <lucide-icon name="send" class="h-4 w-4"></lucide-icon>
-        </button>
+            <button type="button" (click)="onSend()"
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary-main text-white hover:bg-primary-700">
+                <lucide-icon name="send" class="h-4 w-4"></lucide-icon>
+            </button>
+        </div>
     </div>
 </div>

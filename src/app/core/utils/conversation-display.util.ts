@@ -16,6 +16,7 @@ export interface ConversationListItem {
   isPinned: boolean;
   isGroup: boolean;
   memberCount: number;
+  createdBy: string;
 }
 
 export function toConversationListItem(
@@ -45,5 +46,6 @@ export function toConversationListItem(
     isGroup,
     isPinned: me?.isPinned ?? false,
     memberCount: members.length,
+    createdBy: conversation.createdBy,
   };
 }

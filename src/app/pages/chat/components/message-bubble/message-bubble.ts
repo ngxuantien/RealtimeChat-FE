@@ -1,5 +1,5 @@
 // message-bubble.ts
-import { Component, computed, ElementRef, input, output, signal, viewChild } from '@angular/core';
+import { Component, computed, ElementRef, HostListener, inject, input, output, signal, viewChild } from '@angular/core';
 import { MessageType } from '@app/core/enums/message.enum';
 import { MessageAttachment } from '@app/core/model/message/message.model';
 import { LucideAngularModule } from "lucide-angular";
@@ -13,6 +13,8 @@ export type MessageAction = 'reply' | 'edit' | 'delete';
   imports: [LucideAngularModule],
 })
 export class MessageBubble {
+  private elementRef = inject(ElementRef);
+
   id = input.required<string>();
   content = input('');
   time = input('');
@@ -24,6 +26,7 @@ export class MessageBubble {
   isDeleted = input(false);
   editedAt = input<string | null>(null);
   replyPreview = input<string | null>(null);
+  seen = input(false);
 
   action = output<MessageAction>();
 
@@ -60,5 +63,14 @@ export class MessageBubble {
   selectAction(action: MessageAction){
     this.showMenu.set(false);
     this.action.emit(action);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent){
+    if(!this.showMenu()) return;
+
+    if(!this.elementRef.nativeElement.contains(event.target)){
+      this.showMenu.set(false);
+    }
   }
 }
