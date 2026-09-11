@@ -1,5 +1,5 @@
 // chat-detail.ts
-import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map, switchMap } from 'rxjs';
@@ -26,8 +26,8 @@ import {
 import { MessageAction } from '../components/message-bubble/message-bubble';
 import { MessageItem } from '../components/message-list/message-list';
 import { Upload } from 'lucide-angular';
-import { ChatSearchPanel } from "../components/chat-search-panel/chat-search-panel";
-import { ConfirmModal } from "@app/share/component/confirm-modal/confirm-modal";
+import { ChatSearchPanel } from '../components/chat-search-panel/chat-search-panel';
+import { ConfirmModal } from '@app/share/component/confirm-modal/confirm-modal';
 
 @Component({
   selector: 'app-chat-detail',
@@ -71,6 +71,11 @@ export class ChatDetail {
   private joinedConversationId: string | null = null;
 
   constructor() {
+    this.signalRService.onReconnected.pipe(takeUntilDestroyed()).subscribe(() => {
+      const id = this.conversationId();
+      if (id) this.signalRService.joinConversation(id);
+    });
+
     effect(() => {
       const id = this.conversationId();
       const currentUserId = this.authService.currentUser()?.userId;
@@ -140,6 +145,15 @@ export class ChatDetail {
         this.removeMessageLocally(messageId);
       });
 
+    this.signalRService.onMessageRead
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ conversationId, userId, lastReadMessageId }) => {
+        if (conversationId !== this.conversationId()) return;
+        this.members.update((list) =>
+          list.map((m) => (m.userId === userId ? { ...m, lastReadMessageId } : m)),
+        );
+      });
+
     this.destroyRef.onDestroy(() => {
       if (this.joinedConversationId) {
         this.signalRService.leaveConversation(this.joinedConversationId);
@@ -182,7 +196,7 @@ export class ChatDetail {
     });
   }
 
-  onDeleteHistory(){
+  onDeleteHistory() {
     this.showDeleteHistoryConfirm.set(true);
   }
 
@@ -193,15 +207,17 @@ export class ChatDetail {
     if (!conversationId || !currentUserId) return;
 
     this.conversationService.deleteConversation(conversationId, currentUserId).subscribe({
-        next: () => this.router.navigateByUrl('/'),
-        error: () => this.flashMessage.error('Không thể xóa lịch sử trò chuyện, thử lại sau.'),
+      next: () => this.router.navigateByUrl('/'),
+      error: () => this.flashMessage.error('Không thể xóa lịch sử trò chuyện, thử lại sau.'),
     });
   }
 
   onJumpToMessage(messageId: string) {
     this.sidePanelMode.set(null);
     setTimeout(() => {
-        document.getElementById(`message-${messageId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document
+        .getElementById(`message-${messageId}`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 50);
   }
 
@@ -311,5 +327,21 @@ export class ChatDetail {
     this.conversationService.markAsRead(id, currentUserId, messageId).subscribe();
   }
 
+  onMembersChanged() {
+    const id = this.conversationId();
+    if (!id) return;
+    this.conversationService.getMembers(id).subscribe((members) => this.members.set(members));
+  }
 
+  onLeftGroupOrDeleted() {
+    this.sidePanelMode.set(null);
+    this.router.navigateByUrl('/');
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    if (!window.matchMedia('(min-width: 1024px)').matches) {
+      this.sidePanelMode.set(null);
+    }
+  }
 }

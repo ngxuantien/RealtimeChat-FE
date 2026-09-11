@@ -57,7 +57,7 @@ export class MessageService {
     }
 
     getAttachments(conversationId: string){
-        const url = `${this.baseUrl}/${API_ENDPOINT.MESSAGE.BASE}/conversation/${conversationId}/attackments`;
+        const url = `${this.baseUrl}/${API_ENDPOINT.MESSAGE.BASE}/conversation/${conversationId}/attachments`;
         return this.http.get<Message[]>(url);
     }
 }

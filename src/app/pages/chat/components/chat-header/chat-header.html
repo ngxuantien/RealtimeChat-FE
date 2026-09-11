@@ -12,7 +12,8 @@
                 }
             </div>
             @if (isGroup()) {
-            <span class="absolute -bottom-0.5 -right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 border-bg-card bg-primary-main">
+            <span
+                class="absolute -bottom-0.5 -right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full border-2 border-bg-card bg-primary-main">
                 <lucide-icon name="users" class="h-2.5 w-2.5 text-white"></lucide-icon>
             </span>
             }
@@ -29,13 +30,27 @@
         </div>
     </div>
     <div class="relative flex shrink-0 items-center gap-3 text-text-secondary sm:gap-4">
-        <lucide-icon name="search" (click)="toggleSearch.emit()" class="hidden h-4.5 w-4.5 cursor-pointer hover:text-text-heading sm:block"></lucide-icon>
+        <lucide-icon name="search" (click)="toggleSearch.emit()"
+            class="hidden h-4.5 w-4.5 cursor-pointer hover:text-text-heading sm:block"></lucide-icon>
         <lucide-icon name="phone" class="h-4.5 w-4.5 cursor-pointer hover:text-text-heading"></lucide-icon>
-        <lucide-icon name="info" (click)="toggleInfo.emit()" class="hidden h-4.5 w-4.5 cursor-pointer hover:text-text-heading sm:block"></lucide-icon>
-        <lucide-icon name="ellipsis" (click)="toggleMoreMenu()" class="h-4.5 w-4.5 cursor-pointer hover:text-text-heading"></lucide-icon>
+        <lucide-icon name="info" (click)="toggleInfo.emit()"
+            class="hidden h-4.5 w-4.5 cursor-pointer hover:text-text-heading sm:block"></lucide-icon>
+        <lucide-icon name="ellipsis" (click)="toggleMoreMenu()"
+            class="h-4.5 w-4.5 cursor-pointer hover:text-text-heading"></lucide-icon>
 
         @if(showMoreMenu()){
-        <div class="absolute right-0 top-full z-20 mt-2 w-48 rounded-lg border border-border-300 bg-bg-card py-1 shadow-lg">
+        <div
+            class="absolute right-0 top-full z-20 mt-2 w-48 rounded-lg border border-border-300 bg-bg-card py-1 shadow-lg">
+            <button type="button" (click)="onToggleSearch()"
+                class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-text-heading hover:bg-bg-hover sm:hidden">
+                <lucide-icon name="search" class="h-4 w-4"></lucide-icon>
+                Tìm kiếm tin nhắn
+            </button>
+            <button type="button" (click)="onToggleInfo()"
+                class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-text-heading hover:bg-bg-hover sm:hidden">
+                <lucide-icon name="info" class="h-4 w-4"></lucide-icon>
+                Xem chi tiết
+            </button>
             <button type="button" (click)="onToggleMute()"
                 class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-text-heading hover:bg-bg-hover">
                 <lucide-icon [name]="isMuted() ? 'bell' : 'bell-off'" class="h-4 w-4"></lucide-icon>

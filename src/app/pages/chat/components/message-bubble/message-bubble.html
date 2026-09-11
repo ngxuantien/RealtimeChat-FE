@@ -97,4 +97,10 @@
         </div>
         }
     </div>
+
+    @if (isMine() && seen() && !isDeleted()) {
+    <span class="flex items-center gap-1 self-end px-1 text-text-secondary">
+        <lucide-icon name="check-check" class="h-3.5 w-3.5"></lucide-icon>
+    </span>
+    }
 </div>

@@ -22,7 +22,7 @@
         @for (msg of results(); track msg.id) {
         <div (click)="jumpTo.emit(msg.id)" class="cursor-pointer rounded-lg px-3 py-2.5 hover:bg-bg-hover">
             <div class="flex items-center justify-between">
-                <p class="text-sm font-medium text-text-heading">{{ msg.isMine ? 'Bạn' : (msg.senderName ?? '') }}</p>
+                <p class="text-sm font-medium text-text-heading">{{ msg.isMine ? 'Bạn' : senderName(msg.senderId) }}</p>
                 <span class="text-xs text-text-secondary">{{ msg.time }}</span>
             </div>
             <p class="truncate text-sm text-text-secondary">{{ msg.content }}</p>

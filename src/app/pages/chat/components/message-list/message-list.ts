@@ -7,6 +7,7 @@ import { LucideAngularModule } from 'lucide-angular';
 
 export interface MessageItem {
   id: string;
+  senderId: string;
   content: string;
   time: string;
   isMine: boolean;
@@ -18,6 +19,7 @@ export interface MessageItem {
   isDeleted: boolean;
   editedAt: string | null;
   replyPreview: string | null;
+  seen: boolean;
 }
 
 @Component({

@@ -6,4 +6,5 @@ export interface ConversationMember {
     role: string;
     isPinned: boolean;
     isMuted: boolean;
+    lastReadMessageId: string | null;
 }

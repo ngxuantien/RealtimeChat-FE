@@ -10,21 +10,38 @@ export class ConversationService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
 
+  addMember(conversationId: string, userId: string){
+    const url = `${this.baseUrl}/${API_ENDPOINT.CONVERSATION.DETAIL}/${conversationId}/members`;
+    return this,this.http.post(url, {userId});
+  }
+
+  removeMember(conversationId: string, userId: string) {
+    const url = `${this.baseUrl}/${API_ENDPOINT.CONVERSATION.DETAIL}/${conversationId}/members/${userId}`;
+    return this.http.delete(url);
+  }
+
+  leaveConversation(conversationId: string, userId: string) {
+    const url = `${this.baseUrl}/${API_ENDPOINT.CONVERSATION.LIST}/${conversationId}/leave/${userId}`;
+    return this.http.post(url, {});
+  }
+
+  deleteGroup(conversationId: string) {
+    const url = `${this.baseUrl}/${API_ENDPOINT.CONVERSATION.LIST}/${conversationId}/group`;
+    return this.http.delete(url);
+  }
+
   getUserConversations(userId: string) {
     const url = `${this.baseUrl}/${API_ENDPOINT.CONVERSATION.LIST}/user/${userId}`;
-
     return this.http.get<Conversation[]>(url);
   }
 
   getById(conversationId: string) {
     const url = `${this.baseUrl}/${API_ENDPOINT.CONVERSATION.DETAIL}/${conversationId}`;
-
     return this.http.get<Conversation>(url);
   }
 
   getMembers(conversationId: string) {
     const url = `${this.baseUrl}/${API_ENDPOINT.CONVERSATION.DETAIL}/${conversationId}/members`;
-
     return this.http.get<ConversationMember[]>(url);
   }
 
