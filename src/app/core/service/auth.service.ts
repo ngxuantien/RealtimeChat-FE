@@ -9,6 +9,8 @@ import { User } from '../model/user/user.model';
 import { API_ENDPOINT } from '../constants/api-endpoint.constant';
 import { STORAGE_KEY } from '../constants/storage.constant';
 import { RefreshTokenRequest } from '../model/auth/refresh-token-request.model';
+import { ForgotPasswordRequest } from '../model/auth/forgot-password-request.model';
+import { ResetPasswordRequest } from '../model/auth/reset-password-request.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -43,16 +45,16 @@ export class AuthService {
   logout() {
     const userId = this.currentUser()?.userId;
 
+    if (userId) {
+      this.http
+        .post(`${this.baseUrl}/${API_ENDPOINT.AUTH.LOGOUT}/${userId}`, {})
+        .pipe(catchError(() => of(null)))
+        .subscribe();
+    }
+
     this.currentUser.set(null);
     localStorage.removeItem(STORAGE_KEY.ACCESS_TOKEN);
     localStorage.removeItem(STORAGE_KEY.REFRESH_TOKEN);
-
-    if (!userId) return;
-
-    this.http
-      .post(`${this.baseUrl}/${API_ENDPOINT.AUTH.LOGOUT}/${userId}`, {})
-      .pipe(catchError(() => of(null)))
-      .subscribe();
   }
 
   refreshToken() {
@@ -65,6 +67,16 @@ export class AuthService {
     return this.http
       .post<AuthResponse>(url, { refreshToken } satisfies RefreshTokenRequest)
       .pipe(tap((res) => this.setSession(res)));
+  }
+
+  forgotPassword(payload: ForgotPasswordRequest) {
+    const url = `${this.baseUrl}/${API_ENDPOINT.AUTH.FORGOT_PASSWORD}`;
+    return this.http.post<{ message: string }>(url, payload);
+  }
+
+  resetPassword(payload: ResetPasswordRequest) {
+    const url = `${this.baseUrl}/${API_ENDPOINT.AUTH.RESET_PASSWORD}`;
+    return this.http.post<{ message: string }>(url, payload);
   }
 
   private setSession(res: AuthResponse) {

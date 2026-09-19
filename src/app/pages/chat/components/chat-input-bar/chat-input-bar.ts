@@ -7,6 +7,7 @@ import {
   input,
   output,
   signal,
+  untracked,
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -60,6 +61,8 @@ export class ChatInputBar {
   cancelReply = output<void>();
   cancelEdit = output<void>();
 
+  conversationId = input<string | null>(null);
+
   private imageInput = viewChild<ElementRef<HTMLInputElement>>('imageInput');
   private fileInput = viewChild<ElementRef<HTMLInputElement>>('fileInput');
 
@@ -73,6 +76,19 @@ export class ChatInputBar {
     effect(() => {
       const editing = this.editingMessage();
       if(editing) this.message.set(editing.content);
+    });
+
+    effect(() => {
+      this.conversationId();
+
+      untracked(() => {
+        if (this.isRecording()) {
+          this.mediaRecorder?.stop();
+        }
+        this.clearAllPreviewUrls();
+        this.pendingFiles.set([]);
+        this.message.set('');
+      });
     });
   }
 
