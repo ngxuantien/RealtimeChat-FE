@@ -1,30 +1,21 @@
-import { Routes } from '@angular/router';
+import { inject } from '@angular/core';
+import { CanMatchFn, Router, Routes } from '@angular/router';
+
+const settingsLandingRedirect: CanMatchFn = () => {
+  const router = inject(Router);
+  const target = window.matchMedia('(min-width: 768px)').matches ? '/settings/profile' : '/settings/menu';
+  return router.parseUrl(target);
+};
 
 export const SETTINGS_ROUTES: Routes = [
-  { path: '', redirectTo: 'profile', pathMatch: 'full' },
+  { path: '', pathMatch: 'full', canMatch: [settingsLandingRedirect], children: [] },
+  { path: 'menu', children: [] },
   {
     path: 'profile',
     loadComponent: () => import('./profile/profile').then(m => m.Profile),
   },
   {
-    path: 'notifications',
-    loadComponent: () => import('./notifications/notifications').then(m => m.Notifications),
-  },
-  {
     path: 'appearance',
     loadComponent: () => import('./appearance/appearance').then(m => m.Appearance),
-  },
-  {
-    path: 'privacy',
-    loadComponent: () => import('./privacy/privacy').then(m => m.Privacy),
-  },
-  {
-    path: 'security',
-    loadComponent: () => import('./security/security').then(m => m.Security),
-  },
-  {
-    path: 'danger-zone',
-    loadComponent: () => import('./components/settings-placeholder/settings-placeholder').then(m => m.SettingsPlaceholder),
-    data: { title: 'Vùng nguy hiểm', description: 'Xóa tài khoản, dữ liệu', icon: 'triangle-alert' },
   },
 ];

@@ -10,9 +10,9 @@ export class ConversationService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
 
-  addMember(conversationId: string, userId: string){
+  addMember(conversationId: string, userId: string) {
     const url = `${this.baseUrl}/${API_ENDPOINT.CONVERSATION.DETAIL}/${conversationId}/members`;
-    return this,this.http.post(url, {userId});
+    return (this, this.http.post(url, { userId }));
   }
 
   removeMember(conversationId: string, userId: string) {
@@ -72,7 +72,7 @@ export class ConversationService {
     );
   }
 
-  updateMute(conversationId: string, isMuted: boolean){
+  updateMute(conversationId: string, isMuted: boolean) {
     const url = `${this.baseUrl}/${API_ENDPOINT.CONVERSATION.DETAIL}/${conversationId}/members/mute`;
     return this.http.patch(url, { isMuted });
   }
@@ -80,5 +80,12 @@ export class ConversationService {
   deleteConversation(conversationId: string, userId: string) {
     const url = `${this.baseUrl}/${API_ENDPOINT.CONVERSATION.LIST}/${conversationId}/user/${userId}`;
     return this.http.delete(url);
+  }
+
+  updateAvatar(conversationId: string, avatar: File) {
+    const url = `${this.baseUrl}/${API_ENDPOINT.CONVERSATION.LIST}/${conversationId}/avatar`;
+    const formData = new FormData();
+    formData.append('avatar', avatar);
+    return this.http.post<Conversation>(url, formData);
   }
 }

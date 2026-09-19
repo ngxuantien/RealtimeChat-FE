@@ -1,5 +1,4 @@
 <aside class="flex h-full flex-col border-l border-border-300 bg-bg-card">
-
     @if (showAddMember()) {
     <div class="flex items-center gap-2 border-b border-border-300 px-4 py-5">
         <lucide-icon name="arrow-left" class="h-4 w-4 cursor-pointer text-text-secondary hover:text-text-heading"
@@ -88,6 +87,27 @@
 
     <div class="flex-1 overflow-y-auto">
         @if (isGroup()) {
+        <div class="flex flex-col items-center gap-2 border-b border-border-300 px-4 py-5">
+            <input #groupAvatarInput type="file" accept="image/*" class="hidden"
+                (change)="onGroupAvatarSelected($event)" />
+            <div class="relative h-20 w-20">
+                @if (avatarUrl(); as avatar) {
+                <img [src]="avatar" class="h-full w-full rounded-full object-cover" alt="" />
+                } @else {
+                <div class="flex h-full w-full items-center justify-center rounded-full bg-neutral-700">
+                    <lucide-icon name="users" class="h-8 w-8 text-text-secondary"></lucide-icon>
+                </div>
+                }
+                <button type="button" (click)="pickGroupAvatar()" [disabled]="isUploadingAvatar()"
+                    class="absolute -right-1 -bottom-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary-main text-white ring-2 ring-bg-card disabled:opacity-50">
+                    @if (isUploadingAvatar()) {
+                    <lucide-icon name="loader-circle" class="h-3.5 w-3.5 animate-spin"></lucide-icon>
+                    } @else {
+                    <lucide-icon name="camera" class="h-3.5 w-3.5"></lucide-icon>
+                    }
+                </button>
+            </div>
+        </div>
         <div class="border-b border-border-300 px-4 py-4">
             <div class="mb-2 flex items-center justify-between">
                 <span class="text-xs font-semibold uppercase text-text-secondary">{{ members().length }} thành

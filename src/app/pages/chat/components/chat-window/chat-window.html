@@ -5,7 +5,7 @@
 
     <app-message-list [messages]="messages()" (messageAction)="messageAction.emit($event)" />
 
-    <app-chat-input-bar [replyTo]="replyTarget()" [editingMessage]="editTarget()" (send)="sendMessage.emit($event)"
-        (sendAttachment)="sendAttachment.emit($event)" (saveEdit)="saveEdit.emit($event)"
-        (cancelReply)="cancelReply.emit()" (cancelEdit)="cancelEdit.emit()" />
+    <app-chat-input-bar [conversationId]="conversationId()" [replyTo]="replyTarget()" [editingMessage]="editTarget()"
+        (send)="sendMessage.emit($event)" (sendAttachment)="sendAttachment.emit($event)"
+        (saveEdit)="saveEdit.emit($event)" (cancelReply)="cancelReply.emit()" (cancelEdit)="cancelEdit.emit()" />
 </section>
