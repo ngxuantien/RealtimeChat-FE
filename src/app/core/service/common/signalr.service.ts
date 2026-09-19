@@ -12,6 +12,13 @@ export class SignalRService {
   private reconnected$ = new Subject<void>();
   onReconnected = this.reconnected$.asObservable();
 
+  private conversationInfoUpdated$ = new Subject<{
+    conversationId: string;
+    name: string | null;
+    avatarUrl: string | null;
+  }>();
+  onConversationInfoUpdated = this.conversationInfoUpdated$.asObservable();
+
   private messageReceived$ = new Subject<Message>();
   private messageEdited$ = new Subject<Message>();
 
@@ -30,7 +37,7 @@ export class SignalRService {
   }>();
   onConversationUpdated = this.conversationUpdated$.asObservable();
 
-  private messageDeleted$ = new Subject<{messageId: string; conversationId: string}>();
+  private messageDeleted$ = new Subject<{ messageId: string; conversationId: string }>();
   onMessageDeleted = this.messageDeleted$.asObservable();
 
   private messageRead$ = new Subject<{
@@ -53,9 +60,18 @@ export class SignalRService {
       .withAutomaticReconnect()
       .build();
 
-    this.hubConnection.on('UserOnlineStatusChanged', (payload) => this.userOnlineStatusChanged$.next(payload));
-    this.hubConnection.on('ReceiveMessage', (message: Message) => this.messageReceived$.next(message));
-    this.hubConnection.on('ConversationUpdated', (payload) => this.conversationUpdated$.next(payload));
+    this.hubConnection.on('UserOnlineStatusChanged', (payload) =>
+      this.userOnlineStatusChanged$.next(payload),
+    );
+    this.hubConnection.on('ReceiveMessage', (message: Message) =>
+      this.messageReceived$.next(message),
+    );
+    this.hubConnection.on('ConversationUpdated', (payload) =>
+      this.conversationUpdated$.next(payload),
+    );
+    this.hubConnection.on('ConversationInfoUpdated', (payload) =>
+      this.conversationInfoUpdated$.next(payload),
+    );
     this.hubConnection.on('MessageEdited', (message: Message) => this.messageEdited$.next(message));
     this.hubConnection.on('MessageDeleted', (payload) => this.messageDeleted$.next(payload));
     this.hubConnection.on('MessageRead', (payload) => this.messageRead$.next(payload));

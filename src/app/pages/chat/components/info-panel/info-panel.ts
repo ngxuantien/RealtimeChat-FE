@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import { Component, computed, effect, ElementRef, inject, input, output, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MessageType } from '@app/core/enums/message.enum';
@@ -68,6 +68,14 @@ export class InfoPanel {
   showLeaveConfirm = signal(false);
   showDeleteGroupConfirm = signal(false);
 
+  avatarUrl = input<string | null>(null);
+  isUploadingAvatar = signal(false);
+  private avatarInput = viewChild<ElementRef<HTMLInputElement>>('groupAvatarInput');
+
+  pickGroupAvatar(){
+    this.avatarInput()?.nativeElement.click();
+  }
+
   private addMemberSearch$ = new Subject<string>();
 
   constructor() {
@@ -123,6 +131,26 @@ export class InfoPanel {
 
   formatDate(iso: string): string {
     return formatConversationTime(iso);
+  }
+
+  onGroupAvatarSelected(evnet: Event){
+    const input = evnet.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    const conversationId = this.conversationId();
+    if(!file || !conversationId) return;
+
+    this.isUploadingAvatar.set(true);
+    this.conversationService.updateAvatar(conversationId, file).subscribe({
+      next: () => {
+        this.isUploadingAvatar.set(false);
+        this.flashMessage.success('Cập nhật ảnh thành công');
+      },
+      error: () => {
+        this.isUploadingAvatar.set(false);
+        this.flashMessage.error('Không thể cập nhật ảnh nhóm, thử lại sau');
+      }
+    })
   }
 
   onAddMemberPhoneChange(value: string) {

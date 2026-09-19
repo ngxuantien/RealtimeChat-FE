@@ -1,5 +1,13 @@
 // chat-detail.ts
-import { Component, DestroyRef, HostListener, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  HostListener,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map, switchMap } from 'rxjs';
@@ -101,6 +109,9 @@ export class ChatDetail {
     effect(() => {
       const id = this.conversationId();
       const currentUserId = this.authService.currentUser()?.userId;
+
+      this.replyTarget.set(null);
+      this.editTarget.set(null);
 
       if (!id || !currentUserId) {
         this.rawMessages.set([]);

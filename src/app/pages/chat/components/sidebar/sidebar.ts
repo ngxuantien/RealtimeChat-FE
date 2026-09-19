@@ -76,17 +76,17 @@ export class Sidebar {
   }
 
   get allConversations() {
-      return this.sortByLatest(this.conversations().filter((c) => !c.isPinned)).map((c) =>
-        c.id === this.activeConversationId() ? { ...c, unreadCount: 0 } : c,
-      );
+    return this.sortByLatest(this.conversations().filter((c) => !c.isPinned)).map((c) =>
+      c.id === this.activeConversationId() ? { ...c, unreadCount: 0 } : c,
+    );
   }
 
-  private sortByLatest(items: ConversationListItem[]): ConversationListItem[]{
+  private sortByLatest(items: ConversationListItem[]): ConversationListItem[] {
     return [...items].sort((a, b) => {
       const timeA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0;
       const timeB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0;
       return timeB - timeA;
-    })
+    });
   }
 
   constructor() {
@@ -121,6 +121,16 @@ export class Sidebar {
                   unreadCount: isMine || isOpen ? c.unreadCount : c.unreadCount + 1,
                 }
               : c,
+          ),
+        );
+      });
+
+    this.signalRService.onConversationInfoUpdated
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ conversationId, name, avatarUrl }) => {
+        this.conversations.update((list) =>
+          list.map((c) =>
+            c.id === conversationId ? { ...c, name: name ?? c.name, avatarUrl } : c,
           ),
         );
       });
