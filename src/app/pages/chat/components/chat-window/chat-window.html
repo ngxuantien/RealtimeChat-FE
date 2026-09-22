@@ -3,8 +3,12 @@
         [memberCount]="memberCount()" [isMuted]="isMuted()" (toggleInfo)="toggleInfo.emit()"
         (toggleSearch)="toggleSearch.emit()" (toggleMute)="toggleMute.emit()" (deleteHistory)="deleteHistory.emit()" />
 
-    <app-message-list [messages]="messages()" (messageAction)="messageAction.emit($event)" />
+    <app-message-list [messages]="messages()" [isLoadingMore]="isLoadingMore()" [hasMoreMessages]="hasMoreMessages()"
+        (messageAction)="messageAction.emit($event)" (toggleReaction)="toggleReaction.emit($event)" (loadMore)="loadMore.emit()" />
 
+    @if (typingUserNames().length > 0) {
+    <p class="px-4 pb-1 text-xs italic text-text-secondary">{{ typingUserNames().join(', ') }} đang nhập...</p>
+    }
     <app-chat-input-bar [conversationId]="conversationId()" [replyTo]="replyTarget()" [editingMessage]="editTarget()"
         (send)="sendMessage.emit($event)" (sendAttachment)="sendAttachment.emit($event)"
         (saveEdit)="saveEdit.emit($event)" (cancelReply)="cancelReply.emit()" (cancelEdit)="cancelEdit.emit()" />

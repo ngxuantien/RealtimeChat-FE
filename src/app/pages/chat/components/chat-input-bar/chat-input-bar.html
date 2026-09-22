@@ -54,7 +54,7 @@
             <span class="flex-1 text-sm text-red-main">Đang ghi âm... {{ recordSeconds() }}s</span>
         </div>
         } @else {
-        <input type="text" [ngModel]="message()" (ngModelChange)="message.set($event)" (keydown.enter)="onSend()"
+        <input type="text" [ngModel]="message()" (ngModelChange)="onMessageInput($event)" (keydown.enter)="onSend()"
             [placeholder]="pendingFiles().length > 0 ? 'Thêm chú thích (tuỳ chọn)...' : 'Nhập tin nhắn...'"
             class="min-w-0 flex-1 bg-transparent text-sm text-text-heading placeholder:text-text-secondary outline-none" />
         }

@@ -44,6 +44,8 @@ import { ConfirmModal } from '@app/share/component/confirm-modal/confirm-modal';
   host: { class: 'flex min-h-0 flex-1' },
 })
 export class ChatDetail {
+  private readonly PAGE_SIZE = 30;
+
   private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
   private conversationService = inject(ConversationService);
@@ -53,7 +55,18 @@ export class ChatDetail {
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
 
+  currentPage = signal(1);
+  hasMoreMessages = signal(true);
+  isLoadingMore = signal(false);
+
   showInfoPanel = signal(window.matchMedia('(min-width: 1024px)').matches);
+  typingUserIds = signal<Set<string>>(new Set());
+  typingUserNames = computed(() => {
+    const ids = this.typingUserIds();
+    return this.members()
+      .filter((m) => ids.has(m.userId))
+      .map((m) => m.displayName);
+  });
 
   conversationId = toSignal(this.route.paramMap.pipe(map((p) => p.get('conversationId')!)));
 
@@ -84,6 +97,28 @@ export class ChatDetail {
       if (id) this.signalRService.joinConversation(id);
     });
 
+    this.signalRService.onUserTyping
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ conversationId, userId }) => {
+        if (
+          conversationId !== this.conversationId() ||
+          userId === this.authService.currentUser()?.userId
+        )
+          return;
+        this.typingUserIds.update((set) => new Set(set).add(userId));
+      });
+
+    this.signalRService.onUserStoppedTyping
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ conversationId, userId }) => {
+        if (conversationId !== this.conversationId()) return;
+        this.typingUserIds.update((set) => {
+          const next = new Set(set);
+          next.delete(userId);
+          return next;
+        });
+      });
+
     effect(() => {
       const id = this.conversationId();
       const currentUserId = this.authService.currentUser()?.userId;
@@ -111,16 +146,21 @@ export class ChatDetail {
       const currentUserId = this.authService.currentUser()?.userId;
 
       this.replyTarget.set(null);
+      this.typingUserIds.set(new Set());
       this.editTarget.set(null);
+      this.currentPage.set(1);
+      this.hasMoreMessages.set(true);
+      this.isLoadingMore.set(false);
 
       if (!id || !currentUserId) {
         this.rawMessages.set([]);
         return;
       }
 
-      this.messageService.getMessages(id).subscribe((list) => {
+      this.messageService.getMessages(id, 1, this.PAGE_SIZE).subscribe((list) => {
         const ordered = [...list].reverse();
-        this.rawMessages.set([...list].reverse());
+        this.rawMessages.set(ordered);
+        if (list.length < this.PAGE_SIZE) this.hasMoreMessages.set(false);
 
         const lastMessage = ordered.at(-1);
         if (lastMessage) this.markConversationAsRead(lastMessage.id);
@@ -162,6 +202,15 @@ export class ChatDetail {
         if (conversationId !== this.conversationId()) return;
         this.members.update((list) =>
           list.map((m) => (m.userId === userId ? { ...m, lastReadMessageId } : m)),
+        );
+      });
+
+    this.signalRService.onMessageReactionUpdated
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ messageId, conversationId, reactions }) => {
+        if (conversationId !== this.conversationId()) return;
+        this.rawMessages.update((list) =>
+          list.map((m) => (m.id === messageId ? { ...m, reactions } : m)),
         );
       });
 
@@ -290,6 +339,40 @@ export class ChatDetail {
         this.pendingDeleteMessageId.set(message.id);
         break;
     }
+  }
+
+  loadMoreMessages() {
+    const id = this.conversationId();
+    if (!id || this.isLoadingMore() || !this.hasMoreMessages()) return;
+
+    this.isLoadingMore.set(true);
+    const nextPage = this.currentPage() + 1;
+
+    this.messageService.getMessages(id, nextPage, this.PAGE_SIZE).subscribe({
+      next: (list) => {
+        this.isLoadingMore.set(false);
+        this.currentPage.set(nextPage);
+        if (list.length < this.PAGE_SIZE) this.hasMoreMessages.set(false);
+        if (list.length === 0) return;
+
+        const older = [...list].reverse();
+        this.rawMessages.update((current) => {
+          const existingIds = new Set(current.map((m) => m.id));
+          return [...older.filter((m) => !existingIds.has(m.id)), ...current];
+        });
+      },
+      error: () => {
+        this.isLoadingMore.set(false);
+        this.flashMessage.error('Không thể tải thêm tin nhắn, thử lại sau.');
+      },
+    });
+  }
+
+  onToggleReaction({ messageId, emoji }: { messageId: string; emoji: string }) {
+    this.messageService.toggleReaction(messageId, emoji).subscribe({
+      next: (updated) => this.replaceMessage(updated),
+      error: () => this.flashMessage.error('Không thể cập nhật cảm xúc, thử lại sau.'),
+    });
   }
 
   onSaveEdit({ id, content }: { id: string; content: string }) {

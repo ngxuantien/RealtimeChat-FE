@@ -1,10 +1,18 @@
 // message-bubble.ts
 import { Component, computed, ElementRef, HostListener, inject, input, output, signal, viewChild } from '@angular/core';
 import { MessageType } from '@app/core/enums/message.enum';
-import { MessageAttachment } from '@app/core/model/message/message.model';
+import { MessageAttachment, MessageReaction } from '@app/core/model/message/message.model';
 import { LucideAngularModule } from "lucide-angular";
 
 export type MessageAction = 'reply' | 'edit' | 'delete';
+
+export interface ReactionGroup {
+  emoji: string;
+  count: number;
+  mine: boolean;
+}
+
+const QUICK_REACTIONS = ['👍', '❤️', '😆', '😮', '😢', '🙏'];
 
 @Component({
   selector: 'app-message-bubble',
@@ -27,12 +35,30 @@ export class MessageBubble {
   editedAt = input<string | null>(null);
   replyPreview = input<string | null>(null);
   seen = input(false);
+  reactions = input<MessageReaction[]>([]);
+  myReactionEmoji = input<string | null>(null);
 
   action = output<MessageAction>();
+  toggleReaction = output<string>();
 
   protected readonly MessageType = MessageType;
+  protected readonly quickReactions = QUICK_REACTIONS;
   showMenu = signal(false);
   openUpward = signal(false);
+  showReactionPicker = signal(false);
+
+  protected readonly reactionGroups = computed<ReactionGroup[]>(() => {
+    const counts = new Map<string, number>();
+    for (const r of this.reactions()) {
+      counts.set(r.emoji, (counts.get(r.emoji) ?? 0) + 1);
+    }
+    const mine = this.myReactionEmoji();
+    return Array.from(counts.entries()).map(([emoji, count]) => ({
+      emoji,
+      count,
+      mine: emoji === mine,
+    }));
+  });
 
   private menuButton = viewChild<ElementRef<HTMLButtonElement>>('menuButton');
 
@@ -65,12 +91,22 @@ export class MessageBubble {
     this.action.emit(action);
   }
 
+  toggleReactionPicker() {
+    this.showReactionPicker.update((v) => !v);
+  }
+
+  pickReaction(emoji: string) {
+    this.showReactionPicker.set(false);
+    this.toggleReaction.emit(emoji);
+  }
+
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent){
-    if(!this.showMenu()) return;
+    if(!this.showMenu() && !this.showReactionPicker()) return;
 
     if(!this.elementRef.nativeElement.contains(event.target)){
       this.showMenu.set(false);
+      this.showReactionPicker.set(false);
     }
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { STORAGE_KEY } from '@app/core/constants/storage.constant';
-import { Message } from '@app/core/model/message/message.model';
+import { Message, MessageReaction } from '@app/core/model/message/message.model';
 import * as signalR from '@microsoft/signalr';
 import { environment } from 'environments/environment';
 import { Subject } from 'rxjs';
@@ -21,6 +21,19 @@ export class SignalRService {
 
   private messageReceived$ = new Subject<Message>();
   private messageEdited$ = new Subject<Message>();
+
+  private userTyping$ = new Subject<{ conversationId: string; userId: string }>();
+  onUserTyping = this.userTyping$.asObservable();
+
+  private userStoppedTyping$ = new Subject<{ conversationId: string; userId: string }>();
+  onUserStoppedTyping = this.userStoppedTyping$.asObservable();
+
+  private messageReactionUpdated$ = new Subject<{
+    messageId: string;
+    conversationId: string;
+    reactions: MessageReaction[];
+  }>();
+  onMessageReactionUpdated = this.messageReactionUpdated$.asObservable();
 
   private userOnlineStatusChanged$ = new Subject<{
     userId: string;
@@ -75,6 +88,9 @@ export class SignalRService {
     this.hubConnection.on('MessageEdited', (message: Message) => this.messageEdited$.next(message));
     this.hubConnection.on('MessageDeleted', (payload) => this.messageDeleted$.next(payload));
     this.hubConnection.on('MessageRead', (payload) => this.messageRead$.next(payload));
+    this.hubConnection.on('UserTyping', (payload) => this.userTyping$.next(payload));
+    this.hubConnection.on('UserStoppedTyping', (payload) => this.userStoppedTyping$.next(payload));
+    this.hubConnection.on('MessageReactionUpdated', (payload) => this.messageReactionUpdated$.next(payload));
 
     this.hubConnection.onreconnected(() => this.reconnected$.next());
 
@@ -91,5 +107,13 @@ export class SignalRService {
     this.hubConnection
       ?.invoke('LeaveConversation', conversationId)
       .catch((err) => console.error(err));
+  }
+
+  sendTyping(conversationId: string, userId: string) {
+    this.hubConnection?.invoke('Typing', conversationId, userId).catch(() => {});
+  }
+
+  sendStopTyping(conversationId: string, userId: string) {
+    this.hubConnection?.invoke('StopTyping', conversationId, userId).catch(() => {});
   }
 }
