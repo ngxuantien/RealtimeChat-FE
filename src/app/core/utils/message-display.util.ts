@@ -75,6 +75,8 @@ export function toMessageItems(
         ? (replyToMessage?.content || '[Tệp đính kèm]').slice(0, 80)
         : null,
       seen,
+      reactions: message.reactions,
+      myReactionEmoji: message.reactions.find((r) => r.userId === currentUserId)?.emoji ?? null,
     };
   });
 }

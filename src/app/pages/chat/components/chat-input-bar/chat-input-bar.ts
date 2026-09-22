@@ -12,7 +12,10 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MessageType } from '@app/core/enums/message.enum';
+import { AuthService } from '@app/core/service/auth.service';
+import { SignalRService } from '@app/core/service/common/signalr.service';
 import { LucideAngularModule } from 'lucide-angular';
+import { Subject, throttleTime } from 'rxjs';
 
 const MAX_PENDING_FILES = 5;
 
@@ -30,8 +33,14 @@ interface PendingItem extends PendingFile {
   previewUrl: string | null;
 }
 
-export interface ReplyTarget { id: string; preview: string }
-export interface EditTarget { id: string; content: string }
+export interface ReplyTarget {
+  id: string;
+  preview: string;
+}
+export interface EditTarget {
+  id: string;
+  content: string;
+}
 
 @Component({
   selector: 'app-chat-input-bar',
@@ -46,16 +55,18 @@ export class ChatInputBar {
   private destroyRef = inject(DestroyRef);
 
   pendingFiles = signal<PendingItem[]>([]);
-
   message = signal('');
   isRecording = signal(false);
   recordSeconds = signal(0);
-
   send = output<string>();
   sendAttachment = output<AttachmentBatchPayload>();
-
   replyTo = input<ReplyTarget | null>(null);
   editingMessage = input<EditTarget | null>(null);
+
+  private authService = inject(AuthService);
+  private signalRService = inject(SignalRService);
+  private typingSubject = new Subject<void>();
+  private stopTypingTimer: ReturnType<typeof setTimeout> | null = null;
 
   saveEdit = output<{ id: string; content: string }>();
   cancelReply = output<void>();
@@ -73,9 +84,20 @@ export class ChatInputBar {
   constructor() {
     this.destroyRef.onDestroy(() => this.clearAllPreviewUrls());
 
+    this.typingSubject.pipe(throttleTime(2000)).subscribe(() => {
+      const conversationId = this.conversationId();
+      const userId = this.authService.currentUser()?.userId;
+      if (!conversationId || !userId) return;
+      this.signalRService.sendTyping(conversationId, userId);
+    });
+
+    this.destroyRef.onDestroy(() => {
+      if (this.stopTypingTimer) clearTimeout(this.stopTypingTimer);
+    });
+
     effect(() => {
       const editing = this.editingMessage();
-      if(editing) this.message.set(editing.content);
+      if (editing) this.message.set(editing.content);
     });
 
     effect(() => {
@@ -92,12 +114,32 @@ export class ChatInputBar {
     });
   }
 
+  onMessageInput(value: string) {
+    this.message.set(value);
+    this.typingSubject.next();
+
+    const conversationId = this.conversationId();
+    const userId = this.authService.currentUser()?.userId;
+    if (!conversationId || !userId) return;
+
+    if (this.stopTypingTimer) clearTimeout(this.stopTypingTimer);
+    this.stopTypingTimer = setTimeout(() => {
+      this.signalRService.sendStopTyping(conversationId, userId);
+    }, 2000);
+  }
+
   onSend() {
+    const conversationId = this.conversationId();
+    const userId = this.authService.currentUser()?.userId;
+    if (conversationId && userId) {
+        if (this.stopTypingTimer) clearTimeout(this.stopTypingTimer);
+        this.signalRService.sendStopTyping(conversationId, userId);
+    }
     const editing = this.editingMessage();
-    if(editing){
+    if (editing) {
       const value = this.message().trim();
-      if(!value) return;
-      this.saveEdit.emit({id: editing.id, content: value});
+      if (!value) return;
+      this.saveEdit.emit({ id: editing.id, content: value });
       this.message.set('');
       return;
     }

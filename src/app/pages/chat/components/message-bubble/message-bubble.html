@@ -70,6 +70,25 @@
 
         @if (!isDeleted()) {
         <div class="relative shrink-0 opacity-0 transition-opacity group-hover/msg:opacity-100">
+            <button type="button" (click)="toggleReactionPicker()"
+                class="flex h-7 w-7 items-center justify-center rounded-full text-text-secondary hover:bg-neutral-100 hover:text-text-heading">
+                <lucide-icon name="smile" class="h-4 w-4"></lucide-icon>
+            </button>
+
+            @if (showReactionPicker()) {
+            <div class="absolute z-10 flex items-center gap-0.5 rounded-full border border-border-300 bg-bg-hover px-1.5 py-1 shadow-lg"
+                [class]="(isMine() ? 'right-0' : 'left-0') + ' bottom-full mb-1'">
+                @for (emoji of quickReactions; track emoji) {
+                <button type="button" (click)="pickReaction(emoji)"
+                    class="flex h-7 w-7 items-center justify-center rounded-full text-base hover:scale-125 hover:bg-neutral-100 transition-transform">
+                    {{ emoji }}
+                </button>
+                }
+            </div>
+            }
+        </div>
+
+        <div class="relative shrink-0 opacity-0 transition-opacity group-hover/msg:opacity-100">
             <button #menuButton type="button" (click)="toggleMenu()"
                 class="flex h-7 w-7 items-center justify-center rounded-full text-text-secondary hover:bg-neutral-100 hover:text-text-heading">
                 <lucide-icon name="ellipsis" class="h-4 w-4"></lucide-icon>
@@ -97,6 +116,19 @@
         </div>
         }
     </div>
+
+    @if (reactionGroups().length > 0) {
+    <div class="flex flex-wrap gap-1 px-1" [class]="isMine() ? 'justify-end' : 'justify-start'">
+        @for (group of reactionGroups(); track group.emoji) {
+        <button type="button" (click)="pickReaction(group.emoji)"
+            class="flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-xs"
+            [class]="group.mine ? 'border-primary-main bg-primary-main/10' : 'border-border-300 bg-bg-hover'">
+            <span>{{ group.emoji }}</span>
+            @if (group.count > 1) { <span class="text-text-secondary">{{ group.count }}</span> }
+        </button>
+        }
+    </div>
+    }
 
     @if (isMine() && seen() && !isDeleted()) {
     <span class="flex items-center gap-1 self-end px-1 text-text-secondary">

@@ -19,10 +19,14 @@ export class ChatWindow {
     isGroup = input(false);
     memberCount = input(0);
     messages = input<MessageItem[]>([]);
+    isLoadingMore = input(false);
+    hasMoreMessages = input(true);
     sendAttachment = output<AttachmentBatchPayload>();
 
     replyTarget = input<ReplyTarget | null>(null);
     editTarget = input<EditTarget | null>(null);
+
+    typingUserNames = input<string[]>([]);
 
     isMuted = input(false);
 
@@ -32,6 +36,8 @@ export class ChatWindow {
     toggleInfo = output<void>();
     sendMessage = output<string>();
     messageAction = output<{ action: MessageAction; message: MessageItem }>();
+    toggleReaction = output<{ messageId: string; emoji: string }>();
+    loadMore = output<void>();
     saveEdit = output<{ id: string; content: string }>();
     cancelReply = output<void>();
     cancelEdit = output<void>();

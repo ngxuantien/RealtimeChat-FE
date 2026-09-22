@@ -1,12 +1,13 @@
-<app-chat-window class="min-w-0 flex-1" [conversationId]="conversationId() ?? null"
+<app-chat-window class="min-w-0 flex-1" [conversationId]="conversationId() ?? null" [typingUserNames]="typingUserNames()"
     [contactName]="conversation()?.name ?? ''" [contactAvatar]="conversation()?.avatarUrl ?? null"
     [isOnline]="conversation()?.isOnline ?? false" [isGroup]="conversation()?.isGroup ?? false"
     [memberCount]="conversation()?.memberCount ?? 0" [isMuted]="isMuted()" [replyTarget]="replyTarget()"
-    [editTarget]="editTarget()" [messages]="messages()" (toggleInfo)="toggleInfoPanel()"
+    [editTarget]="editTarget()" [messages]="messages()" [isLoadingMore]="isLoadingMore()" [hasMoreMessages]="hasMoreMessages()"
+    (toggleInfo)="toggleInfoPanel()"
     (toggleSearch)="toggleSearchPanel()" (toggleMute)="onToggleMute()" (deleteHistory)="onDeleteHistory()"
     (sendMessage)="onSendMessage($event)" (sendAttachment)="onSendAttachment($event)"
-    (messageAction)="onMessageAction($event)" (saveEdit)="onSaveEdit($event)" (cancelReply)="replyTarget.set(null)"
-    (cancelEdit)="editTarget.set(null)" />
+    (messageAction)="onMessageAction($event)" (toggleReaction)="onToggleReaction($event)" (saveEdit)="onSaveEdit($event)" (cancelReply)="replyTarget.set(null)"
+    (cancelEdit)="editTarget.set(null)" (loadMore)="loadMoreMessages()" />
 
 @if (sidePanelMode() === 'files') {
 <div class="fixed inset-0 z-40 bg-black/50 lg:hidden" (click)="sidePanelMode.set(null)"></div>

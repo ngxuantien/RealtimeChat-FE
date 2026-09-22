@@ -3,7 +3,6 @@ export const API_ENDPOINT = {
         LOGIN: 'auth/login',
         LOGOUT: 'auth/logout',
         REFRESH_TOKEN: 'auth/refresh-token',
-        CHANGE_PASSWORD: 'auth/change-password',
         FORGOT_PASSWORD: 'auth/forgot-password',
         RESET_PASSWORD: 'auth/reset-password',
     },

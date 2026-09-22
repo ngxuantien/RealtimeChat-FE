@@ -21,4 +21,10 @@ export interface Message {
     editedAt: string | null;
     createdAt: string;
     updatedAt: string | null;
+    reactions: MessageReaction[];
+}
+
+export interface MessageReaction {
+    userId: string;
+    emoji: string;
 }
