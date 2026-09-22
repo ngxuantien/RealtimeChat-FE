@@ -16,6 +16,8 @@
     <div class="flex-1 overflow-y-auto px-2 pb-4">
         @if (keyword().trim().length === 0) {
         <p class="py-10 text-center text-sm text-text-secondary">Nhập từ khoá để tìm tin nhắn trong đoạn chat này.</p>
+        } @else if (isSearching()) {
+        <p class="py-10 text-center text-sm text-text-secondary">Đang tìm...</p>
         } @else if (results().length === 0) {
         <p class="py-10 text-center text-sm text-text-secondary">Không tìm thấy tin nhắn phù hợp.</p>
         } @else {

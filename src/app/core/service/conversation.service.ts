@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 import { environment } from 'environments/environment';
 import { API_ENDPOINT } from '../constants/api-endpoint.constant';
 import { Conversation } from '../model/conversation/conversation.model';
@@ -9,6 +10,13 @@ import { ConversationMember } from '../model/conversation/conversation-member.mo
 export class ConversationService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
+
+  private conversationRemoved$ = new Subject<string>();
+  onConversationRemoved = this.conversationRemoved$.asObservable();
+
+  notifyConversationRemoved(conversationId: string) {
+    this.conversationRemoved$.next(conversationId);
+  }
 
   addMember(conversationId: string, userId: string) {
     const url = `${this.baseUrl}/${API_ENDPOINT.CONVERSATION.DETAIL}/${conversationId}/members`;

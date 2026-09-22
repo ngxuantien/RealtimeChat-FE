@@ -1,0 +1,16 @@
+<div class="fixed inset-0 z-9999 flex items-center justify-center" (click)="closed.emit()">
+    <div class="absolute inset-0 bg-black/85"></div>
+
+    <button type="button" (click)="closed.emit()"
+        class="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20">
+        <lucide-icon name="x" class="h-5 w-5"></lucide-icon>
+    </button>
+
+    <a [href]="imageUrl()" download target="_blank" rel="noopener" (click)="$event.stopPropagation()"
+        class="absolute left-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20">
+        <lucide-icon name="download" class="h-5 w-5"></lucide-icon>
+    </a>
+
+    <img [src]="imageUrl()" (click)="$event.stopPropagation()"
+        class="relative max-h-[90vh] max-w-[90vw] rounded-lg object-contain shadow-2xl" alt="" />
+</div>

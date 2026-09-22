@@ -134,6 +134,12 @@ export class Sidebar {
           ),
         );
       });
+
+    this.conversationService.onConversationRemoved
+      .pipe(takeUntilDestroyed())
+      .subscribe((conversationId) => {
+        this.conversations.update((list) => list.filter((c) => c.id !== conversationId));
+      });
   }
 
   setTab(tab: 'message' | 'group') {

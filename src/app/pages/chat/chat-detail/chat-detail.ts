@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { map, switchMap } from 'rxjs';
+import { map, Observable, switchMap, tap } from 'rxjs';
 import { ChatWindow } from '@app/pages/chat/components/chat-window/chat-window';
 import { InfoPanel } from '@app/pages/chat/components/info-panel/info-panel';
 import { Message } from '@app/core/model/message/message.model';
@@ -36,10 +36,11 @@ import { MessageItem } from '../components/message-list/message-list';
 import { Upload } from 'lucide-angular';
 import { ChatSearchPanel } from '../components/chat-search-panel/chat-search-panel';
 import { ConfirmModal } from '@app/share/component/confirm-modal/confirm-modal';
+import { ImageViewer } from '@app/share/component/image-viewer/image-viewer';
 
 @Component({
   selector: 'app-chat-detail',
-  imports: [ChatWindow, InfoPanel, ChatSearchPanel, ConfirmModal],
+  imports: [ChatWindow, InfoPanel, ChatSearchPanel, ConfirmModal, ImageViewer],
   templateUrl: './chat-detail.html',
   host: { class: 'flex min-h-0 flex-1' },
 })
@@ -88,6 +89,8 @@ export class ChatDetail {
       this.isGroupConversation(),
     ),
   );
+
+  previewImageUrl = signal<string | null>(null);
 
   private joinedConversationId: string | null = null;
 
@@ -267,13 +270,45 @@ export class ChatDetail {
     if (!conversationId || !currentUserId) return;
 
     this.conversationService.deleteConversation(conversationId, currentUserId).subscribe({
-      next: () => this.router.navigateByUrl('/'),
+      next: () => {
+        this.conversationService.notifyConversationRemoved(conversationId);
+        this.router.navigateByUrl('/');
+      },
       error: () => this.flashMessage.error('Không thể xóa lịch sử trò chuyện, thử lại sau.'),
     });
   }
 
   onJumpToMessage(messageId: string) {
     this.sidePanelMode.set(null);
+
+    if (this.rawMessages().some((m) => m.id === messageId)) {
+      this.scrollToMessage(messageId);
+      return;
+    }
+
+    this.loadUntilMessageFound(messageId);
+  }
+
+  private loadUntilMessageFound(messageId: string) {
+    const id = this.conversationId();
+    if (!id || this.isLoadingMore() || !this.hasMoreMessages()) return;
+
+    this.fetchNextPage(id).subscribe({
+      next: () => {
+        if (this.rawMessages().some((m) => m.id === messageId) || !this.hasMoreMessages()) {
+          this.scrollToMessage(messageId);
+        } else {
+          this.loadUntilMessageFound(messageId);
+        }
+      },
+      error: () => {
+        this.isLoadingMore.set(false);
+        this.flashMessage.error('Không thể tải tin nhắn, thử lại sau.');
+      },
+    });
+  }
+
+  private scrollToMessage(messageId: string) {
     setTimeout(() => {
       document
         .getElementById(`message-${messageId}`)
@@ -345,11 +380,20 @@ export class ChatDetail {
     const id = this.conversationId();
     if (!id || this.isLoadingMore() || !this.hasMoreMessages()) return;
 
+    this.fetchNextPage(id).subscribe({
+      error: () => {
+        this.isLoadingMore.set(false);
+        this.flashMessage.error('Không thể tải thêm tin nhắn, thử lại sau.');
+      },
+    });
+  }
+
+  private fetchNextPage(conversationId: string): Observable<Message[]> {
     this.isLoadingMore.set(true);
     const nextPage = this.currentPage() + 1;
 
-    this.messageService.getMessages(id, nextPage, this.PAGE_SIZE).subscribe({
-      next: (list) => {
+    return this.messageService.getMessages(conversationId, nextPage, this.PAGE_SIZE).pipe(
+      tap((list) => {
         this.isLoadingMore.set(false);
         this.currentPage.set(nextPage);
         if (list.length < this.PAGE_SIZE) this.hasMoreMessages.set(false);
@@ -360,12 +404,8 @@ export class ChatDetail {
           const existingIds = new Set(current.map((m) => m.id));
           return [...older.filter((m) => !existingIds.has(m.id)), ...current];
         });
-      },
-      error: () => {
-        this.isLoadingMore.set(false);
-        this.flashMessage.error('Không thể tải thêm tin nhắn, thử lại sau.');
-      },
-    });
+      }),
+    );
   }
 
   onToggleReaction({ messageId, emoji }: { messageId: string; emoji: string }) {
@@ -428,6 +468,9 @@ export class ChatDetail {
   }
 
   onLeftGroupOrDeleted() {
+    const id = this.conversationId();
+    if (id) this.conversationService.notifyConversationRemoved(id);
+
     this.sidePanelMode.set(null);
     this.router.navigateByUrl('/');
   }
