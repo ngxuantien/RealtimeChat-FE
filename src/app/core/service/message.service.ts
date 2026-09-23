@@ -65,4 +65,9 @@ export class MessageService {
     const url = `${this.baseUrl}/${API_ENDPOINT.MESSAGE.BASE}/${messageId}/reactions`;
     return this.http.post<Message>(url, { emoji });
   }
+
+  searchMessages(conversationId: string, keyword: string) {
+    const url = `${this.baseUrl}/${API_ENDPOINT.MESSAGE.BASE}/conversation/${conversationId}/search`;
+    return this.http.get<Message[]>(url, { params: { keyword } });
+  }
 }

@@ -25,7 +25,7 @@
             @switch (type()) {
             @case (MessageType.Image) {
             <div class="flex flex-col gap-1.5">
-                <img [src]="attachments()[0]?.fileUrl" class="rounded-2xl object-cover" alt="" />
+                <img [src]="attachments()[0]?.fileUrl" (click)="imageClick.emit(attachments()[0]?.fileUrl!)" class="cursor-zoom-in rounded-2xl object-cover transition hover:brightness-90" alt="" />
                 @if (content()) {
                 <div class="rounded-2xl px-4 py-2 text-sm wrap-break-words" [class]="bubbleClasses()">{{ content() }}
                 </div>

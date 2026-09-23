@@ -134,6 +134,12 @@ export class Sidebar {
           ),
         );
       });
+
+    this.conversationService.onConversationRemoved
+      .pipe(takeUntilDestroyed())
+      .subscribe((conversationId) => {
+        this.conversations.update((list) => list.filter((c) => c.id !== conversationId));
+      });
   }
 
   setTab(tab: 'message' | 'group') {
@@ -189,6 +195,21 @@ export class Sidebar {
   clearSearch() {
     this.searchTerm.set('');
     this.searchFocused.set(false);
+  }
+
+  togglePin(item: ConversationListItem, event: Event) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const nextIsPinned = !item.isPinned;
+
+    this.conversationService.updatePin(item.id, nextIsPinned).subscribe({
+      next: () => {
+        this.conversations.update((list) =>
+          list.map((c) => (c.id === item.id ? { ...c, isPinned: nextIsPinned } : c)),
+        );
+      },
+    });
   }
 
   selectSearchResult(item: ConversationListItem) {
