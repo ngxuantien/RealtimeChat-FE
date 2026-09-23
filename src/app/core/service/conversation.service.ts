@@ -85,6 +85,11 @@ export class ConversationService {
     return this.http.patch(url, { isMuted });
   }
 
+  updatePin(conversationId: string, isPinned: boolean) {
+    const url = `${this.baseUrl}/${API_ENDPOINT.CONVERSATION.DETAIL}/${conversationId}/members/pin`;
+    return this.http.patch(url, { isPinned });
+  }
+
   deleteConversation(conversationId: string, userId: string) {
     const url = `${this.baseUrl}/${API_ENDPOINT.CONVERSATION.LIST}/${conversationId}/user/${userId}`;
     return this.http.delete(url);
