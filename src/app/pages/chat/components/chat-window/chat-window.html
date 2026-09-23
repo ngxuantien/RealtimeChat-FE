@@ -3,7 +3,7 @@
         [memberCount]="memberCount()" [isMuted]="isMuted()" (toggleInfo)="toggleInfo.emit()"
         (toggleSearch)="toggleSearch.emit()" (toggleMute)="toggleMute.emit()" (deleteHistory)="deleteHistory.emit()" />
 
-    <app-message-list [messages]="messages()" [isLoadingMore]="isLoadingMore()" [hasMoreMessages]="hasMoreMessages()"
+    <app-message-list [messages]="messages()" [isLoadingMore]="isLoadingMore()" [hasMoreMessages]="hasMoreMessages()" (imageClick)="imageClick.emit($event)"
         (messageAction)="messageAction.emit($event)" (toggleReaction)="toggleReaction.emit($event)" (loadMore)="loadMore.emit()" />
 
     @if (typingUserNames().length > 0) {

@@ -37,6 +37,7 @@
         [myReactionEmoji]="msg.myReactionEmoji"
         (action)="messageAction.emit({ action: $event, message: msg })"
         (toggleReaction)="toggleReaction.emit({ messageId: msg.id, emoji: $event })"
+        (imageClick)="imageClick.emit($event)"
         [class.mt-3]="msg.showHeader && !msg.dateLabel" />
     }
 </div>

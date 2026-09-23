@@ -52,7 +52,14 @@ export class NewConversationModal {
             )
             .subscribe((user) => {
                 this.isSearching.set(false);
-                if (user) this.foundUser.set(user);
+                if (!user) return;
+
+                if (user.id === this.authService.currentUser()?.userId) {
+                    this.errorMessage.set('Không thể nhắn tin cho chính mình.');
+                    return;
+                }
+
+                this.foundUser.set(user);
             });
     }
 

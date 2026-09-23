@@ -1,23 +1,25 @@
-<app-chat-window class="min-w-0 flex-1" [conversationId]="conversationId() ?? null" [typingUserNames]="typingUserNames()"
-    [contactName]="conversation()?.name ?? ''" [contactAvatar]="conversation()?.avatarUrl ?? null"
-    [isOnline]="conversation()?.isOnline ?? false" [isGroup]="conversation()?.isGroup ?? false"
-    [memberCount]="conversation()?.memberCount ?? 0" [isMuted]="isMuted()" [replyTarget]="replyTarget()"
-    [editTarget]="editTarget()" [messages]="messages()" [isLoadingMore]="isLoadingMore()" [hasMoreMessages]="hasMoreMessages()"
-    (toggleInfo)="toggleInfoPanel()"
-    (toggleSearch)="toggleSearchPanel()" (toggleMute)="onToggleMute()" (deleteHistory)="onDeleteHistory()"
-    (sendMessage)="onSendMessage($event)" (sendAttachment)="onSendAttachment($event)"
-    (messageAction)="onMessageAction($event)" (toggleReaction)="onToggleReaction($event)" (saveEdit)="onSaveEdit($event)" (cancelReply)="replyTarget.set(null)"
-    (cancelEdit)="editTarget.set(null)" (loadMore)="loadMoreMessages()" />
+<app-chat-window class="min-w-0 flex-1" [conversationId]="conversationId() ?? null"
+    [typingUserNames]="typingUserNames()" [contactName]="conversation()?.name ?? ''"
+    [contactAvatar]="conversation()?.avatarUrl ?? null" [isOnline]="conversation()?.isOnline ?? false"
+    [isGroup]="conversation()?.isGroup ?? false" [memberCount]="conversation()?.memberCount ?? 0" [isMuted]="isMuted()"
+    [replyTarget]="replyTarget()" [editTarget]="editTarget()" [messages]="messages()" [isLoadingMore]="isLoadingMore()"
+    [hasMoreMessages]="hasMoreMessages()" (toggleInfo)="toggleInfoPanel()" (toggleSearch)="toggleSearchPanel()"
+    (toggleMute)="onToggleMute()" (deleteHistory)="onDeleteHistory()" (sendMessage)="onSendMessage($event)"
+    (sendAttachment)="onSendAttachment($event)" (messageAction)="onMessageAction($event)"
+    (toggleReaction)="onToggleReaction($event)" (saveEdit)="onSaveEdit($event)" (cancelReply)="replyTarget.set(null)"
+    (cancelEdit)="editTarget.set(null)" (loadMore)="loadMoreMessages()" (imageClick)="previewImageUrl.set($event)" />
+
+@if (previewImageUrl(); as url) {
+<app-image-viewer [imageUrl]="url" (closed)="previewImageUrl.set(null)" />
+}
 
 @if (sidePanelMode() === 'files') {
 <div class="fixed inset-0 z-40 bg-black/50 lg:hidden" (click)="sidePanelMode.set(null)"></div>
 <app-info-panel
     class="fixed inset-y-0 right-0 z-50 w-full shadow-xl lg:static lg:z-auto lg:w-96 lg:max-w-none lg:shrink-0 lg:shadow-none"
-    [conversationId]="conversationId() ?? null" [members]="members()"
-    [avatarUrl]="conversation()?.avatarUrl ?? null"
+    [conversationId]="conversationId() ?? null" [members]="members()" [avatarUrl]="conversation()?.avatarUrl ?? null"
     [isGroup]="conversation()?.isGroup ?? false" [createdBy]="conversation()?.createdBy ?? null"
-    (close)="sidePanelMode.set(null)"
-    (memberRemoved)="onMembersChanged()" (memberAdded)="onMembersChanged()"
+    (close)="sidePanelMode.set(null)" (memberRemoved)="onMembersChanged()" (memberAdded)="onMembersChanged()"
     (leftGroup)="onLeftGroupOrDeleted()" (groupDeleted)="onLeftGroupOrDeleted()" />
 }
 
@@ -25,19 +27,17 @@
 <div class="fixed inset-0 z-40 bg-black/50 lg:hidden" (click)="sidePanelMode.set(null)"></div>
 <app-chat-search-panel
     class="fixed inset-y-0 right-0 z-50 w-full shadow-xl lg:static lg:z-auto lg:w-96 lg:max-w-none lg:shrink-0 lg:shadow-none"
-    [messages]="messages()" [members]="members()" (close)="sidePanelMode.set(null)" (jumpTo)="onJumpToMessage($event)" />
+    [conversationId]="conversationId() ?? ''" [members]="members()" (close)="sidePanelMode.set(null)"
+    (jumpTo)="onJumpToMessage($event)" />
 }
 
 @if (pendingDeleteMessageId()) {
-<app-confirm-modal title="Xóa tin nhắn"
-    message="Bạn có chắc chắn muốn xóa tin nhắn này không?" confirmLabel="Xóa"
+<app-confirm-modal title="Xóa tin nhắn" message="Bạn có chắc chắn muốn xóa tin nhắn này không?" confirmLabel="Xóa"
     closeLabel="Hủy" (confirmed)="confirmDeleteMessage()" (closed)="pendingDeleteMessageId.set(null)" />
 }
 
 @if(showDeleteHistoryConfirm()){
-    <app-confirm-modal title="Xóa lịch sử trò chuyện"
-    message="Toàn bộ tin nhắn trong đoạn chat này sẽ bị xóa."
-    confirmLabel="Xóa" closeLabel="Hủy"
-    (confirmed)="confirmDeleteHistory()"
+<app-confirm-modal title="Xóa lịch sử trò chuyện" message="Toàn bộ tin nhắn trong đoạn chat này sẽ bị xóa."
+    confirmLabel="Xóa" closeLabel="Hủy" (confirmed)="confirmDeleteHistory()"
     (closed)="showDeleteHistoryConfirm.set(false)" />
 }

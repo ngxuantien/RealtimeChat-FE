@@ -47,6 +47,8 @@ export class MessageBubble {
   openUpward = signal(false);
   showReactionPicker = signal(false);
 
+  imageClick = output<string>();
+
   protected readonly reactionGroups = computed<ReactionGroup[]>(() => {
     const counts = new Map<string, number>();
     for (const r of this.reactions()) {

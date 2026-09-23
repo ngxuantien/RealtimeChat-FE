@@ -41,4 +41,5 @@ export class ChatWindow {
     saveEdit = output<{ id: string; content: string }>();
     cancelReply = output<void>();
     cancelEdit = output<void>();
+    imageClick = output<string>();
 }
