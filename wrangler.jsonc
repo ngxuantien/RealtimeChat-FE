@@ -1,0 +1,8 @@
+{
+  "name": "realtimechat-fe",
+  "compatibility_date": "2026-09-24",
+  "assets": {
+    "directory": "./dist/RealtimeChat-FE/browser",
+    "not_found_handling": "single-page-application"
+  }
+}
