@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class SignalRService {
   private hubConnection: signalR.HubConnection | null = null;
+  private startPromise: Promise<void> | null = null;
 
   private reconnected$ = new Subject<void>();
   onReconnected = this.reconnected$.asObservable();
@@ -94,26 +95,43 @@ export class SignalRService {
 
     this.hubConnection.onreconnected(() => this.reconnected$.next());
 
-    this.hubConnection.start().catch((err) => console.error('Lỗi kết nối SignalR:', err));
+    this.startPromise = this.hubConnection
+      .start()
+      .catch((err) => console.error('Lỗi kết nối SignalR:', err));
+  }
+
+  // Hub invocations only succeed once the connection has actually reached the
+  // "Connected" state; over real network latency (unlike localhost) callers
+  // routinely fire these before that happens, so queue behind the start promise.
+  private whenConnected(invoke: () => void) {
+    if (this.hubConnection?.state === signalR.HubConnectionState.Connected) {
+      invoke();
+      return;
+    }
+    this.startPromise?.then(invoke);
   }
 
   joinConversation(conversationId: string) {
-    this.hubConnection
-      ?.invoke('JoinConversation', conversationId)
-      .catch((err) => console.error(err));
+    this.whenConnected(() => {
+      this.hubConnection?.invoke('JoinConversation', conversationId).catch((err) => console.error(err));
+    });
   }
 
   leaveConversation(conversationId: string) {
-    this.hubConnection
-      ?.invoke('LeaveConversation', conversationId)
-      .catch((err) => console.error(err));
+    this.whenConnected(() => {
+      this.hubConnection?.invoke('LeaveConversation', conversationId).catch((err) => console.error(err));
+    });
   }
 
   sendTyping(conversationId: string, userId: string) {
-    this.hubConnection?.invoke('Typing', conversationId, userId).catch(() => {});
+    this.whenConnected(() => {
+      this.hubConnection?.invoke('Typing', conversationId, userId).catch(() => {});
+    });
   }
 
   sendStopTyping(conversationId: string, userId: string) {
-    this.hubConnection?.invoke('StopTyping', conversationId, userId).catch(() => {});
+    this.whenConnected(() => {
+      this.hubConnection?.invoke('StopTyping', conversationId, userId).catch(() => {});
+    });
   }
 }
